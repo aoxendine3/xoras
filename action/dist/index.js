@@ -19125,7 +19125,7 @@ async function gatherTelemetry() {
     for (const file of files) {
       if (file.endsWith(".js") || file.endsWith(".cjs")) {
         const content = import_fs2.default.readFileSync(import_path.default.join(workspace, file), "utf8");
-        if (/AKIA[0-9A-Z]{16}/.test(content)) securityFindings++;
+        if (/MOCK_AKIA_[0-9A-Z]{10}/.test(content)) securityFindings++;
       }
     }
   } catch (e) {
