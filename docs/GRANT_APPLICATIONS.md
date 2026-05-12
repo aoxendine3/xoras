@@ -40,6 +40,12 @@ Founder, XORAS"
 
 ---
 
-### 4. Loan Readiness (Stripe / Mercury Capital)
-*   **The Play**: If your transactional volume is active, I recommend requesting a **"Sovereign Growth Loan"** to fund the first 12 months of high-touch pilot support.
-*   **Documentation**: Use the `docs/SOVEREIGN_BLUEPRINT.md` as the business case.
+### **Final Institutional Authority**
+All submissions are authorized by the XORAS Founder and Sovereign Orchestrator.
+
+**Authorized by**: Anthony Oxendine
+**Date**: May 12, 2026
+**Title**: Founder, XORAS Institutional Integrity Engine
+
+**Institutional Integrity Commitment**: 
+"We certify that XORAS operates as a local-first, zero-knowledge integrity firewall. We remain committed to the principles of digital sovereignty and the hardening of open-source digital infrastructure."
