@@ -2,74 +2,72 @@ const core = require('@actions/core');
 const fs = require('fs');
 const path = require('path');
 
+/**
+ * XORAS: Simple Release Governance
+ * Scans for secrets, checks Docker tags, and verifies Next.js routes.
+ */
+
 async function run() {
   try {
-    core.info('🚀 Initializing XORAS Release Audit...');
+    core.info('🚀 Starting XORAS Audit...');
 
-    // 1. Perform Real Audit
-    const auditResults = await performAudit();
+    const metrics = await performAudit();
+    generateStepSummary(metrics);
 
-    // 2. Generate Step Summary
-    generateStepSummary(auditResults);
-
-    // 3. Set Outputs and Status
-    const failureThreshold = 10;
-    if (auditResults.security_findings > 0 || auditResults.docker_tag_drift) {
-      core.setFailed('❌ XORAS Audit failed: Critical security or integrity risks detected.');
+    if (metrics.security_findings > 0) {
+      core.setFailed(`❌ Audit failed: ${metrics.security_findings} potential secrets detected.`);
+    } else if (metrics.docker_tag_drift) {
+      core.setFailed('❌ Audit failed: Unstable Docker tags detected (using :latest).');
     } else {
-      core.info('✅ XORAS Audit passed successfully.');
+      core.info('✅ Audit passed.');
     }
 
   } catch (error) {
-    core.setFailed(`XORAS Execution Error: ${error.message}`);
+    core.setFailed(`Error: ${error.message}`);
   }
 }
 
 async function performAudit() {
   const results = {
-    latency: 0,
     security_findings: 0,
     dependency_count: 0,
     docker_tag_drift: false,
-    route_integrity: { status: "SKIPPED", details: "No Next.js project detected." },
-    baseline: { latency: 15, dependency_count: 40 }
+    next_js_found: false
   };
 
-  // 1. Real Secret Scanning
   const secretPatterns = [
     /api[_-]?key/i, /secret/i, /password/i, /token/i,
     /A3T[A-Z0-9]{16}/, // AWS
     /sk-[a-zA-Z0-9]{48}/ // OpenAI
   ];
   
+  // 1. Scan for Secrets
   const files = getAllFiles(process.cwd());
   files.forEach(file => {
-    if (file.includes('node_modules') || file.includes('.git')) return;
-    const content = fs.readFileSync(file, 'utf8');
-    secretPatterns.forEach(pattern => {
-      if (pattern.test(content)) results.security_findings++;
-    });
+    if (file.includes('node_modules') || file.includes('.git') || file.includes('dist')) return;
+    try {
+      const content = fs.readFileSync(file, 'utf8');
+      secretPatterns.forEach(pattern => {
+        if (pattern.test(content)) results.security_findings++;
+      });
+    } catch (e) { /* skip binary/unreadable files */ }
   });
 
-  // 2. Real Dependency Audit
+  // 2. Check Dependencies
   if (fs.existsSync('package.json')) {
     const pkg = JSON.parse(fs.readFileSync('package.json', 'utf8'));
-    results.dependency_count = Object.keys(pkg.dependencies || {}).length + 
-                               Object.keys(pkg.devDependencies || {}).length;
+    results.dependency_count = Object.keys(pkg.dependencies || {}).length;
   }
 
-  // 3. Real Docker Tag Audit
-  const dockerfile = 'Dockerfile';
-  if (fs.existsSync(dockerfile)) {
-    const content = fs.readFileSync(dockerfile, 'utf8');
-    if (content.includes(':latest')) {
-      results.docker_tag_drift = true;
-    }
+  // 3. Check Docker Tags
+  if (fs.existsSync('Dockerfile')) {
+    const content = fs.readFileSync('Dockerfile', 'utf8');
+    if (content.includes(':latest')) results.docker_tag_drift = true;
   }
 
-  // 4. Real Next.js Route Audit
+  // 4. Check Next.js
   if (fs.existsSync('next.config.js') || fs.existsSync('next.config.mjs')) {
-    results.route_integrity = { status: "HEALTHY", details: "Build-to-source mapping verified." };
+    results.next_js_found = true;
   }
 
   return results;
@@ -79,10 +77,11 @@ function getAllFiles(dirPath, arrayOfFiles) {
   const files = fs.readdirSync(dirPath);
   arrayOfFiles = arrayOfFiles || [];
   files.forEach(function(file) {
-    if (fs.statSync(dirPath + "/" + file).isDirectory()) {
-      arrayOfFiles = getAllFiles(dirPath + "/" + file, arrayOfFiles);
+    const fullPath = path.join(dirPath, file);
+    if (fs.statSync(fullPath).isDirectory()) {
+      arrayOfFiles = getAllFiles(fullPath, arrayOfFiles);
     } else {
-      arrayOfFiles.push(path.join(dirPath, "/", file));
+      arrayOfFiles.push(fullPath);
     }
   });
   return arrayOfFiles;
@@ -90,15 +89,15 @@ function getAllFiles(dirPath, arrayOfFiles) {
 
 function generateStepSummary(metrics) {
   core.summary
-    .addHeading('🛡️ XORAS Engineering Audit Summary')
+    .addHeading('🛡️ XORAS Audit Summary')
     .addTable([
-      ['Metric', 'Status', 'Benchmark', 'Result'],
-      ['Security Scan', metrics.security_findings > 0 ? '❌ AT RISK' : '✅ HEALTHY', '0 Secrets', `${metrics.security_findings} detected`],
-      ['Architecture', metrics.dependency_count > 100 ? '⚠️ BLOAT' : '✅ HEALTHY', '< 100 deps', `${metrics.dependency_count} dependencies`],
-      ['Route Integrity', metrics.route_integrity.status, 'Grounding', metrics.route_integrity.details],
-      ['Registry Finality', metrics.docker_tag_drift ? '❌ DRIFT' : '✅ VERIFIED', 'No :latest tags', metrics.docker_tag_drift ? 'Unstable Tags' : 'Stable Tags']
+      ['Audit Type', 'Result', 'Status'],
+      ['Secret Scan', `${metrics.security_findings} found`, metrics.security_findings > 0 ? '❌ FAIL' : '✅ PASS'],
+      ['Docker Tags', metrics.docker_tag_drift ? 'Using :latest' : 'Stable', metrics.docker_tag_drift ? '❌ FAIL' : '✅ PASS'],
+      ['Next.js Check', metrics.next_js_found ? 'Detected' : 'Not Found', metrics.next_js_found ? '✅ OK' : '⚪ N/A'],
+      ['Dependencies', `${metrics.dependency_count} packages`, '✅ OK']
     ])
-    .addLink('View Full Audit Dashboard', 'https://aoxendine3.github.io/xoras/dashboard/')
+    .addLink('View Documentation', 'https://github.com/aoxendine3/xoras')
     .write();
 }
 
