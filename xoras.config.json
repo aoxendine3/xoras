@@ -1,0 +1,16 @@
+{
+  "name": "XORAS-DEFAULT-POLICY",
+  "description": "Standard Release Governance Policy for the Xero-knowledge Operational Release Audit System.",
+  "mode": "ADVISORY",
+  "thresholds": {
+    "latencyDrift": 0.15,
+    "securitySeverity": "high",
+    "maxDependencies": 100
+  },
+  "trustAnchors": [
+    {
+      "id": "XORAS-ORCHESTRATOR-01",
+      "type": "TECHNICAL_AUTHORITY"
+    }
+  ]
+}

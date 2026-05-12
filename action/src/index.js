@@ -42,7 +42,7 @@ function simulateMetrics() {
     baseline: {
       latency: 15,
       dependency_count: 40,
-      docker_tag_hash: "sha256:7b5a..."
+      docker_tag_hash: "sha256:7b5a59c3f739665796c56b6c6b4d32f512c1d8c1c5c1c5c1c5c1c5c1c5c1c5c"
     }
   };
 }
