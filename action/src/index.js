@@ -7,8 +7,11 @@ async function run() {
     const mode = core.getInput('mode') || 'ADVISORY';
     core.info(`Starting XORAS Release Integrity Check (Mode: ${mode})`);
 
-    // Simulated Telemetry (For Pilot Display)
-    // In production, this would call the xoras core engine via API or binary
+    // 1. Load and Validate Configuration
+    const config = loadConfig();
+    validateConfig(config);
+
+    // 2. Gather Telemetry
     const metrics = await gatherTelemetry();
 
     // Evaluate
@@ -27,6 +30,38 @@ async function run() {
   } catch (error) {
     core.setFailed(error.message);
   }
+}
+
+function validateConfig(config) {
+    const required = ['name', 'mode', 'thresholds'];
+    const missing = required.filter(key => !config[key]);
+    
+    if (missing.length > 0) {
+        throw new Error(`XORAS Institutional Error: Malformed xoras.config.json. Missing required fields: ${missing.join(', ')}`);
+    }
+
+    if (!['ADVISORY', 'ENFORCEMENT'].includes(config.mode)) {
+        throw new Error(`XORAS Institutional Error: Invalid mode "${config.mode}". Must be ADVISORY or ENFORCEMENT.`);
+    }
+    
+    console.log(`✅ XORAS Policy Validated: [${config.name}] in [${config.mode}] mode.`);
+}
+
+function loadConfig() {
+    try {
+        const configPath = path.join(process.cwd(), 'xoras.config.json');
+        if (fs.existsSync(configPath)) {
+            return JSON.parse(fs.readFileSync(configPath, 'utf8'));
+        }
+        // Fallback for pilots
+        return {
+            name: "XORAS-ADVISORY-PILOT",
+            mode: "ADVISORY",
+            thresholds: { latencyDrift: 0.25, securitySeverity: "high" }
+        };
+    } catch (err) {
+        throw new Error(`XORAS Technical Error: Failed to parse xoras.config.json - ${err.message}`);
+    }
 }
 
 async function gatherTelemetry() {

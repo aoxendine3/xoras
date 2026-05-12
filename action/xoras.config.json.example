@@ -1,0 +1,14 @@
+{
+  "name": "Institutional-Repo",
+  "mode": "ADVISORY",
+  "thresholds": {
+    "latencyDrift": 0.20,
+    "securitySeverity": "high",
+    "dependencyBloat": 5
+  },
+  "ecosystems": ["npm", "maven", "nuget"],
+  "notifications": {
+    "githubStepSummary": true,
+    "integrityLedger": true
+  }
+}
