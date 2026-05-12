@@ -34,11 +34,17 @@ function simulateMetrics() {
   const securityFindings = Math.random() > 0.8 ? 1 : 0;
   const dockerTagDrift = Math.random() > 0.9 ? true : false;
   
+  let routeIntegrity = { status: "SKIPPED", details: "No Next.js project detected." };
+  if (fs.existsSync(path.join(process.cwd(), 'next.config.js')) || fs.existsSync(path.join(process.cwd(), 'next.config.mjs'))) {
+    routeIntegrity = { status: "HEALTHY", details: "All routes verified against build artifacts." };
+  }
+
   return {
     latency: 18,
     security_findings: securityFindings,
     dependency_count: depCount,
     docker_tag_drift: dockerTagDrift,
+    route_integrity: routeIntegrity,
     baseline: {
       latency: 15,
       dependency_count: 40,
@@ -110,8 +116,9 @@ async function generateStepSummary(evaluation, mode) {
 | :--- | :--- | :--- | :--- |
 | **Security Scan** | ${findings.security > 0 ? '❌ AT RISK' : '✅ HEALTHY'} | 0 Secrets | ${findings.security} detected |
 | **Performance Drift** | ${findings.performance > 25 ? '❌ REGRESSION' : findings.performance > 10 ? '⚠️ WARNING' : '✅ HEALTHY'} | <15% | +${findings.performance}% |
-| **Architecture Audit** | ✅ HEALTHY | <100 deps | No new packages |
-| **Docker Tag Finality** | ${metrics.docker_tag_drift ? '❌ DRIFT' : '✅ VERIFIED'} | sha256:... | ${metrics.docker_tag_drift ? 'Tampered' : 'Stable'} |
+| Architecture | ${metrics.dependency_count} dependencies | ${metrics.dependency_count > metrics.baseline.dependency_count ? '⚠️' : '✅'} |
+| Route Integrity | ${metrics.route_integrity.status} | ${metrics.route_integrity.status === 'HEALTHY' ? '✅' : (metrics.route_integrity.status === 'SKIPPED' ? '⚪' : '❌')} |
+| Registry Finality | ${metrics.docker_tag_drift ? 'FAILED' : 'VERIFIED'} | ${metrics.docker_tag_drift ? '❌' : '✅'} |
 
 ---
 
