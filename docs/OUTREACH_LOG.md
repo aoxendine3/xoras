@@ -3,12 +3,12 @@
 
 ### **High-Value Targets (Scour Results)**
 
-| Target Entity | Focus Area | Status | Notes |
+| Target Entity | Focus Area | Status | Target / Handle |
 | :--- | :--- | :--- | :--- |
-| **tj-actions Maintainers** | Action Security | [PENDING] | Focus on mutable reference protection. |
-| **Nx Platform Team** | Monorepo Integrity | [PENDING] | Focus on drift detection in complex builds. |
-| **Trivy / Aqua Security** | Scanner Integrity | [PENDING] | Focus on the "Scanner for Scanners" angle. |
-| **Platform Leads @ Vercel** | Edge Deployment | [PENDING] | Focus on deterministic release finality. |
+| **tj-actions Maintainers** | Action Security | [READY] | @tj-actions / @TheJackWilliams |
+| **Nx Platform Team** | Monorepo Integrity | [READY] | @NxDevTools / @JeffCrossISC |
+| **Trivy / Aqua Security** | Scanner Integrity | [READY] | @AquaSecTeam / @LizRice |
+| **Platform Leads @ Vercel** | Edge Deployment | [READY] | @leeerob / @rauchg |
 
 ---
 
