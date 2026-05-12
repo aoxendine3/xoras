@@ -19,7 +19,7 @@ jobs:
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
 
       - name: Run Zizmor Audit
-        uses: woodruffw/zizmor-action@072186716075191c0e3592c7309068032ec88313 # v0.1.1
+        uses: zizmorcore/zizmor-action@f52a838cfabf134edcbaa7c8b3677dde20045018 # v0.1.1
         with:
           arguments: .github/workflows/ --format plain
 
@@ -31,6 +31,4 @@ jobs:
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
 
       - name: Run Actionlint
-        uses: rhysd/actionlint-action@7005470d062828e678396c21e6be3f48a1d1354a # v1.11.1
-        with:
-          flags: -color
+        uses: devops-actions/actionlint@9fb9c192862f19e684586ca84b500461bcd8a541 # v0.1.12
