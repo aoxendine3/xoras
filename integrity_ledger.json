@@ -1,0 +1,33 @@
+{
+  "history": [
+    {
+      "id": "SNAP-68D33A",
+      "timestamp": "2026-05-12T00:59:02.675Z",
+      "status": "GOVERNANCE_ACTIVE",
+      "metrics": {
+        "latency": 0.0766,
+        "security_findings": 0,
+        "dependency_count": 0,
+        "timestamp": "2026-05-12T00:59:02.674Z"
+      }
+    }
+  ],
+  "audit_log": [
+    {
+      "id": "EVT-4335C09E",
+      "timestamp": "2026-05-12T00:59:02.716Z",
+      "origin": {
+        "hostname": "Mac.lan",
+        "user": "ajoxendine68",
+        "cwd": "/Users/ajoxendine68/Documents/GitHub/xoras"
+      },
+      "type": "REPAIR",
+      "details": {
+        "reason": "MISSING_LEDGER_AUTO_DETECT",
+        "original_ledger_exists": false,
+        "recovery_method": "AUTO_REBASELINE"
+      }
+    }
+  ],
+  "signature": "124dc46f00eaa8e313de11f68f8de08626294d52a2f4ab290b05cdf7cc785773"
+}
