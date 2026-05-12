@@ -3,97 +3,115 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>XORAS | Release Integrity Pilot</title>
+    <title>XORAS | Institutional Release Integrity</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
+    <div class="glow-bg"></div>
+    
     <div class="container">
         <header>
             <div class="logo">XORAS</div>
             <nav>
-                <a href="#apply" class="cta-button" style="padding: 0.6rem 1.2rem; font-size: 0.9rem;">Join Pilot</a>
+                <a href="#ecosystems">Ecosystems</a>
+                <a href="#simulator">Live Demo</a>
+                <a href="#apply" class="cta-button secondary">Join Pilot</a>
             </nav>
         </header>
 
         <section class="hero">
-            <h1>Release Confidence for High-Velocity Engineering</h1>
-            <p class="subtitle">XORAS surfaces release drift directly inside your CI pipeline—detecting performance regressions and security leaks before they reach production.</p>
-            <a href="#apply" class="cta-button">Apply for the 30-Day Advisory Pilot</a>
-        </section>
-
-        <section class="section-title">
-            <h2>Deterministic Drift Detection</h2>
-            <p class="subtitle">XORAS monitors your institutional baseline across four critical categories.</p>
-        </section>
-
-        <div class="grid">
-            <div class="card">
-                <h3>Performance Drift</h3>
-                <p>Detect latency regressions and TTFB degradation caused by inefficient code paths before merge.</p>
-            </div>
-            <div class="card">
-                <h3>Dependency Bloat</h3>
-                <p>Enforce architectural discipline by flagging unnecessary packages and massive bundle size growth.</p>
-            </div>
-            <div class="card">
-                <h3>Secret Exposure</h3>
-                <p>Intercept exposed API keys and credentials directly in the PR workflow with zero false positives.</p>
-            </div>
-            <div class="card">
-                <h3>Governance Drift</h3>
-                <p>Ensure every release meets institutional standards for security headers, CORS, and configuration.</p>
-            </div>
-        </div>
-
-        <section class="proof-section">
-            <div class="section-title">
-                <h2>Operational Proof</h2>
-                <p class="subtitle">See how XORAS catches a latency regression and an exposed secret in real-time.</p>
-            </div>
-            <div class="video-container">
-                <img src="assets/walkthrough.webp" alt="XORAS Walkthrough">
+            <div class="badge">Institutional Release Integrity</div>
+            <h1>Turn Release Anxiety into Release Confidence</h1>
+            <p class="subtitle">XORAS detects performance regressions, security leaks, and architectural drift before they merge—across npm, Maven, and NuGet.</p>
+            <div class="hero-actions">
+                <a href="#apply" class="cta-button">Apply for the 30-Day Pilot</a>
+                <a href="#ecosystems" class="secondary-btn">View Supported Ecosystems</a>
             </div>
         </section>
 
-        <section class="section-title">
-            <h2>The 30-Day Advisory Pilot</h2>
-            <p class="subtitle">A frictionless, no-blocking introduction to release integrity.</p>
+        <!-- Interactive Ecosystem Tabs -->
+        <section id="ecosystems" class="tabs-section">
+            <div class="section-header">
+                <h2>Multi-Registry Integrity</h2>
+                <p>One governance layer for every package in your enterprise.</p>
+            </div>
+            
+            <div class="tab-container">
+                <div class="tab-list">
+                    <button class="tab-btn active" data-tab="npm">npm / Node.js</button>
+                    <button class="tab-btn" data-tab="maven">Maven / Java</button>
+                    <button class="tab-btn" data-tab="nuget">NuGet / .NET</button>
+                </div>
+                
+                <div class="tab-content active" id="npm">
+                    <h3>npm Integrity</h3>
+                    <p>Track dependency bloat and performance drift in JavaScript/TypeScript projects. Integrates directly with `package.json` and lockfiles.</p>
+                    <pre><code>uses: xoras/action@v1
+with:
+  ecosystem: npm
+  threshold: 15%</code></pre>
+                </div>
+                
+                <div class="tab-content" id="maven">
+                    <h3>Maven Integrity</h3>
+                    <p>Governance for Apache Maven. Detects unauthorized registry access and artifact drift in `pom.xml` configurations.</p>
+                    <pre><code># XORAS Policy for Maven
+<distributionManagement>
+  <repository>
+    <id>github</id>
+    <url>https://maven.pkg.github.com/OWNER/REPO</url>
+  </repository>
+</distributionManagement></code></pre>
+                </div>
+                
+                <div class="tab-content" id="nuget">
+                    <h3>NuGet Integrity</h3>
+                    <p>Secure release management for .NET. Validates NuGet package sources and ensures integrity of DLL artifacts.</p>
+                    <pre><code># XORAS Policy for NuGet
+dotnet nuget add source \
+  --name "GitHub" \
+  --username OWNER \
+  --password TOKEN \
+  "https://nuget.pkg.github.com/OWNER/index.json"</code></pre>
+                </div>
+            </div>
         </section>
 
-        <div class="process-grid">
-            <div class="step">
-                <span class="step-num">Step 01</span>
-                <h3>Silent Install</h3>
-                <p>Deploy the XORAS GitHub Action in Advisory Mode. Setup takes under 3 minutes.</p>
+        <!-- Live Drift Simulator -->
+        <section id="simulator" class="simulator-section">
+            <div class="simulator-card">
+                <div class="sim-header">
+                    <h3>Live Drift Simulator</h3>
+                    <div class="status-indicator" id="sim-status">HEALTHY</div>
+                </div>
+                <div class="sim-display">
+                    <div class="metric">
+                        <span class="label">Latency</span>
+                        <span class="value" id="latency-val">42ms</span>
+                    </div>
+                    <div class="metric">
+                        <span class="label">Secrets</span>
+                        <span class="value" id="secrets-val">0</span>
+                    </div>
+                </div>
+                <div class="sim-controls">
+                    <button id="simulate-drift" class="cta-button">Inject Release Drift</button>
+                    <button id="reset-sim" class="secondary-btn">Reset Baseline</button>
+                </div>
+                <div class="sim-output" id="sim-output">
+                    Waiting for release signal...
+                </div>
             </div>
-            <div class="step">
-                <span class="step-num">Step 02</span>
-                <h3>Measure Drift</h3>
-                <p>Observe silent regressions and measure drift frequency without blocking a single build.</p>
-            </div>
-            <div class="step">
-                <span class="step-num">Step 03</span>
-                <h3>Review ROI</h3>
-                <p>Receive weekly governance reports showing exactly what XORAS caught before production.</p>
-            </div>
-        </div>
-
-        <section class="safety">
-            <div class="section-title" style="text-align: left; margin-bottom: 2rem;">
-                <h2 style="font-size: 2rem;">Operationally Safe</h2>
-            </div>
-            <div class="safety-item"><span>✓</span> No source code is ever uploaded or transmitted.</div>
-            <div class="safety-item"><span>✓</span> Zero build blocking or workflow disruption during the pilot.</div>
-            <div class="safety-item"><span>✓</span> 100% Local-first CI execution.</div>
-            <div class="safety-item"><span>✓</span> No intrusive agents or complex infrastructure.</div>
         </section>
 
+        <!-- Lead Capture Form -->
         <section id="apply" class="form-card">
-            <div class="section-title" style="margin-bottom: 2rem;">
-                <h2>Apply for the Pilot</h2>
-                <p style="font-size: 1rem;">Limited to 30 engineering teams for the Q2 cohort.</p>
-            </div>
-            <form>
+            <h2>Apply for the Pilot</h2>
+            <p>Limited to 30 engineering teams for the Q2 cohort.</p>
+            <form id="pilot-form">
                 <div class="form-group">
                     <label>Work Email</label>
                     <input type="email" placeholder="name@company.com" required>
@@ -107,29 +125,20 @@
                         <option>200+ engineers</option>
                     </select>
                 </div>
-                <div class="form-group">
-                    <label>Your Biggest Release Pain Point</label>
-                    <textarea rows="3" placeholder="e.g. Latency regressions slipping into production..."></textarea>
-                </div>
                 <button type="submit" class="submit-btn">Request Early Access</button>
             </form>
         </section>
 
         <footer>
-            &copy; 2026 XORAS Engineering Integrity. Built for High-Velocity Teams.
+            <div class="footer-links">
+                <a href="ARCHITECTURE.md">Technical Architecture</a>
+                <a href="SUPPORT_WORKFLOW.md">Support Workflow</a>
+                <a href="https://github.com/aoxendine3/xoras">GitHub</a>
+            </div>
+            <p>&copy; 2026 XORAS Institutional Integrity Engine</p>
         </footer>
     </div>
 
-    <script>
-        // Smooth scrolling
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                document.querySelector(this.getAttribute('href')).scrollIntoView({
-                    behavior: 'smooth'
-                });
-            });
-        });
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
