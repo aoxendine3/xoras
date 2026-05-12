@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="container">
@@ -28,63 +28,62 @@
             </nav>
         </header>
 
-        <section class="hero">
-            <h1>Automated Release Governance</h1>
-            <p class="subtitle">XORAS acts as a continuous quality guardrail for your engineering team, detecting security risks, performance regressions, and architectural drift before they reach production.</p>
-            <div class="hero-actions">
-                <a href="#contact" class="cta-button">Apply for the Pilot</a>
-                <a href="https://github.com/aoxendine3/xoras" class="secondary-btn">View Documentation</a>
-            </div>
-        </section>
+        <main>
+            <section class="hero">
+                <h1>Stop broken releases before they reach production.</h1>
+                <p>XORAS is a local-first governance layer that verifiably audits your code, dependencies, and build artifacts for total release integrity.</p>
+                <div class="hero-btns">
+                    <a href="#contact" class="cta-button">Get Started</a>
+                    <a href="https://github.com/aoxendine3/xoras" class="cta-button secondary">View on GitHub</a>
+                </div>
+            </section>
 
-        <section id="features" class="feature-section">
-            <div class="section-header">
-                <h2>Security. Quality. Freedom.</h2>
-                <p>Move fast without compromising on engineering standards.</p>
-            </div>
-            
-            <div class="feature-grid">
+            <section id="features" class="features">
                 <div class="feature-card">
-                    <div class="icon">🔒</div>
-                    <h3>Secret Detection</h3>
-                    <p>Automatically identify exposed tokens, keys, and credentials in every pull request.</p>
+                    <h3>Zero-Data Secret Scanning</h3>
+                    <p>Intercepts API keys and secrets locally via Git hooks. No sensitive data ever leaves your secure environment.</p>
                 </div>
                 <div class="feature-card">
-                    <div class="icon">⚡</div>
-                    <h3>Performance Monitoring</h3>
-                    <p>Track latency regressions and performance drift at the commit level.</p>
+                    <h3>Registry Finality</h3>
+                    <p>Prevents tag-poisoning by verifying Docker hashes and blocking the use of non-deterministic ':latest' tags.</p>
                 </div>
                 <div class="feature-card">
-                    <div class="icon">📦</div>
-                    <h3>Architectural Guardrails</h3>
-                    <p>Prevent dependency bloat and unauthorized architectural changes in real-time.</p>
+                    <h3>Next.js Route Grounding</h3>
+                    <p>Verifies that your compiled build artifacts match your source routes. No more 404s in production.</p>
                 </div>
                 <div class="feature-card">
-                    <div class="icon">✅</div>
-                    <h3>Release Confidence</h3>
-                    <p>Generate a professional quality score and summary for every release candidate.</p>
+                    <h3>Architecture Guardrails</h3>
+                    <p>Monitors dependency bloat and performance drift to ensure your application stays lean and fast.</p>
                 </div>
-            </div>
-        </section>
+            </section>
 
-        <section class="details-section">
-            <div class="detail-grid">
-                <div class="detail-item">
-                    <h4>Local-First Architecture</h4>
-                    <p>XORAS runs entirely within your existing CI/CD infrastructure. No code, secrets, or sensitive metadata ever leave your environment.</p>
+            <section class="how-it-works">
+                <h2>Three Steps to Absolute Integrity</h2>
+                <div class="steps-grid">
+                    <div class="step">
+                        <div class="step-num">1</div>
+                        <h4>Install Local Edge</h4>
+                        <p>Add a lightweight pre-commit hook to catch risks before they are even committed.</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-num">2</div>
+                        <h4>Automate in CI</h4>
+                        <p>Drop the XORAS Action into your GitHub workflow to enforce governance on every PR.</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-num">3</div>
+                        <h4>Audit Everything</h4>
+                        <p>View high-fidelity audit reports and real-time release confidence scores on your dashboard.</p>
+                    </div>
                 </div>
-                <div class="detail-item">
-                    <h4>Advisory & Enforcement</h4>
-                    <p>Start with non-blocking feedback during the calibration phase, then enable automated merge-blocking for critical integrity violations.</p>
-                </div>
-            </div>
-        </section>
+            </section>
+        </main>
 
         <section id="contact" class="form-section">
             <div class="form-card">
                 <div class="card-brand">XORAS</div>
                 <h2>Join the Audit Pilot</h2>
-                <p>Establishing the new standard for <strong>X</strong>ero-knowledge <strong>O</strong>perational <strong>R</strong>elease <strong>A</strong>udits.</p>
+                <p>Onboarding engineering teams for the Q2 Release Integrity program.</p>
                 <form id="pilot-form">
                     <div class="form-group">
                         <label>Intelligence Tier</label>
@@ -104,16 +103,9 @@
         </section>
 
         <footer>
-            <div class="footer-content">
-                <div class="logo">XORAS</div>
-                <div class="footer-links">
-                    <a href="https://github.com/aoxendine3/xoras">GitHub</a>
-                    <a href="docs/ARCHITECTURE.md">Documentation</a>
-                    <a href="docs/PILOT_AGREEMENT.md">Pilot Agreement</a>
-                </div>
-            </div>
-            <p class="copyright">&copy; 2026 XORAS. All rights reserved.</p>
+            <p>&copy; 2026 XORAS. Standardizing Release Finality.</p>
         </footer>
     </div>
+    <script src="script.js"></script>
 </body>
 </html>
