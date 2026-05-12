@@ -3,73 +3,82 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>XORAS | Security & Audit Dashboard</title>
+    <title>XORAS | CI Release Health</title>
     <link rel="stylesheet" href="../style.css">
-    <style>
-        .advisory-panel {
-            background: rgba(255, 255, 255, 0.05);
-            border-left: 4px solid #007bff;
-            padding: 1.5rem;
-            margin: 2rem 0;
-            border-radius: 0 8px 8px 0;
-        }
-        .advisory-item {
-            margin-bottom: 1rem;
-            font-family: 'Inter', sans-serif;
-            font-size: 0.9rem;
-        }
-        .label-high { color: #ff4444; font-weight: bold; }
-        .label-med { color: #ffcc00; font-weight: bold; }
-        .label-info { color: #00ff88; font-weight: bold; }
-    </style>
 </head>
 <body>
     <div class="container">
         <header>
             <div class="logo">XORAS</div>
             <nav>
-                <a href="../index.html">Home</a>
-                <a href="#logs">Audit Logs</a>
-                <a href="#advisories">Security Advisories</a>
+                <a href="../index.html">Overview</a>
+                <a href="#findings">Recent Findings</a>
+                <a href="#trends">Trendline</a>
+                <a href="https://github.com/aoxendine3/xoras">GitHub</a>
             </nav>
         </header>
 
         <main>
-            <section class="hero">
-                <h1>Security & Audit Dashboard</h1>
-                <p>Status monitoring for repository integrity and workflow security.</p>
+            <section class="hero" style="padding: 4rem 0 2rem; text-align: left; max-width: 100%;">
+                <h1>CI Release Health</h1>
+                <p>Status monitoring for repository integrity and release drift.</p>
             </section>
 
-            <section id="advisories" class="advisory-panel">
-                <h3>Technical Security Advisories</h3>
-                <div class="advisory-item">
-                    <span class="label-high">[HIGH]</span> GitHub Actions: Cache poisoning vulnerabilities via fork-access. Mitigation: Use pinned SHAs.
+            <div class="dashboard-grid">
+                <div class="stat-card">
+                    <h3>Recent Findings</h3>
+                    <div class="audit-finding" style="background: transparent; border-color: var(--border);">
+                        <div class="finding-header" style="color: var(--zinc-100); font-size: 0.8rem;">
+                            12:09 PM • Secret Exposure
+                        </div>
+                        <div class="finding-body" style="font-size: 0.75rem;">
+                            Exposed Stripe Token detected in <code>feat/stripe-auth</code>.
+                        </div>
+                    </div>
+                    <div class="audit-finding" style="background: transparent; border-color: var(--border);">
+                        <div class="finding-header" style="color: var(--zinc-100); font-size: 0.8rem;">
+                            10:45 AM • Dependency Drift
+                        </div>
+                        <div class="finding-body" style="font-size: 0.75rem;">
+                            Unpinned GitHub Action <code>actions/checkout@v4</code> detected.
+                        </div>
+                    </div>
                 </div>
-                <div class="advisory-item">
-                    <span class="label-med">[MEDIUM]</span> OIDC Token Exposure: Risks associated with <code>pull_request_target</code> workflows.
-                </div>
-                <div class="advisory-item">
-                    <span class="label-info">[INFO]</span> Next.js 15: Recommended CSP configuration for Server Action integrity.
-                </div>
-            </section>
 
-            <section id="logs" class="audit-log">
-                <h2>Repository Audit Log</h2>
-                <table>
+                <div class="stat-card">
+                    <h3>Release Integrity</h3>
+                    <div style="font-size: 2rem; font-weight: 700; color: var(--green-500); margin-top: 1rem;">98.2%</div>
+                    <p style="font-size: 0.75rem;">Deterministic Integrity Score</p>
+                    <div class="trend-line">
+                        <!-- Simplified Trend Mock -->
+                        <div style="height: 100%; border-left: 2px solid var(--blue-500); width: 0;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <section id="findings" style="margin-top: 4rem;">
+                <h3>Prevented Incidents</h3>
+                <table style="width: 100%; border-collapse: collapse; margin-top: 1rem; font-size: 0.875rem;">
                     <thead>
-                        <tr>
-                            <th>Timestamp</th>
-                            <th>Action</th>
-                            <th>Result</th>
-                            <th>Commit SHA</th>
+                        <tr style="border-bottom: 1px solid var(--border); text-align: left;">
+                            <th style="padding: 1rem 0;">Type</th>
+                            <th>Status</th>
+                            <th>Remediation</th>
+                            <th>PR</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>2026-05-12 12:39</td>
-                            <td>Workflow Integrity Sync</td>
-                            <td><span class="label-info">PASS</span></td>
-                            <td><code>9545127...</code></td>
+                        <tr style="border-bottom: 1px solid var(--border);">
+                            <td style="padding: 1rem 0;">Secret Exposure</td>
+                            <td><span style="color: var(--green-500);">RESOLVED</span></td>
+                            <td>Moved to GH Secrets</td>
+                            <td>#42</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid var(--border);">
+                            <td style="padding: 1rem 0;">Dependency Drift</td>
+                            <td><span style="color: var(--green-500);">RESOLVED</span></td>
+                            <td>Pinned to SHA</td>
+                            <td>#39</td>
                         </tr>
                     </tbody>
                 </table>
@@ -77,7 +86,7 @@
         </main>
 
         <footer>
-            <p>&copy; 2026 XORAS Engineering. Technical-Literal State Verified.</p>
+            <p>&copy; 2026 XORAS. Engineering-first release governance.</p>
         </footer>
     </div>
 </body>

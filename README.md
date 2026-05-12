@@ -1,38 +1,33 @@
-# XORAS: GitHub Release Integrity Auditor
+# XORAS: Release Drift Detection for GitHub
 
-XORAS is a technical governance tool designed to verify the security and integrity of GitHub release candidates. It performs automated static analysis on workflows, build artifacts, and secret patterns to prevent configuration-related failures.
+XORAS is a technical auditor designed to detect and prevent "Release Drift" within your CI/CD pipeline. It ensures that every release candidate is immutable, secure, and verifiably grounded before it reaches production.
 
-## Core Features
-- **Workflow Security**: Identifies unpinned third-party actions and high-risk triggers.
-- **Secret Scanning**: High-fidelity regex patterns for detecting hardcoded tokens and API keys.
-- **Environment Forecasting**: Validates the presence of required environment variables locally before commit.
-- **Pipeline Auditing**: Detects brittle installation patterns and cache poisoning risks.
+## 🚀 The Wedge: Release Drift Detection
+Standard CI tools focus on "Does it build?" XORAS focuses on "Is it safe to release?"
+- **Dependency Drift**: Detects and enforces immutable SHA-pinning for GitHub Actions.
+- **Credential Drift**: Detects exposed secrets using Pattern-based and Entropy-based analysis.
+- **Environment Drift**: Validates required environment variables before deployment.
 
-## Installation
+## 🛠️ Quick Start (10-Minute Setup)
+1. **Install XORAS**:
 ```bash
 npm install -g xoras
 ```
 
-## Usage
-### Local Audit
-To run a pre-commit integrity audit:
+2. **Initialize**:
 ```bash
-xoras local
+node scripts/setup_xoras.js
 ```
 
-### GitHub Action Integration
-Add the following to your `.github/workflows/audit.yml`:
-```yaml
-- uses: aoxendine3/xoras@main
-  with:
-    github-token: ${{ secrets.GITHUB_TOKEN }}
+3. **Verify**:
+```bash
+npm run audit
 ```
 
-## Technical Architecture
-XORAS operates in a tiered execution model:
-1. **Edge Sentry**: High-speed local pre-commit checks.
-2. **Workflow Auditor**: Deep analysis of GitHub Action configurations.
-3. **Condition Forecaster**: Environment variable and dependency validation.
+## 📊 Documentation
+- [Security Model](SECURITY_MODEL.md): Bounded Determinism (v1.0).
+- [Case Study #01](docs/CASE_STUDY_01.md): Detecting Drift in Pull Requests.
+- [Technical Disclosures](DISCLOSURES.md): Scope and Boundaries.
 
 ---
-*XORAS is an engineering-first tool for release governance.*
+*XORAS: Hardening the gap between Build and Release.*

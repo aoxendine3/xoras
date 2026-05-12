@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>XORAS | GitHub Release Auditor</title>
+    <title>XORAS | Release Integrity for CI</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -11,39 +11,119 @@
         <header>
             <div class="logo">XORAS</div>
             <nav>
+                <a href="#how-it-works">How it works</a>
                 <a href="dashboard/index.html">Dashboard</a>
-                <a href="https://github.com/aoxendine3/xoras">Documentation</a>
+                <a href="https://github.com/aoxendine3/xoras">GitHub</a>
             </nav>
         </header>
 
         <main>
             <section class="hero">
-                <h1>GitHub Release Integrity Auditor</h1>
-                <p>Automated static analysis for GitHub Actions, build artifacts, and secret detection.</p>
+                <h1>Release integrity checks for CI pipelines</h1>
+                <p>XORAS detects release drift, exposed secrets, dependency anomalies, and performance regressions during pull requests before deployment.</p>
                 <div class="cta-buttons">
-                    <a href="#setup" class="btn primary">View Installation</a>
-                    <a href="dashboard/index.html" class="btn secondary">Access Dashboard</a>
+                    <a href="https://github.com/aoxendine3/xoras" class="btn primary">View CI Example</a>
+                    <a href="https://github.com/aoxendine3/xoras" class="btn secondary">Start Advisory Pilot</a>
                 </div>
             </section>
 
-            <section id="features" class="grid">
-                <div class="card">
-                    <h3>Workflow Auditing</h3>
-                    <p>Detects unpinned GitHub Actions and high-risk triggers like <code>pull_request_target</code>.</p>
+            <section class="metrics-strip">
+                <div class="metric-item">
+                    <span class="metric-val">~5 min</span>
+                    <span class="metric-label">Setup Time</span>
                 </div>
-                <div class="card">
-                    <h3>Secret Detection</h3>
-                    <p>Scans code for hardcoded API keys and tokens using high-fidelity regex patterns.</p>
+                <div class="metric-item">
+                    <span class="metric-val">&lt;1s</span>
+                    <span class="metric-label">CI Runtime Impact</span>
                 </div>
-                <div class="card">
-                    <h3>Environment Verification</h3>
-                    <p>Validates the presence of required environment variables before deployment.</p>
+                <div class="metric-item">
+                    <span class="metric-val">None</span>
+                    <span class="metric-label">Hosting Required</span>
+                </div>
+                <div class="metric-item">
+                    <span class="metric-val">Advisory</span>
+                    <span class="metric-label">Pilot Mode</span>
+                </div>
+            </section>
+
+            <!-- Dominant Hero Asset: The PR Experience -->
+            <section class="pr-mockup">
+                <div class="pr-header">
+                    <span class="pr-badge">Open</span>
+                    <span class="pr-title">feat: add stripe integration #42</span>
+                </div>
+                <div class="pr-body">
+                    <div class="line" style="color: #8b949e;">@@ -12,4 +12,8 @@</div>
+                    <div class="line diff-add">+ const STRIPE_KEY = "sk_test_51...j9z2";</div>
+                    <div class="line"> </div>
+                    <div class="audit-finding">
+                        <div class="finding-header">
+                            ⚠️ XORAS: Secret Exposure Detected
+                        </div>
+                        <div class="finding-body">
+                            High-entropy string (4.82) detected in <code>stripe_integration.js</code>. <br>
+                            <strong>Remediation:</strong> Move secret to <code>process.env.STRIPE_KEY</code>.
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="grid-section">
+                <div>
+                    <h2>XORAS does not:</h2>
+                    <ul class="negative-list">
+                        <li>upload source code to external servers</li>
+                        <li>require hosted infrastructure</li>
+                        <li>modify application code</li>
+                        <li>block builds during pilots</li>
+                    </ul>
+                </div>
+                <div>
+                    <h2>Rules-based detection</h2>
+                    <p style="font-size: 1rem; color: var(--zinc-400);">XORAS provides repeatable CI outputs and auditable findings using a deterministic, scoped-detection engine. No black-box analysis.</p>
+                </div>
+            </section>
+
+            <section class="grid-section">
+                <div>
+                    <h2>Who is this for?</h2>
+                    <div class="target-list">
+                        <div class="target-item">
+                            <h3>Startups</h3>
+                            <p style="font-size: 0.9rem;">Shipping daily with lean teams.</p>
+                        </div>
+                        <div class="target-item">
+                            <h3>Platform Teams</h3>
+                            <p style="font-size: 0.9rem;">Hardening internal release pipelines.</p>
+                        </div>
+                        <div class="target-item">
+                            <h3>CI/CD Heavy Orgs</h3>
+                            <p style="font-size: 0.9rem;">Automating compliance at the edge.</p>
+                        </div>
+                        <div class="target-item">
+                            <h3>AI-Assisted Coding</h3>
+                            <p style="font-size: 0.9rem;">Verifying AI-generated secrets & config.</p>
+                        </div>
+                    </div>
+                </div>
+                <div id="how-it-works">
+                    <h2>How it works</h2>
+                    <div class="target-item" style="margin-bottom: 1.5rem;">
+                        <span style="color: var(--blue-500); font-family: monospace; font-size: 0.8rem;">STEP 1</span>
+                        <h3>Install GitHub Action</h3>
+                        <p style="font-size: 0.9rem;">Add XORAS to your <code>.github/workflows</code> in seconds.</p>
+                    </div>
+                    <div class="target-item">
+                        <span style="color: var(--blue-500); font-family: monospace; font-size: 0.8rem;">STEP 2</span>
+                        <h3>XORAS analyzes PR drift</h3>
+                        <p style="font-size: 0.9rem;">Automated feedback on secrets, dependency drift, and regressions.</p>
+                    </div>
                 </div>
             </section>
         </main>
 
         <footer>
-            <p>&copy; 2026 XORAS Infrastructure Audit.</p>
+            <p>Quietly improving engineering discipline.</p>
         </footer>
     </div>
 </body>
