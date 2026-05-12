@@ -1,0 +1,19 @@
+{
+  "name": "xoras",
+  "version": "2.2.0",
+  "description": "Xero-knowledge Operational Release Audit System",
+  "main": "action/src/index.js",
+  "bin": {
+    "xoras-intel": "./intelligence.js"
+  },
+  "scripts": {
+    "audit": "node action/src/index.js",
+    "intel": "node intelligence.js",
+    "local": "node scripts/local_audit.js"
+  },
+  "dependencies": {
+    "@actions/core": "^1.10.1",
+    "commander": "^11.0.0"
+  },
+  "license": "MIT"
+}
