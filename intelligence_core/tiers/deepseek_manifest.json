@@ -1,0 +1,31 @@
+{
+    "provider": "DeepSeek-AI",
+    "tiers": {
+        "REASONER": {
+            "model": "DeepSeek-Coder-V2-Instruct",
+            "parameters": "236B (MoE)",
+            "context_window": "128K",
+            "capabilities": [
+                "Advanced HumanEval+",
+                "338 Language Polyglot Audit",
+                "Deep Logical Debugging",
+                "Architectural Mapping"
+            ]
+        },
+        "APEX": {
+            "model": "DeepSeek-V3",
+            "parameters": "671B (MoE)",
+            "context_window": "128K",
+            "capabilities": [
+                "Global Strategy Synthesis",
+                "High-Context Security Audit",
+                "Institutional Grant Development",
+                "Supply-Chain Risk Modeling"
+            ]
+        }
+    },
+    "quantization": {
+        "format": "GGUF",
+        "recommended": "Q4_K_M (via bartowski/QuantFactory)"
+    }
+}

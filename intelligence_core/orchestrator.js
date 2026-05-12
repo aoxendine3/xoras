@@ -8,11 +8,11 @@
 class IntelligenceCore {
     constructor() {
         this.tiers = {
-            EDGE: { parameters: '3B', capability: 'Code Syntax, Documentation, Simple Edits', latency: 'ultra-low' },
-            REASONER: { parameters: '12B', capability: 'Cross-file Logic, Bug Fixing, Architecture', latency: 'low' },
-            APEX: { parameters: '120B', capability: 'Strategy, Market Audit, Legal/Grant Finality', latency: 'medium' }
+            EDGE: { parameters: '3B', capability: 'Code Syntax, Documentation, Simple Edits', engine: 'Llama-3-Edge' },
+            REASONER: { parameters: '236B (MoE)', capability: '338-Language Audit, Logic, Architecture', engine: 'DeepSeek-Coder-V2' },
+            APEX: { parameters: '671B (MoE)', capability: 'Global Strategy, Institutional Audit, Risk Modeling', engine: 'DeepSeek-V3' }
         };
-        this.activeTier = 'REASONER'; // Default state
+        this.activeTier = 'REASONER';
     }
 
     /**
