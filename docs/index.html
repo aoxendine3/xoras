@@ -29,78 +29,43 @@
 
         <section class="hero">
             <div class="badge">Institutional Release Integrity</div>
-            <h1>Universal Release Confidence</h1>
-            <p class="subtitle">XORAS provides a single governance layer for your entire infrastructure—securing code, artifacts, and container images across every registry.</p>
+            <h1>The Engineering Guardrail</h1>
+            <p class="subtitle">XORAS detects security, performance, and architectural drift in every pull request—giving your team the confidence to move fast without breaking things.</p>
             <div class="hero-actions">
-                <a href="#apply" class="cta-button">Apply for the 30-Day Pilot</a>
-                <a href="#ecosystems" class="secondary-btn">View Supported Ecosystems</a>
+                <a href="#apply" class="cta-button">Join the 30-Day Pilot</a>
+                <a href="https://github.com/aoxendine3/xoras" class="secondary-btn">View on GitHub</a>
             </div>
-        </section>
-
-        <!-- Interactive Ecosystem Tabs -->
-        <section id="ecosystems" class="tabs-section">
+        </sectio        <!-- The Pillars of Integrity -->
+        <section id="why-xoras" class="tabs-section">
             <div class="section-header">
-                <h2>Multi-Registry Integrity</h2>
-                <p>One governance layer for every package in your enterprise.</p>
+                <h2>Why XORAS?</h2>
+                <p>Automated governance for high-velocity engineering teams.</p>
             </div>
             
-            <div class="tab-container">
-                <div class="tab-list">
-                    <button class="tab-btn active" data-tab="npm">npm</button>
-                    <button class="tab-btn" data-tab="maven">Maven</button>
-                    <button class="tab-btn" data-tab="nuget">NuGet</button>
-                    <button class="tab-btn" data-tab="ruby">RubyGems</button>
-                    <button class="tab-btn" data-tab="docker">Docker/OCI</button>
+            <div class="dev-grid">
+                <div class="dev-card">
+                    <div class="feature-icon">🔑</div>
+                    <h4>Secret Protection</h4>
+                    <p>Detect exposed tokens and credentials before they ever hit production.</p>
                 </div>
-                
-                <div class="tab-content active" id="npm">
-                    <h3>npm Integrity</h3>
-                    <p>Governance for Node.js. XORAS validates `.npmrc` configurations and tracks dependency drift in scoped packages.</p>
-                    <pre><code># XORAS npm Policy
-$ npm login --scope=@NAMESPACE \
-  --auth-type=legacy \
-  --registry=https://npm.pkg.github.com</code></pre>
+                <div class="dev-card">
+                    <div class="feature-icon">⚡</div>
+                    <h4>Performance Gating</h4>
+                    <p>Identify latency regressions and performance drift at the commit level.</p>
                 </div>
-                
-                <div class="tab-content" id="maven">
-                    <h3>Maven Integrity</h3>
-                    <p>Secure release management for Java. XORAS ensures `pom.xml` distribution settings meet institutional standards.</p>
-                    <pre><code><distributionManagement>
-  <repository>
-    <id>github</id>
-    <url>https://maven.pkg.github.com/OWNER/REPO</url>
-  </repository>
-</distributionManagement></code></pre>
+                <div class="dev-card">
+                    <div class="feature-icon">📦</div>
+                    <h4>Architecture Audit</h4>
+                    <p>Stop dependency bloat and unauthorized architectural changes in real-time.</p>
                 </div>
-                
-                <div class="tab-content" id="nuget">
-                    <h3>NuGet Integrity</h3>
-                    <p>Integrity for .NET ecosystems. XORAS validates `nuget.config` and package source mappings to prevent dependency confusion.</p>
-                    <pre><code><packageSourceMapping>
-  <packageSource key="github">
-    <package pattern="PACKAGE-ID-PREFIX.*" />
-  </packageSource>
-</packageSourceMapping></code></pre>
-                </div>
-
-                <div class="tab-content" id="ruby">
-                    <h3>RubyGems Integrity</h3>
-                    <p>Governance for Ruby applications. XORAS monitors `Gemfile` source blocks and validates `ssh://` repository links in metadata.</p>
-                    <pre><code># XORAS Ruby Policy
-source "https://rubygems.pkg.github.com/NAMESPACE" do
-  gem "INSTITUTIONAL_GEM"
-end</code></pre>
-                </div>
-
-                <div class="tab-content" id="docker">
-                    <h3>Container Integrity (OCI)</h3>
-                    <p>Security for the Container Registry (ghcr.io). XORAS validates image labels, architecture manifests, and base image provenance.</p>
-                    <pre><code># XORAS OCI Labels
-LABEL org.opencontainers.image.source=https://github.com/OWNER/REPO
-LABEL org.opencontainers.image.description="XORAS Verified Image"</code></pre>
+                <div class="dev-card">
+                    <div class="feature-icon">📈</div>
+                    <h4>Release Confidence</h4>
+                    <p>Get a professional 0-100 score for every pull request summary.</p>
                 </div>
             </div>
         </section>
+on>
 
         <!-- Live Drift Simulator -->
         <section id="simulator" class="simulator-section">
