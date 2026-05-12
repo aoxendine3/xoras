@@ -3,160 +3,109 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>XORAS | Institutional Release Integrity</title>
+    <title>XORAS | Release Governance Infrastructure</title>
     <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="crisis-banner">
-        <span class="pulse"></span> 
-        <strong>Technical Post-Mortem:</strong> Analysis of the TanStack OIDC-drift attack and the XORAS interception logic. 
-        <a href="https://github.com/aoxendine3/xoras/blob/main/docs/TANSTACK_PWN_ANALYSIS.md">Read the Audit →</a>
-    </div>
-    <div class="glow-bg"></div>
-    
     <div class="container">
         <header>
             <div class="logo">XORAS</div>
             <nav>
-                <a href="#ecosystems">Ecosystems</a>
-                <a href="#simulator">Live Demo</a>
-                <a href="#apply" class="cta-button secondary">Join Pilot</a>
+                <a href="#features">Features</a>
+                <a href="#documentation">Docs</a>
+                <a href="#contact" class="cta-button secondary">Join Pilot</a>
             </nav>
         </header>
 
         <section class="hero">
-            <div class="badge">Institutional Release Integrity</div>
-            <h1>The Engineering Guardrail</h1>
-            <p class="subtitle">XORAS detects security, performance, and architectural drift in every pull request—giving your team the confidence to move fast without breaking things.</p>
+            <h1>Automated Release Governance</h1>
+            <p class="subtitle">XORAS acts as a continuous quality guardrail for your engineering team, detecting security risks, performance regressions, and architectural drift before they reach production.</p>
             <div class="hero-actions">
-                <a href="#apply" class="cta-button">Join the 30-Day Pilot</a>
-                <a href="https://github.com/aoxendine3/xoras" class="secondary-btn">View on GitHub</a>
+                <a href="#contact" class="cta-button">Apply for the Pilot</a>
+                <a href="https://github.com/aoxendine3/xoras" class="secondary-btn">View Documentation</a>
             </div>
-        </sectio        <!-- The Pillars of Integrity -->
-        <section id="why-xoras" class="tabs-section">
+        </section>
+
+        <section id="features" class="feature-section">
             <div class="section-header">
-                <h2>Why XORAS?</h2>
-                <p>Automated governance for high-velocity engineering teams.</p>
+                <h2>Security. Quality. Freedom.</h2>
+                <p>Move fast without compromising on engineering standards.</p>
             </div>
             
-            <div class="dev-grid">
-                <div class="dev-card">
-                    <div class="feature-icon">🔑</div>
-                    <h4>Secret Protection</h4>
-                    <p>Detect exposed tokens and credentials before they ever hit production.</p>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="icon">🔒</div>
+                    <h3>Secret Detection</h3>
+                    <p>Automatically identify exposed tokens, keys, and credentials in every pull request.</p>
                 </div>
-                <div class="dev-card">
-                    <div class="feature-icon">⚡</div>
-                    <h4>Performance Gating</h4>
-                    <p>Identify latency regressions and performance drift at the commit level.</p>
+                <div class="feature-card">
+                    <div class="icon">⚡</div>
+                    <h3>Performance Monitoring</h3>
+                    <p>Track latency regressions and performance drift at the commit level.</p>
                 </div>
-                <div class="dev-card">
-                    <div class="feature-icon">📦</div>
-                    <h4>Architecture Audit</h4>
-                    <p>Stop dependency bloat and unauthorized architectural changes in real-time.</p>
+                <div class="feature-card">
+                    <div class="icon">📦</div>
+                    <h3>Architectural Guardrails</h3>
+                    <p>Prevent dependency bloat and unauthorized architectural changes in real-time.</p>
                 </div>
-                <div class="dev-card">
-                    <div class="feature-icon">📈</div>
-                    <h4>Release Confidence</h4>
-                    <p>Get a professional 0-100 score for every pull request summary.</p>
-                </div>
-            </div>
-        </section>
-on>
-
-        <!-- Live Drift Simulator -->
-        <section id="simulator" class="simulator-section">
-            <div class="simulator-card">
-                <div class="sim-header">
-                    <h3>Live Drift Simulator</h3>
-                    <div class="status-indicator" id="sim-status">HEALTHY</div>
-                </div>
-                    <div class="feature-item">
-                        <div class="feature-icon">🛡️</div>
-                        <h3>Governance Policy</h3>
-                        <p>Deterministic gating for latency, bloat, and security. (BETA Enforcement Mode)</p>
-                    </div>
-                    <div class="metric">
-                        <span class="label">Integrity Score</span>
-                        <span class="value" id="score-val">100/1</span>
-                    </div>
-                <div class="sim-display">
-                    <div class="metric">
-                        <span class="label">Release Drift</span>
-                        <span class="value" id="latency-val">0%</span>
-                    </div>
-                </div>
-                <div class="sim-controls">
-                    <button id="simulate-drift" class="cta-button">Inject Release Drift</button>
-                    <button id="reset-sim" class="secondary-btn">Reset Baseline</button>
-                </div>
-                <div class="sim-output" id="sim-output">
-                    Waiting for release signal...
+                <div class="feature-card">
+                    <div class="icon">✅</div>
+                    <h3>Release Confidence</h3>
+                    <p>Generate a professional quality score and summary for every release candidate.</p>
                 </div>
             </div>
         </section>
 
-        <!-- Developer Vanguard Section -->
-        <section id="developers" class="dev-section">
-            <div class="section-header">
-                <h2>Built for Vanguards</h2>
-                <p>XORAS is an open governance layer designed for developers who value zero-knowledge integrity and deterministic releases.</p>
-            </div>
-            <div class="dev-grid">
-                <div class="dev-card">
-                    <h4>Local-First Privacy</h4>
-                    <p>All integrity analysis happens within your CI runner. We never see your code; we only see your confidence.</p>
+        <section class="details-section">
+            <div class="detail-grid">
+                <div class="detail-item">
+                    <h4>Local-First Architecture</h4>
+                    <p>XORAS runs entirely within your existing CI/CD infrastructure. No code, secrets, or sensitive metadata ever leave your environment.</p>
                 </div>
-                <div class="dev-card">
-                    <h4>The Regression Lab</h4>
-                    <p>Enter our synthetic exploit lab to test the engine. Inject latency, leak secrets, and verify the baseline.</p>
-                    <a href="https://github.com/aoxendine3/xoras/blob/main/demo-vulnerable-app/LAB_EXERCISES.md" class="text-link">Enter the Lab →</a>
-                </div>
-                <div class="dev-card">
-                    <h4>Custom Policies</h4>
-                    <p>Extend XORAS with custom JQ filters or WASM plugins to enforce ecosystem-specific governance.</p>
+                <div class="detail-item">
+                    <h4>Advisory & Enforcement</h4>
+                    <p>Start with non-blocking feedback during the calibration phase, then enable automated merge-blocking for critical integrity violations.</p>
                 </div>
             </div>
         </section>
 
-        <!-- Lead Capture Form -->
-        <section id="apply" class="form-card">
-            <h2>Apply for the Pilot</h2>
-            <p>Join the Q2 cohort for high-velocity engineering teams.</p>
-            <form id="pilot-form">
-                <div class="form-group">
-                    <label>Work Email</label>
-                    <input type="email" placeholder="name@company.com" required>
-                </div>
-                <div class="form-group">
-                    <label>Primary Ecosystem</label>
-                    <select>
-                        <option>Node.js / npm</option>
-                        <option>Java / Maven</option>
-                        <option>.NET / NuGet</option>
-                        <option>Ruby / Gems</option>
-                        <option>Containers / Docker</option>
-                    </select>
-                </div>
-                <button type="submit" class="submit-btn">Request Early Access</button>
-            </form>
+        <section id="contact" class="form-section">
+            <div class="form-card">
+                <h2>Join the XORAS Pilot</h2>
+                <p>We are currently onboarding high-velocity engineering teams for our Q2 pilot program.</p>
+                <form id="pilot-form">
+                    <div class="form-group">
+                        <label>Work Email</label>
+                        <input type="email" placeholder="name@company.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Engineering Team Size</label>
+                        <select>
+                            <option>1-10</option>
+                            <option>11-50</option>
+                            <option>51-200</option>
+                            <option>200+</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="submit-btn">Request Access</button>
+                </form>
+            </div>
         </section>
 
         <footer>
-            <div class="footer-links">
-                <a href="ARCHITECTURE.md">Architecture</a>
-                <a href="PILOT_AGREEMENT.md">Pilot Agreement</a>
-                <a href="OUTREACH_LOG.md">Outreach Log</a>
-                <a href="SUPPORT_WORKFLOW.md">Support</a>
-                <a href="https://github.com/aoxendine3/xoras">GitHub</a>
+            <div class="footer-content">
+                <div class="logo">XORAS</div>
+                <div class="footer-links">
+                    <a href="https://github.com/aoxendine3/xoras">GitHub</a>
+                    <a href="docs/ARCHITECTURE.md">Documentation</a>
+                    <a href="docs/PILOT_AGREEMENT.md">Pilot Agreement</a>
+                </div>
             </div>
-            <p>&copy; 2026 XORAS Institutional Integrity Engine</p>
+            <p class="copyright">&copy; 2026 XORAS. All rights reserved.</p>
         </footer>
     </div>
-
-    <script src="script.js"></script>
 </body>
 </html>
