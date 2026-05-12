@@ -1,7 +1,7 @@
 {
   "name": "xoras",
   "version": "2.2.0",
-  "description": "Xero-knowledge Operational Release Audit System",
+  "description": "Static analysis and governance tool for GitHub release integrity.",
   "main": "action/src/index.js",
   "bin": {
     "xoras-intel": "./intelligence.js"

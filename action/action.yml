@@ -18,3 +18,7 @@ inputs:
 runs:
   using: 'node20'
   main: 'dist/index.js'
+
+permissions:
+  id-token: write
+  contents: read

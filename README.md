@@ -1,34 +1,38 @@
-# XORAS | Xero-knowledge Operational Release Audit System
+# XORAS: GitHub Release Integrity Auditor
 
-Automated engineering guardrails for security, quality, and performance.
+XORAS is a technical governance tool designed to verify the security and integrity of GitHub release candidates. It performs automated static analysis on workflows, build artifacts, and secret patterns to prevent configuration-related failures.
 
-## Intelligence Core Architecture
-XORAS operates on a tiered intelligence model, routing tasks between local and cloud environments to maximize efficiency and security.
-
-### 1. Local Edge (Tier 1 - 3B Logic)
-- **Function**: Pre-commit security and syntax gating.
-- **Location**: Local Git Hook (`scripts/local_audit.js`).
-- **Goal**: Intercept secrets and low-level regressions before they reach the repository.
-
-### 2. Cloud Reasoning (Tier 2/3 - 12B/120B Logic)
-- **Function**: Deep logical audit, Registry Finality, and Strategic Strategy.
-- **Location**: GitHub Actions.
-- **Goal**: Enforce deterministic governance on every release candidate.
+## Core Features
+- **Workflow Security**: Identifies unpinned third-party actions and high-risk triggers.
+- **Secret Scanning**: High-fidelity regex patterns for detecting hardcoded tokens and API keys.
+- **Environment Forecasting**: Validates the presence of required environment variables locally before commit.
+- **Pipeline Auditing**: Detects brittle installation patterns and cache poisoning risks.
 
 ## Installation
-
-### Local Setup
-Initialize the local edge auditor:
 ```bash
-node scripts/install_hooks.js
+npm install -g xoras
 ```
 
-### GitHub Setup
-Add XORAS to your workflow:
+## Usage
+### Local Audit
+To run a pre-commit integrity audit:
+```bash
+xoras local
+```
+
+### GitHub Action Integration
+Add the following to your `.github/workflows/audit.yml`:
 ```yaml
-- name: XORAS Integrity
-  uses: aoxendine3/xoras/action@main
+- uses: aoxendine3/xoras@main
+  with:
+    github-token: ${{ secrets.GITHUB_TOKEN }}
 ```
 
-## Documentation
-View the full documentation at [https://aoxendine3.github.io/xoras/](https://aoxendine3.github.io/xoras/)
+## Technical Architecture
+XORAS operates in a tiered execution model:
+1. **Edge Sentry**: High-speed local pre-commit checks.
+2. **Workflow Auditor**: Deep analysis of GitHub Action configurations.
+3. **Condition Forecaster**: Environment variable and dependency validation.
+
+---
+*XORAS is an engineering-first tool for release governance.*

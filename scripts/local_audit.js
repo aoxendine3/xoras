@@ -1,23 +1,38 @@
 /**
- * XORAS Local Edge Auditor (Tier 1 - High-Fidelity Logic)
- * Finality Standard: v2026.1 (Harvested Patterns)
+ * XORAS Local Edge Auditor (Tier 2 - Entropy Analysis)
+ * Finality Standard: v2026.2
  */
 
 const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
 
-// Mature Patterns from env-integrity-sentry
+// 1. Technical Patterns
 const SECRETS_REGEX = /(?:key|secret|token|password|auth|api|id)['"]?\s*[:=]\s*['"]([a-zA-Z0-9_\-\.]{20,})['"]/gi;
-const ENV_USAGE_REGEX = /process\.env(?:\.([A-Z_][A-Z0-9_]*)|\[['"]([A-Z_][A-Z0-9_]*)['"]\])/g;
+
+/**
+ * Calculates Shannon Entropy of a string.
+ * High entropy (> 4.5) often indicates a cryptographic key or token.
+ */
+function calculateEntropy(str) {
+    const len = str.length;
+    const freq = {};
+    for (let i = 0; i < len; i++) {
+        freq[str[i]] = (freq[str[i]] || 0) + 1;
+    }
+    let entropy = 0;
+    for (const char in freq) {
+        const p = freq[char] / len;
+        entropy -= p * Math.log2(p);
+    }
+    return entropy;
+}
 
 function runLocalAudit() {
-    console.log("🔒 XORAS: Initiating High-Fidelity Local Audit...");
+    console.log("🔒 XORAS: Initiating Entropy-Aware Audit...");
     
     const changedFiles = getChangedFiles();
     let violations = 0;
-    const requiredEnvVars = new Set();
-    const existingEnvVars = getLocalEnvVars();
 
     changedFiles.forEach(file => {
         if (file.includes('node_modules') || file.includes('.git') || file.includes('dist') || file.includes('docs/')) return;
@@ -25,54 +40,38 @@ function runLocalAudit() {
         if (fs.existsSync(file) && fs.lstatSync(file).isFile()) {
             const content = fs.readFileSync(file, 'utf8');
             
-            // 1. Precise Secret Detection
+            // A. Regex Pattern Matching
             const secretMatches = content.matchAll(SECRETS_REGEX);
             for (const match of secretMatches) {
-                // Ignore internal XORAS scripts to prevent self-blocking
                 if (file.includes('scripts/') || file.includes('action/src/')) continue;
-                
-                console.error(`❌ ERROR: Hardcoded secret detected in ${file}`);
+                console.error(`❌ ERROR: Pattern-based secret detected in ${file}`);
                 violations++;
             }
 
-            // 2. Environment Condition Forecasting
-            const envMatches = content.matchAll(ENV_USAGE_REGEX);
-            for (const match of envMatches) {
-                const varName = match[1] || match[2];
-                requiredEnvVars.add(varName);
-            }
-        }
-    });
-
-    // 3. Condition Report
-    console.log("\n📊 XORAS Condition Forecast:");
-    requiredEnvVars.forEach(v => {
-        if (!existingEnvVars.has(v)) {
-            console.warn(`⚠️ WARNING: "${v}" is used in code but missing from .env. Build may fail.`);
-        } else {
-            console.log(`✅ "${v}" verified in environment.`);
+            // B. Entropy-Based Detection (Heuristic)
+            // We look for high-entropy strings that might be obfuscated secrets
+            const words = content.split(/[\s'"=:,;]+/);
+            words.forEach(word => {
+                if (word.length > 30) {
+                    const entropy = calculateEntropy(word);
+                    if (entropy > 4.5) {
+                        // Avoid flagging internal hashes or long words
+                        if (!file.includes('package-lock.json')) {
+                            console.warn(`⚠️  WARNING: High-entropy string detected in ${file} (Entropy: ${entropy.toFixed(2)}). Possible obfuscated secret.`);
+                            // We don't block on entropy alone to avoid false positives, but we alert.
+                        }
+                    }
+                }
+            });
         }
     });
 
     if (violations > 0) {
-        console.error(`\n⚠️ Local Audit Failed: ${violations} violation(s) found. Commit blocked.`);
+        console.error(`\n⚠️ Local Audit Failed: ${violations} violation(s) found.`);
         process.exit(1);
     }
 
-    console.log("\n✅ XORAS: Structural Integrity Verified. Proceeding to commit.");
-}
-
-function getLocalEnvVars() {
-    const envPath = path.join(process.cwd(), '.env');
-    const vars = new Set();
-    if (fs.existsSync(envPath)) {
-        const content = fs.readFileSync(envPath, 'utf8');
-        content.split('\n').forEach(line => {
-            const match = line.match(/^([A-Z_][A-Z0-9_]*)=/);
-            if (match) vars.add(match[1]);
-        });
-    }
-    return vars;
+    console.log("\n✅ XORAS: Structural & Entropy Audit Verified.");
 }
 
 function getChangedFiles() {

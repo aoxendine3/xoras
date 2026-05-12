@@ -3,51 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>XORAS | Simple Release Governance</title>
+    <title>XORAS | GitHub Release Auditor</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
         <header>
             <div class="logo">XORAS</div>
+            <nav>
+                <a href="dashboard/index.html">Dashboard</a>
+                <a href="https://github.com/aoxendine3/xoras">Documentation</a>
+            </nav>
         </header>
 
         <main>
             <section class="hero">
-                <h1>Release software with confidence.</h1>
-                <p>XORAS is a simple tool for GitHub that checks your code for security risks and build errors before you deploy.</p>
-            </section>
-
-            <section class="section">
-                <h2>How it helps you</h2>
-                <div class="feature-list">
-                    <div class="feature-item">
-                        <h3>Secret Scanning</h3>
-                        <p>Automatically checks your code for API keys and passwords. It stops them from ever being committed or leaked.</p>
-                    </div>
-                    <div class="feature-item">
-                        <h3>Next.js Route Checks</h3>
-                        <p>If you use Next.js, it verifies that your compiled website matches your code. This prevents broken links and 404 errors in production.</p>
-                    </div>
-                    <div class="feature-item">
-                        <h3>Docker Integrity</h3>
-                        <p>Ensures your Docker containers are using stable versions. It blocks the use of the risky "latest" tag to keep your deployments predictable.</p>
-                    </div>
+                <h1>GitHub Release Integrity Auditor</h1>
+                <p>Automated static analysis for GitHub Actions, build artifacts, and secret detection.</p>
+                <div class="cta-buttons">
+                    <a href="#setup" class="btn primary">View Installation</a>
+                    <a href="dashboard/index.html" class="btn secondary">Access Dashboard</a>
                 </div>
             </section>
 
-            <section class="section">
-                <h2>Get Started</h2>
-                <p>XORAS works as a simple GitHub Action. You can add it to any repository in minutes.</p>
-                <div class="cta-section">
-                    <p>Ready to try it?</p>
-                    <a href="https://github.com/aoxendine3/xoras" class="cta-button">View on GitHub</a>
+            <section id="features" class="grid">
+                <div class="card">
+                    <h3>Workflow Auditing</h3>
+                    <p>Detects unpinned GitHub Actions and high-risk triggers like <code>pull_request_target</code>.</p>
+                </div>
+                <div class="card">
+                    <h3>Secret Detection</h3>
+                    <p>Scans code for hardcoded API keys and tokens using high-fidelity regex patterns.</p>
+                </div>
+                <div class="card">
+                    <h3>Environment Verification</h3>
+                    <p>Validates the presence of required environment variables before deployment.</p>
                 </div>
             </section>
         </main>
 
         <footer>
-            <p>&copy; 2026 XORAS. Simple tools for safe releases.</p>
+            <p>&copy; 2026 XORAS Infrastructure Audit.</p>
         </footer>
     </div>
 </body>

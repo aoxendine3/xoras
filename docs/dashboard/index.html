@@ -3,73 +3,73 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>XORAS | Institutional Governance Dashboard</title>
+    <title>XORAS | Security & Audit Dashboard</title>
     <link rel="stylesheet" href="../style.css">
     <style>
-        .threat-feed {
-            background: rgba(255, 0, 0, 0.05);
-            border-left: 4px solid var(--accent);
+        .advisory-panel {
+            background: rgba(255, 255, 255, 0.05);
+            border-left: 4px solid #007bff;
             padding: 1.5rem;
             margin: 2rem 0;
             border-radius: 0 8px 8px 0;
         }
-        .threat-item {
+        .advisory-item {
             margin-bottom: 1rem;
-            font-family: 'Space Mono', monospace;
+            font-family: 'Inter', sans-serif;
             font-size: 0.9rem;
         }
-        .status-secure { color: #00ff88; }
-        .status-warn { color: #ffcc00; }
-        .status-critical { color: #ff4444; }
+        .label-high { color: #ff4444; font-weight: bold; }
+        .label-med { color: #ffcc00; font-weight: bold; }
+        .label-info { color: #00ff88; font-weight: bold; }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <div class="logo">XORAS<span>_APEX</span></div>
+            <div class="logo">XORAS</div>
             <nav>
                 <a href="../index.html">Home</a>
-                <a href="#audit">Audit Log</a>
-                <a href="#threats">Threat Feed</a>
+                <a href="#logs">Audit Logs</a>
+                <a href="#advisories">Security Advisories</a>
             </nav>
         </header>
 
         <main>
             <section class="hero">
-                <h1>Institutional Finality</h1>
-                <p>Verifying release integrity for the next generation of supply chains.</p>
+                <h1>Security & Audit Dashboard</h1>
+                <p>Status monitoring for repository integrity and workflow security.</p>
             </section>
 
-            <section id="threats" class="threat-feed">
-                <h3>📡 Real-Time Institutional Threat Feed (v2026.5)</h3>
-                <div class="threat-item">
-                    <span class="status-critical">[CRITICAL]</span> Mini Shai-Hulud: Cache poisoning campaign targeting TanStack (May 2026). XORAS Shield: <strong>ACTIVE</strong>
+            <section id="advisories" class="advisory-panel">
+                <h3>Technical Security Advisories</h3>
+                <div class="advisory-item">
+                    <span class="label-high">[HIGH]</span> GitHub Actions: Cache poisoning vulnerabilities via fork-access. Mitigation: Use pinned SHAs.
                 </div>
-                <div class="threat-item">
-                    <span class="status-warn">[WARNING]</span> GitHub OIDC token extraction via pull_request_target detected in wild. XORAS Shield: <strong>ACTIVE</strong>
+                <div class="advisory-item">
+                    <span class="label-med">[MEDIUM]</span> OIDC Token Exposure: Risks associated with <code>pull_request_target</code> workflows.
                 </div>
-                <div class="threat-item">
-                    <span class="status-secure">[INFO]</span> Next.js 15.2 Server Action CSRF bypass mitigated. XORAS Shield: <strong>ACTIVE</strong>
+                <div class="advisory-item">
+                    <span class="label-info">[INFO]</span> Next.js 15: Recommended CSP configuration for Server Action integrity.
                 </div>
             </section>
 
-            <section id="audit" class="audit-log">
-                <h2>Recent Audit Events</h2>
+            <section id="logs" class="audit-log">
+                <h2>Repository Audit Log</h2>
                 <table>
                     <thead>
                         <tr>
                             <th>Timestamp</th>
-                            <th>Repository</th>
-                            <th>Status</th>
-                            <th>Integrity Key</th>
+                            <th>Action</th>
+                            <th>Result</th>
+                            <th>Commit SHA</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td>2026-05-12 11:57</td>
-                            <td>aoxendine3/xoras</td>
-                            <td><span class="status-secure">SECURE</span></td>
-                            <td><code>6773606...</code></td>
+                            <td>2026-05-12 12:39</td>
+                            <td>Workflow Integrity Sync</td>
+                            <td><span class="label-info">PASS</span></td>
+                            <td><code>9545127...</code></td>
                         </tr>
                     </tbody>
                 </table>
@@ -77,7 +77,7 @@
         </main>
 
         <footer>
-            <p>&copy; 2026 XORAS Institutional Governance. Sovereignty through Integrity.</p>
+            <p>&copy; 2026 XORAS Engineering. Technical-Literal State Verified.</p>
         </footer>
     </div>
 </body>
