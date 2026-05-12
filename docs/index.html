@@ -24,8 +24,8 @@
 
         <section class="hero">
             <div class="badge">Institutional Release Integrity</div>
-            <h1>Turn Release Anxiety into Release Confidence</h1>
-            <p class="subtitle">XORAS detects performance regressions, security leaks, and architectural drift before they merge—across npm, Maven, and NuGet.</p>
+            <h1>Universal Release Confidence</h1>
+            <p class="subtitle">XORAS provides a single governance layer for your entire infrastructure—securing code, artifacts, and container images across every registry.</p>
             <div class="hero-actions">
                 <a href="#apply" class="cta-button">Apply for the 30-Day Pilot</a>
                 <a href="#ecosystems" class="secondary-btn">View Supported Ecosystems</a>
@@ -41,25 +41,26 @@
             
             <div class="tab-container">
                 <div class="tab-list">
-                    <button class="tab-btn active" data-tab="npm">npm / Node.js</button>
-                    <button class="tab-btn" data-tab="maven">Maven / Java</button>
-                    <button class="tab-btn" data-tab="nuget">NuGet / .NET</button>
+                    <button class="tab-btn active" data-tab="npm">npm</button>
+                    <button class="tab-btn" data-tab="maven">Maven</button>
+                    <button class="tab-btn" data-tab="nuget">NuGet</button>
+                    <button class="tab-btn" data-tab="ruby">RubyGems</button>
+                    <button class="tab-btn" data-tab="docker">Docker/OCI</button>
                 </div>
                 
                 <div class="tab-content active" id="npm">
                     <h3>npm Integrity</h3>
-                    <p>Track dependency bloat and performance drift in JavaScript/TypeScript projects. Integrates directly with `package.json` and lockfiles.</p>
-                    <pre><code>uses: xoras/action@v1
-with:
-  ecosystem: npm
-  threshold: 15%</code></pre>
+                    <p>Governance for Node.js. XORAS validates `.npmrc` configurations and tracks dependency drift in scoped packages.</p>
+                    <pre><code># XORAS npm Policy
+$ npm login --scope=@NAMESPACE \
+  --auth-type=legacy \
+  --registry=https://npm.pkg.github.com</code></pre>
                 </div>
                 
                 <div class="tab-content" id="maven">
                     <h3>Maven Integrity</h3>
-                    <p>Governance for Apache Maven. Detects unauthorized registry access and artifact drift in `pom.xml` configurations.</p>
-                    <pre><code># XORAS Policy for Maven
-<distributionManagement>
+                    <p>Secure release management for Java. XORAS ensures `pom.xml` distribution settings meet institutional standards.</p>
+                    <pre><code><distributionManagement>
   <repository>
     <id>github</id>
     <url>https://maven.pkg.github.com/OWNER/REPO</url>
@@ -69,13 +70,29 @@ with:
                 
                 <div class="tab-content" id="nuget">
                     <h3>NuGet Integrity</h3>
-                    <p>Secure release management for .NET. Validates NuGet package sources and ensures integrity of DLL artifacts.</p>
-                    <pre><code># XORAS Policy for NuGet
-dotnet nuget add source \
-  --name "GitHub" \
-  --username OWNER \
-  --password TOKEN \
-  "https://nuget.pkg.github.com/OWNER/index.json"</code></pre>
+                    <p>Integrity for .NET ecosystems. XORAS validates `nuget.config` and package source mappings to prevent dependency confusion.</p>
+                    <pre><code><packageSourceMapping>
+  <packageSource key="github">
+    <package pattern="PACKAGE-ID-PREFIX.*" />
+  </packageSource>
+</packageSourceMapping></code></pre>
+                </div>
+
+                <div class="tab-content" id="ruby">
+                    <h3>RubyGems Integrity</h3>
+                    <p>Governance for Ruby applications. XORAS monitors `Gemfile` source blocks and validates `ssh://` repository links in metadata.</p>
+                    <pre><code># XORAS Ruby Policy
+source "https://rubygems.pkg.github.com/NAMESPACE" do
+  gem "INSTITUTIONAL_GEM"
+end</code></pre>
+                </div>
+
+                <div class="tab-content" id="docker">
+                    <h3>Container Integrity (OCI)</h3>
+                    <p>Security for the Container Registry (ghcr.io). XORAS validates image labels, architecture manifests, and base image provenance.</p>
+                    <pre><code># XORAS OCI Labels
+LABEL org.opencontainers.image.source=https://github.com/OWNER/REPO
+LABEL org.opencontainers.image.description="XORAS Verified Image"</code></pre>
                 </div>
             </div>
         </section>
@@ -89,12 +106,12 @@ dotnet nuget add source \
                 </div>
                 <div class="sim-display">
                     <div class="metric">
-                        <span class="label">Latency</span>
-                        <span class="value" id="latency-val">42ms</span>
+                        <span class="label">Release Drift</span>
+                        <span class="value" id="latency-val">0%</span>
                     </div>
                     <div class="metric">
-                        <span class="label">Secrets</span>
-                        <span class="value" id="secrets-val">0</span>
+                        <span class="label">Integrity Score</span>
+                        <span class="value" id="score-val">100/1</span>
                     </div>
                 </div>
                 <div class="sim-controls">
@@ -110,19 +127,20 @@ dotnet nuget add source \
         <!-- Lead Capture Form -->
         <section id="apply" class="form-card">
             <h2>Apply for the Pilot</h2>
-            <p>Limited to 30 engineering teams for the Q2 cohort.</p>
+            <p>Join the Q2 cohort for high-velocity engineering teams.</p>
             <form id="pilot-form">
                 <div class="form-group">
                     <label>Work Email</label>
                     <input type="email" placeholder="name@company.com" required>
                 </div>
                 <div class="form-group">
-                    <label>Engineering Team Size</label>
+                    <label>Primary Ecosystem</label>
                     <select>
-                        <option>1-10 engineers</option>
-                        <option>10-50 engineers</option>
-                        <option>50-200 engineers</option>
-                        <option>200+ engineers</option>
+                        <option>Node.js / npm</option>
+                        <option>Java / Maven</option>
+                        <option>.NET / NuGet</option>
+                        <option>Ruby / Gems</option>
+                        <option>Containers / Docker</option>
                     </select>
                 </div>
                 <button type="submit" class="submit-btn">Request Early Access</button>

@@ -19,8 +19,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const simulateBtn = document.getElementById('simulate-drift');
     const resetBtn = document.getElementById('reset-sim');
     const statusIndicator = document.getElementById('sim-status');
-    const latencyVal = document.getElementById('latency-val');
-    const secretsVal = document.getElementById('secrets-val');
+    const driftVal = document.getElementById('latency-val');
+    const scoreVal = document.getElementById('score-val');
     const output = document.getElementById('sim-output');
 
     simulateBtn.addEventListener('click', () => {
@@ -28,21 +28,21 @@ document.addEventListener('DOMContentLoaded', () => {
         output.innerText = "Analyzing release candidate...";
         
         setTimeout(() => {
-            latencyVal.innerText = "98ms (+133%)";
-            latencyVal.style.color = "var(--danger)";
+            driftVal.innerText = "133% (Critical)";
+            driftVal.style.color = "var(--danger)";
             
             setTimeout(() => {
-                secretsVal.innerText = "1 DETECTED";
-                secretsVal.style.color = "var(--danger)";
+                scoreVal.innerText = "60/1";
+                scoreVal.style.color = "var(--danger)";
                 
                 statusIndicator.innerText = "DRIFT DETECTED";
                 statusIndicator.classList.add('drift');
                 
-                output.innerHTML = `<span style="color: var(--danger)">❌ Integrity Check Failed</span><br>
-                - Latency regression in critical path.<br>
-                - Exposed secret found in commit diff.<br>
+                output.innerHTML = `<span style="color: var(--danger)">❌ Integrity Violation</span><br>
+                - Major latency regression detected in core API.<br>
+                - Unauthorized container layer detected (Docker).<br>
                 <br>
-                <span style="color: var(--warning)">⚠️ ADVISORY MODE: Build allowed, but review required.</span>`;
+                <span style="color: var(--warning)">⚠️ ADVISORY MODE: Drift recorded in ledger. Merge blocked.</span>`;
                 
                 simulateBtn.disabled = false;
             }, 800);
@@ -50,10 +50,10 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     resetBtn.addEventListener('click', () => {
-        latencyVal.innerText = "42ms";
-        latencyVal.style.color = "var(--text-bright)";
-        secretsVal.innerText = "0";
-        secretsVal.style.color = "var(--text-bright)";
+        driftVal.innerText = "0%";
+        driftVal.style.color = "var(--text-bright)";
+        scoreVal.innerText = "100/1";
+        scoreVal.style.color = "var(--text-bright)";
         statusIndicator.innerText = "HEALTHY";
         statusIndicator.classList.remove('drift');
         output.innerText = "Waiting for release signal...";
@@ -64,7 +64,7 @@ document.addEventListener('DOMContentLoaded', () => {
     form.addEventListener('submit', (e) => {
         e.preventDefault();
         const btn = form.querySelector('.submit-btn');
-        btn.innerText = "Request Sent ✅";
+        btn.innerText = "Application Sent ✅";
         btn.disabled = true;
         btn.style.background = "var(--success)";
     });
