@@ -1,14 +1,15 @@
 :root {
-    --bg: #ffffff;
-    --text: #1a1a1a;
-    --text-muted: #666666;
-    --primary: #2563eb;
-    --primary-hover: #1d4ed8;
-    --accent: #f8fafc;
-    --border: #e2e8f0;
-    --card-bg: #ffffff;
-    --font-main: 'Inter', system-ui, -apple-system, sans-serif;
-    --font-mono: 'JetBrains Mono', monospace;
+    --bg: #020617;
+    --surface: #0f172a;
+    --primary: #3b82f6;
+    --accent: #06b6d4;
+    --success: #10b981;
+    --warn: #f59e0b;
+    --error: #ef4444;
+    --text: #f8fafc;
+    --text-muted: #94a3b8;
+    --border: rgba(255, 255, 255, 0.08);
+    --glass: rgba(15, 23, 42, 0.6);
 }
 
 * {
@@ -20,24 +21,31 @@
 body {
     background-color: var(--bg);
     color: var(--text);
-    font-family: var(--font-main);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     line-height: 1.6;
-    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+    background-image: 
+        radial-gradient(circle at 50% -20%, rgba(59, 130, 246, 0.15), transparent),
+        radial-gradient(circle at 0% 100%, rgba(6, 182, 212, 0.05), transparent);
+    min-height: 100vh;
 }
 
 .container {
-    max-width: 1100px;
+    max-width: 1200px;
     margin: 0 auto;
-    padding: 0 1.5rem;
+    padding: 0 2rem;
 }
 
-/* Header */
 header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 2rem 0;
     border-bottom: 1px solid var(--border);
+    backdrop-filter: blur(12px);
+    position: sticky;
+    top: 0;
+    z-index: 100;
 }
 
 .logo-group {
@@ -47,18 +55,19 @@ header {
 
 .logo {
     font-weight: 800;
-    font-size: 1.75rem;
+    font-size: 1.5rem;
     letter-spacing: -0.04em;
-    color: var(--text);
-    line-height: 1;
+    background: linear-gradient(135deg, #fff 0%, #94a3b8 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
 .acronym {
-    font-size: 0.625rem;
+    font-size: 0.65rem;
     color: var(--text-muted);
     text-transform: uppercase;
-    letter-spacing: 0.05em;
-    margin-top: 0.25rem;
+    letter-spacing: 0.1em;
+    margin-top: 0.2rem;
 }
 
 .acronym strong {
@@ -74,6 +83,7 @@ header {
     stroke-dasharray: 100;
     stroke-dashoffset: 100;
     animation: pulse 4s linear infinite;
+    stroke: var(--primary);
 }
 
 @keyframes pulse {
@@ -85,50 +95,17 @@ header {
     100% { stroke-dashoffset: -100; opacity: 0; }
 }
 
-nav {
-    display: flex;
-    gap: 2rem;
-    align-items: center;
-}
-
 nav a {
     text-decoration: none;
     color: var(--text-muted);
+    font-size: 0.9rem;
     font-weight: 500;
-    font-size: 0.9375rem;
-    transition: color 0.2s;
+    margin-left: 2rem;
+    transition: color 0.3s ease;
 }
 
 nav a:hover {
     color: var(--text);
-}
-
-/* Hero */
-.hero {
-    padding: 6rem 0;
-    text-align: center;
-}
-
-.hero h1 {
-    font-size: 3.5rem;
-    font-weight: 800;
-    letter-spacing: -0.04em;
-    line-height: 1.1;
-    margin-bottom: 1.5rem;
-    color: #0f172a;
-}
-
-.hero .subtitle {
-    font-size: 1.25rem;
-    color: var(--text-muted);
-    max-width: 700px;
-    margin: 0 auto 2.5rem auto;
-}
-
-.hero-actions {
-    display: flex;
-    gap: 1rem;
-    justify-content: center;
 }
 
 .cta-button {
@@ -136,151 +113,166 @@ nav a:hover {
     color: white;
     padding: 0.75rem 1.5rem;
     border-radius: 6px;
-    text-decoration: none;
     font-weight: 600;
-    font-size: 0.9375rem;
-    transition: background-color 0.2s;
+    font-size: 0.9rem;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
 }
 
 .cta-button:hover {
-    background-color: var(--primary-hover);
+    background-color: #2563eb;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(37, 99, 235, 0.4);
 }
 
-.secondary-btn {
-    background-color: white;
-    color: var(--text);
-    padding: 0.75rem 1.5rem;
-    border-radius: 6px;
+.cta-button.secondary {
+    background-color: transparent;
     border: 1px solid var(--border);
-    text-decoration: none;
-    font-weight: 600;
-    font-size: 0.9375rem;
-    transition: background-color 0.2s;
+    color: var(--text);
 }
 
-.secondary-btn:hover {
-    background-color: var(--accent);
+.cta-button.secondary:hover {
+    background-color: var(--border);
 }
 
-/* Features */
-.feature-section {
-    padding: 4rem 0;
-}
-
-.section-header {
+.hero {
+    padding: 8rem 0;
     text-align: center;
-    margin-bottom: 4rem;
 }
 
-.section-header h2 {
-    font-size: 2rem;
-    font-weight: 700;
-    margin-bottom: 1rem;
+.hero h1 {
+    font-size: 4rem;
+    font-weight: 900;
+    line-height: 1.1;
+    margin-bottom: 1.5rem;
+    letter-spacing: -0.05em;
+    background: linear-gradient(to bottom, #fff, #94a3b8);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
-.feature-grid {
+.hero p {
+    font-size: 1.25rem;
+    color: var(--text-muted);
+    max-width: 700px;
+    margin: 0 auto 3rem;
+}
+
+.bento-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 2rem;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    margin-bottom: 8rem;
 }
 
-.feature-card {
-    padding: 2rem;
+.bento-card {
+    background: var(--surface);
     border: 1px solid var(--border);
     border-radius: 12px;
-    transition: transform 0.2s, border-color 0.2s;
+    padding: 2rem;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
 }
 
-.feature-card:hover {
+.bento-card:hover {
     border-color: var(--primary);
+    transform: translateY(-4px);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
 }
 
-.feature-card .icon {
-    font-size: 1.5rem;
-    margin-bottom: 1rem;
-}
-
-.feature-card h3 {
-    font-size: 1.125rem;
-    font-weight: 600;
-    margin-bottom: 0.75rem;
-}
-
-.feature-card p {
-    color: var(--text-muted);
-    font-size: 0.9375rem;
-}
-
-/* Details */
-.details-section {
-    padding: 4rem 0;
-    background-color: var(--accent);
-    margin: 0 -1.5rem;
-    padding: 6rem 3rem;
-}
-
-.detail-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 4rem;
-    max-width: 1100px;
-    margin: 0 auto;
-}
-
-.detail-item h4 {
+.bento-card h3 {
     font-size: 1.25rem;
-    font-weight: 700;
     margin-bottom: 1rem;
+    color: #fff;
 }
 
-.detail-item p {
+.bento-card p {
+    font-size: 0.95rem;
     color: var(--text-muted);
 }
 
-/* Form */
-.form-section {
+.bento-card.wide {
+    grid-column: span 2;
+}
+
+.terminal-section {
+    background: #000;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin-bottom: 8rem;
+    padding: 2rem;
+    font-family: 'JetBrains Mono', monospace;
+    position: relative;
+}
+
+.terminal-header {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.dot { width: 12px; height: 12px; border-radius: 50%; }
+.dot.red { background: #ff5f56; }
+.dot.yellow { background: #ffbd2e; }
+.dot.green { background: #27c93f; }
+
+.terminal-body {
+    color: var(--success);
+    font-size: 0.9rem;
+    min-height: 200px;
+}
+
+.steps-section {
     padding: 6rem 0;
 }
 
+.steps-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 3rem;
+    margin-top: 4rem;
+}
+
+.step-card {
+    text-align: center;
+}
+
+.step-num {
+    width: 40px;
+    height: 40px;
+    background: var(--primary);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    margin: 0 auto 1.5rem;
+}
+
+.form-section {
+    padding: 8rem 0;
+}
+
 .form-card {
-    max-width: 500px;
+    max-width: 600px;
     margin: 0 auto;
-    padding: 3rem;
+    background: var(--surface);
+    padding: 4rem;
+    border-radius: 20px;
     border: 1px solid var(--border);
-    border-radius: 12px;
-    background-color: white;
     position: relative;
-    overflow: hidden;
 }
 
 .form-card::before {
     content: '';
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 4px;
-    height: 100%;
-    background-color: var(--primary);
-}
-
-.card-brand {
-    font-size: 0.75rem;
-    font-weight: 800;
-    color: var(--primary);
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    margin-bottom: 1rem;
-}
-
-.form-card h2 {
-    text-align: center;
-    margin-bottom: 1rem;
-}
-
-.form-card p {
-    text-align: center;
-    color: var(--text-muted);
-    margin-bottom: 2rem;
+    top: 0; left: 0; width: 100%; height: 4px;
+    background: linear-gradient(90deg, var(--primary), var(--accent));
 }
 
 .form-group {
@@ -289,67 +281,27 @@ nav a:hover {
 
 .form-group label {
     display: block;
-    font-weight: 600;
-    font-size: 0.875rem;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--text-muted);
     margin-bottom: 0.5rem;
 }
 
-.form-group input, .form-group select {
+input, select {
     width: 100%;
-    padding: 0.75rem;
+    background: var(--bg);
     border: 1px solid var(--border);
-    border-radius: 6px;
-    font-family: inherit;
-}
-
-.submit-btn {
-    width: 100%;
-    background-color: var(--primary);
+    padding: 0.75rem 1rem;
     color: white;
-    padding: 0.75rem;
-    border: none;
     border-radius: 6px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: background-color 0.2s;
+    font-size: 1rem;
 }
 
-.submit-btn:hover {
-    background-color: var(--primary-hover);
-}
-
-/* Footer */
 footer {
+    text-align: center;
     padding: 4rem 0;
     border-top: 1px solid var(--border);
-    text-align: center;
-}
-
-.footer-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 2rem;
-}
-
-.footer-links {
-    display: flex;
-    gap: 2rem;
-}
-
-.footer-links a {
-    text-decoration: none;
     color: var(--text-muted);
-    font-size: 0.875rem;
-}
-
-.copyright {
-    color: var(--text-muted);
-    font-size: 0.875rem;
-}
-
-@media (max-width: 768px) {
-    .hero h1 { font-size: 2.5rem; }
-    .detail-grid { grid-template-columns: 1fr; }
-    .footer-content { flex-direction: column; gap: 2rem; }
+    font-size: 0.8rem;
 }

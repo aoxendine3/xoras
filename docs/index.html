@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>XORAS | Release Governance Infrastructure</title>
+    <title>XORAS | Enterprise Release Governance</title>
     <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="container">
@@ -18,7 +18,7 @@
             </div>
             <div class="integrity-pulse">
                 <svg width="100" height="30" viewBox="0 0 100 30">
-                    <path class="pulse-path" d="M0,15 L30,15 L35,5 L45,25 L50,15 L100,15" fill="none" stroke="#2563eb" stroke-width="2" />
+                    <path class="pulse-path" d="M0,15 L30,15 L35,5 L45,25 L50,15 L100,15" fill="none" stroke-width="2" />
                 </svg>
             </div>
             <nav>
@@ -30,50 +30,62 @@
 
         <main>
             <section class="hero">
-                <h1>Stop broken releases before they reach production.</h1>
-                <p>XORAS is a local-first governance layer that verifiably audits your code, dependencies, and build artifacts for total release integrity.</p>
+                <h1>Absolute grounding for every release.</h1>
+                <p>Standardizing release integrity through xero-knowledge audits and automated registry finality.</p>
                 <div class="hero-btns">
                     <a href="#contact" class="cta-button">Get Started</a>
                     <a href="https://github.com/aoxendine3/xoras" class="cta-button secondary">View on GitHub</a>
                 </div>
             </section>
 
-            <section id="features" class="features">
-                <div class="feature-card">
-                    <h3>Zero-Data Secret Scanning</h3>
-                    <p>Intercepts API keys and secrets locally via Git hooks. No sensitive data ever leaves your secure environment.</p>
+            <section class="terminal-section">
+                <div class="terminal-header">
+                    <div class="dot red"></div>
+                    <div class="dot yellow"></div>
+                    <div class="dot green"></div>
                 </div>
-                <div class="feature-card">
-                    <h3>Registry Finality</h3>
-                    <p>Prevents tag-poisoning by verifying Docker hashes and blocking the use of non-deterministic ':latest' tags.</p>
-                </div>
-                <div class="feature-card">
-                    <h3>Next.js Route Grounding</h3>
-                    <p>Verifies that your compiled build artifacts match your source routes. No more 404s in production.</p>
-                </div>
-                <div class="feature-card">
-                    <h3>Architecture Guardrails</h3>
-                    <p>Monitors dependency bloat and performance drift to ensure your application stays lean and fast.</p>
+                <div class="terminal-body" id="terminal-output">
+                    // Initializing XORAS Audit Engine...<br>
+                    // Checking Registry Integrity...<br>
+                    // Verification SUCCESS.
                 </div>
             </section>
 
-            <section class="how-it-works">
-                <h2>Three Steps to Absolute Integrity</h2>
+            <section id="features" class="bento-grid">
+                <div class="bento-card wide">
+                    <h3>Next.js Route Grounding</h3>
+                    <p>Verifiably map source intent to compiled build artifacts. Intercept 404s before they reach production by auditing physical .next output against the app directory.</p>
+                </div>
+                <div class="bento-card">
+                    <h3>Docker Finality</h3>
+                    <p>Enforce immutable registry standards. Block non-deterministic tags and verify cryptographic hashes.</p>
+                </div>
+                <div class="bento-card">
+                    <h3>Zero-Data Secrets</h3>
+                    <p>Local-first scanning via Git hooks. Prevent key leaks before the first commit is ever made.</p>
+                </div>
+                <div class="bento-card wide">
+                    <h3>Multi-Tier Intelligence</h3>
+                    <p>Orchestrate audits across specialized model tiers. From lightweight local syntax checks to deep strategic reasoning powered by the DeepSeek-Coder engine.</p>
+                </div>
+            </section>
+
+            <section class="steps-section">
                 <div class="steps-grid">
-                    <div class="step">
+                    <div class="step-card">
                         <div class="step-num">1</div>
-                        <h4>Install Local Edge</h4>
-                        <p>Add a lightweight pre-commit hook to catch risks before they are even committed.</p>
+                        <h4>Install</h4>
+                        <p>Deploy the local edge auditor via npx.</p>
                     </div>
-                    <div class="step">
+                    <div class="step-card">
                         <div class="step-num">2</div>
-                        <h4>Automate in CI</h4>
-                        <p>Drop the XORAS Action into your GitHub workflow to enforce governance on every PR.</p>
+                        <h4>Enforce</h4>
+                        <p>Drop the XORAS action into your CI pipeline.</p>
                     </div>
-                    <div class="step">
+                    <div class="step-card">
                         <div class="step-num">3</div>
-                        <h4>Audit Everything</h4>
-                        <p>View high-fidelity audit reports and real-time release confidence scores on your dashboard.</p>
+                        <h4>Verify</h4>
+                        <p>Audit every release candidate in real-time.</p>
                     </div>
                 </div>
             </section>
@@ -83,7 +95,7 @@
             <div class="form-card">
                 <div class="card-brand">XORAS</div>
                 <h2>Join the Audit Pilot</h2>
-                <p>Onboarding engineering teams for the Q2 Release Integrity program.</p>
+                <p>Standardizing the future of release governance.</p>
                 <form id="pilot-form">
                     <div class="form-group">
                         <label>Intelligence Tier</label>
@@ -103,7 +115,7 @@
         </section>
 
         <footer>
-            <p>&copy; 2026 XORAS. Standardizing Release Finality.</p>
+            <p>&copy; 2026 XORAS. All Rights Reserved.</p>
         </footer>
     </div>
     <script src="script.js"></script>
