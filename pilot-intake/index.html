@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XORAS | Release Integrity Pilot</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">XORAS</div>
+            <nav>
+                <a href="#apply" class="cta-button" style="padding: 0.6rem 1.2rem; font-size: 0.9rem;">Join Pilot</a>
+            </nav>
+        </header>
+
+        <section class="hero">
+            <h1>Release Confidence for High-Velocity Engineering</h1>
+            <p class="subtitle">XORAS surfaces release drift directly inside your CI pipeline—detecting performance regressions and security leaks before they reach production.</p>
+            <a href="#apply" class="cta-button">Apply for the 30-Day Advisory Pilot</a>
+        </section>
+
+        <section class="section-title">
+            <h2>Deterministic Drift Detection</h2>
+            <p class="subtitle">XORAS monitors your institutional baseline across four critical categories.</p>
+        </section>
+
+        <div class="grid">
+            <div class="card">
+                <h3>Performance Drift</h3>
+                <p>Detect latency regressions and TTFB degradation caused by inefficient code paths before merge.</p>
+            </div>
+            <div class="card">
+                <h3>Dependency Bloat</h3>
+                <p>Enforce architectural discipline by flagging unnecessary packages and massive bundle size growth.</p>
+            </div>
+            <div class="card">
+                <h3>Secret Exposure</h3>
+                <p>Intercept exposed API keys and credentials directly in the PR workflow with zero false positives.</p>
+            </div>
+            <div class="card">
+                <h3>Governance Drift</h3>
+                <p>Ensure every release meets institutional standards for security headers, CORS, and configuration.</p>
+            </div>
+        </div>
+
+        <section class="proof-section">
+            <div class="section-title">
+                <h2>Operational Proof</h2>
+                <p class="subtitle">See how XORAS catches a latency regression and an exposed secret in real-time.</p>
+            </div>
+            <div class="video-container">
+                <img src="assets/walkthrough.webp" alt="XORAS Walkthrough">
+            </div>
+        </section>
+
+        <section class="section-title">
+            <h2>The 30-Day Advisory Pilot</h2>
+            <p class="subtitle">A frictionless, no-blocking introduction to release integrity.</p>
+        </section>
+
+        <div class="process-grid">
+            <div class="step">
+                <span class="step-num">Step 01</span>
+                <h3>Silent Install</h3>
+                <p>Deploy the XORAS GitHub Action in Advisory Mode. Setup takes under 3 minutes.</p>
+            </div>
+            <div class="step">
+                <span class="step-num">Step 02</span>
+                <h3>Measure Drift</h3>
+                <p>Observe silent regressions and measure drift frequency without blocking a single build.</p>
+            </div>
+            <div class="step">
+                <span class="step-num">Step 03</span>
+                <h3>Review ROI</h3>
+                <p>Receive weekly governance reports showing exactly what XORAS caught before production.</p>
+            </div>
+        </div>
+
+        <section class="safety">
+            <div class="section-title" style="text-align: left; margin-bottom: 2rem;">
+                <h2 style="font-size: 2rem;">Operationally Safe</h2>
+            </div>
+            <div class="safety-item"><span>✓</span> No source code is ever uploaded or transmitted.</div>
+            <div class="safety-item"><span>✓</span> Zero build blocking or workflow disruption during the pilot.</div>
+            <div class="safety-item"><span>✓</span> 100% Local-first CI execution.</div>
+            <div class="safety-item"><span>✓</span> No intrusive agents or complex infrastructure.</div>
+        </section>
+
+        <section id="apply" class="form-card">
+            <div class="section-title" style="margin-bottom: 2rem;">
+                <h2>Apply for the Pilot</h2>
+                <p style="font-size: 1rem;">Limited to 30 engineering teams for the Q2 cohort.</p>
+            </div>
+            <form>
+                <div class="form-group">
+                    <label>Work Email</label>
+                    <input type="email" placeholder="name@company.com" required>
+                </div>
+                <div class="form-group">
+                    <label>Engineering Team Size</label>
+                    <select>
+                        <option>1-10 engineers</option>
+                        <option>10-50 engineers</option>
+                        <option>50-200 engineers</option>
+                        <option>200+ engineers</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Your Biggest Release Pain Point</label>
+                    <textarea rows="3" placeholder="e.g. Latency regressions slipping into production..."></textarea>
+                </div>
+                <button type="submit" class="submit-btn">Request Early Access</button>
+            </form>
+        </section>
+
+        <footer>
+            &copy; 2026 XORAS Engineering Integrity. Built for High-Velocity Teams.
+        </footer>
+    </div>
+
+    <script>
+        // Smooth scrolling
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+</body>
+</html>
