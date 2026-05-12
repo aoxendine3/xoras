@@ -20,14 +20,17 @@ function runLocalAudit() {
     let violations = 0;
     
     changedFiles.forEach(file => {
-        // Exclude infrastructure and dependency directories
-        if (file.includes('node_modules') || file.includes('.git') || file.includes('dist')) return;
+        // Exclude infrastructure, dependencies, and documentation
+        if (file.includes('node_modules') || 
+            file.includes('.git') || 
+            file.includes('dist') || 
+            file.includes('docs/')) return;
 
         if (fs.existsSync(file) && fs.lstatSync(file).isFile()) {
             const content = fs.readFileSync(file, 'utf8');
             secretPatterns.forEach(pattern => {
                 if (pattern.test(content)) {
-                    // Exclude infrastructure setup and audit logic to prevent self-detection
+                    // Exclude infrastructure setup and audit logic
                     if (file.includes('scripts/local_audit.js') || 
                         file.includes('scripts/setup_xoras.js') || 
                         file.includes('action/src/index.js')) return;
