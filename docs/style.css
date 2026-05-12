@@ -1,3 +1,37 @@
+/* Crisis Alert Banner */
+.crisis-banner {
+    background: linear-gradient(90deg, #991b1b 0%, #dc2626 100%);
+    color: white;
+    text-align: center;
+    padding: 0.75rem;
+    font-size: 0.875rem;
+    position: relative;
+    z-index: 1000;
+}
+
+.crisis-banner a {
+    color: white;
+    text-decoration: underline;
+    font-weight: 600;
+    margin-left: 0.5rem;
+}
+
+.pulse {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    background: #fff;
+    border-radius: 50%;
+    margin-right: 0.5rem;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7); }
+    70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(255, 255, 255, 0); }
+    100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); }
+}
+
 :root {
     --bg: #030303;
     --card-bg: rgba(255, 255, 255, 0.03);

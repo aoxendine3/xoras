@@ -19094,6 +19094,8 @@ async function run() {
   try {
     const mode = getInput("mode") || "ADVISORY";
     info(`Starting XORAS Release Integrity Check (Mode: ${mode})`);
+    const config = loadConfig();
+    validateConfig(config);
     const metrics = await gatherTelemetry();
     const policy = loadPolicy();
     const evaluation = evaluateMetrics(metrics, policy);
@@ -19105,6 +19107,32 @@ async function run() {
     }
   } catch (error2) {
     setFailed(error2.message);
+  }
+}
+function validateConfig(config) {
+  const required = ["name", "mode", "thresholds"];
+  const missing = required.filter((key) => !config[key]);
+  if (missing.length > 0) {
+    throw new Error(`XORAS Institutional Error: Malformed xoras.config.json. Missing required fields: ${missing.join(", ")}`);
+  }
+  if (!["ADVISORY", "ENFORCEMENT"].includes(config.mode)) {
+    throw new Error(`XORAS Institutional Error: Invalid mode "${config.mode}". Must be ADVISORY or ENFORCEMENT.`);
+  }
+  console.log(`\u2705 XORAS Policy Validated: [${config.name}] in [${config.mode}] mode.`);
+}
+function loadConfig() {
+  try {
+    const configPath = import_path.default.join(process.cwd(), "xoras.config.json");
+    if (import_fs2.default.existsSync(configPath)) {
+      return JSON.parse(import_fs2.default.readFileSync(configPath, "utf8"));
+    }
+    return {
+      name: "XORAS-ADVISORY-PILOT",
+      mode: "ADVISORY",
+      thresholds: { latencyDrift: 0.25, securitySeverity: "high" }
+    };
+  } catch (err) {
+    throw new Error(`XORAS Technical Error: Failed to parse xoras.config.json - ${err.message}`);
   }
 }
 async function gatherTelemetry() {

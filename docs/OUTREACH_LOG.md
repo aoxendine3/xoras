@@ -5,6 +5,7 @@
 
 | Target Entity | Focus Area | Status | Target / Handle |
 | :--- | :--- | :--- | :--- |
+| **TanStack Team** | Registry Poisoning | [URGENT] | @tannerlinsley / @tan_stack |
 | **tj-actions Maintainers** | Action Security | [READY] | @tj-actions / @TheJackWilliams |
 | **Nx Platform Team** | Monorepo Integrity | [READY] | @NxDevTools / @JeffCrossISC |
 | **Trivy / Aqua Security** | Scanner Integrity | [READY] | @AquaSecTeam / @LizRice |

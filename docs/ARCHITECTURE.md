@@ -22,7 +22,21 @@ Identifies critical signals from the current build environment:
 ### B. Policy Evaluator (Advisory vs. Enforcement)
 XORAS operates in two distinct modes:
 - **ADVISORY (Pilot Standard)**: Non-blocking feedback. XORAS surfaces warnings in the PR Step Summary but allows the build to proceed.
-- **ENFORCEMENT**: Blocks merges that violate institutional integrity thresholds (e.g., >25% latency regression).
+- **ENFORCEMENT**: Blocks merges that violate integrity thresholds (e.g., >25% latency regression).
+
+### **Specific Defense: The "Pwn Request" Vector**
+*(Ref: May 2026 TanStack Incident)*
+
+The TanStack attack leveraged the `pull_request_target` event to gain access to write-scoped OIDC tokens from a malicious fork. 
+
+**XORAS intercepts this vector via:**
+1.  **Context-Aware Policy Gating**: XORAS identifies if a workflow is executing under `pull_request_target` with elevated permissions and blocks the release if the registry baseline deviates by even 1%.
+2.  **OIDC Scope Verification**: The engine monitors the runner's environment variables. If an unauthorized `ACTIONS_ID_TOKEN_REQUEST_URL` is detected (used to extract cloud credentials), XORAS triggers a **Hard Enforcement Block**.
+3.  **Registry Determinism**: XORAS maintains a "Registry State Baseline." If an `npm install` cycle pulls versions that are not cryptographically signed or verified by the institutional ledger, the integrity score drops to **0/1**, blocking the merge.
+
+---
+
+## 4. Operational Finality
 
 ### C. The Integrity Ledger (`integrity_ledger.json`)
 Every release event is recorded in a tamper-evident, cryptographically signed ledger. 
