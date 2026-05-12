@@ -23,7 +23,7 @@
             </div>
             <nav>
                 <a href="#features">Features</a>
-                <a href="#documentation">Docs</a>
+                <a href="https://github.com/aoxendine3/xoras/blob/main/docs/ARCHITECTURE.md">Docs</a>
                 <a href="#contact" class="cta-button secondary">Join Pilot</a>
             </nav>
         </header>
@@ -87,17 +87,16 @@
                 <p>Establishing the new standard for <strong>X</strong>ero-knowledge <strong>O</strong>perational <strong>R</strong>elease <strong>A</strong>udits.</p>
                 <form id="pilot-form">
                     <div class="form-group">
-                        <label>Work Email</label>
-                        <input type="email" placeholder="name@company.com" required>
+                        <label>Intelligence Tier</label>
+                        <select id="intelligence-tier">
+                            <option value="EDGE_3B">Tier 1: Edge (3B)</option>
+                            <option value="REASONER_12B">Tier 2: Reasoner (12B)</option>
+                            <option value="APEX_120B">Tier 3: Apex (120B)</option>
+                        </select>
                     </div>
                     <div class="form-group">
-                        <label>Engineering Team Size</label>
-                        <select>
-                            <option>1-10</option>
-                            <option>11-50</option>
-                            <option>51-200</option>
-                            <option>200+</option>
-                        </select>
+                        <label>Work Email</label>
+                        <input type="email" id="user-email" placeholder="name@company.com" required>
                     </div>
                     <button type="submit" class="submit-btn">Request Access</button>
                 </form>

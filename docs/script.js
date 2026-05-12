@@ -5,8 +5,8 @@ document.addEventListener('DOMContentLoaded', () => {
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
             
-            const email = form.querySelector('input[type="email"]').value;
-            const teamSize = form.querySelector('select').value;
+            const email = document.getElementById('user-email').value;
+            const tier = document.getElementById('intelligence-tier').value;
             const submitBtn = form.querySelector('.submit-btn');
             
             // Set Loading State
@@ -15,15 +15,16 @@ document.addEventListener('DOMContentLoaded', () => {
             
             // Simulate Lead Processing
             setTimeout(() => {
-                // In a production environment, this would hit a backend API (e.g., Slack/Discord webhook or CRM)
-                console.log(`Lead Captured: ${email} | Team Size: ${teamSize}`);
+                // Secure logging - no email exposure in UI
+                console.log(`XORAS Pilot Access Requested for Tier: ${tier}`);
                 
-                // Show Success State
+                // Show Success State (No Email Displayed)
                 form.innerHTML = `
                     <div class="success-message" style="text-align: center; padding: 2rem;">
+                        <div class="card-brand">XORAS</div>
                         <h3 style="margin-bottom: 1rem;">Application Received</h3>
-                        <p style="color: #666; margin-bottom: 2rem;">Thank you for your interest in the XORAS Pilot. Our engineering team will review your application and reach out within 24 hours.</p>
-                        <a href="https://github.com/aoxendine3/xoras" class="cta-button" style="display: inline-block;">Explore the Docs</a>
+                        <p style="color: #666; margin-bottom: 2rem;">Thank you for your interest in the <strong>${tier}</strong> Intelligence Tier. Our team will review your application and reach out to the provided work email within 24 hours.</p>
+                        <a href="https://github.com/aoxendine3/xoras" class="cta-button" style="display: inline-block;">Return to Main</a>
                     </div>
                 `;
             }, 1000);
@@ -34,9 +35,12 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('nav a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
             e.preventDefault();
-            document.querySelector(this.getAttribute('href')).scrollIntoView({
-                behavior: 'smooth'
-            });
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth'
+                });
+            }
         });
     });
 });
