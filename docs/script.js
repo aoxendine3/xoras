@@ -61,56 +61,63 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Pilot Intake Form & Payload Delivery
     const form = document.getElementById('pilot-form');
-    form.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const btn = form.querySelector('.submit-btn');
-        const email = form.querySelector('input[type="email"]').value;
-        const ecosystem = form.querySelector('select').value;
+    if (form) {
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = form.querySelector('.submit-btn');
+            const emailInput = form.querySelector('input[type="email"]');
+            const select = form.querySelector('select');
+            
+            const email = emailInput ? emailInput.value : "unknown";
+            const ecosystem = select ? select.value : "unknown";
 
-        btn.innerText = "Sending...";
-        btn.disabled = true;
+            btn.innerText = "Sending...";
+            btn.disabled = true;
 
-        // --- WEBHOOK LOGIC (Placeholder for Anthony) ---
-        // Replace 'YOUR_WEBHOOK_URL' with your real Slack/Discord URL
-        const webhookUrl = 'YOUR_WEBHOOK_URL'; 
-        
-        if (webhookUrl !== 'YOUR_WEBHOOK_URL') {
-            try {
-                await fetch(webhookUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        content: `🚀 **New XORAS Pilot Lead!**\n**Email:** ${email}\n**Ecosystem:** ${ecosystem}\n**Status:** Payload Delivered.`
-                    })
-                });
-            } catch (err) {
-                console.error("Webhook failed:", err);
+            // --- WEBHOOK LOGIC (Placeholder for Anthony) ---
+            // Replace 'YOUR_WEBHOOK_URL' with your real Slack/Discord URL
+            const webhookUrl = 'YOUR_WEBHOOK_URL'; 
+            
+            if (webhookUrl !== 'YOUR_WEBHOOK_URL') {
+                try {
+                    await fetch(webhookUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            content: `🚀 **New XORAS Pilot Lead!**\n**Email:** ${email}\n**Ecosystem:** ${ecosystem}\n**Status:** Payload Delivered.`
+                        })
+                    });
+                } catch (err) {
+                    console.error("Webhook failed:", err);
+                }
             }
-        }
 
-        // --- SUCCESS STATE & PAYLOAD DELIVERY ---
-        btn.innerText = "Welcome to XORAS! ✅";
-        btn.style.background = "var(--success)";
-        
-        // Instant Download of Starter Pack
-        window.location.href = 'XORAS_PILOT_STARTER.zip';
+            // --- SUCCESS STATE & PAYLOAD DELIVERY ---
+            btn.innerText = "Welcome to XORAS! ✅";
+            btn.style.background = "var(--success)";
+            
+            // Instant Download of Starter Pack
+            window.location.href = 'XORAS_PILOT_STARTER.zip';
 
-        // Update UI to show next steps
-        const formCard = document.querySelector('.form-card');
-        formCard.innerHTML = `
-            <div style="padding: 2rem;">
-                <h2 style="color: var(--success)">Institutional Access Granted</h2>
-                <p>Your <strong>XORAS_PILOT_STARTER.zip</strong> should be downloading now.</p>
-                <div style="margin-top: 2rem; background: rgba(0,0,0,0.3); padding: 1.5rem; border-radius: 12px; border: 1px solid var(--accent);">
-                    <h3 style="margin-bottom: 1rem;">Next Steps:</h3>
-                    <ol style="text-align: left; margin-left: 1.5rem; color: var(--text-dim);">
-                        <li>Unzip the starter pack and read <code>PILOT_ONBOARDING.md</code></li>
-                        <li>Add the <code>xoras.config.json</code> to your repo root.</li>
-                        <li>Configure your GitHub Action (v1).</li>
-                    </ol>
-                </div>
-                <p style="margin-top: 2rem;"><a href="https://github.com/aoxendine3/xoras" class="cta-button">View Repository Docs</a></p>
-            </div>
-        `;
-    });
+            // Update UI to show next steps
+            const formCard = document.querySelector('.form-card');
+            if (formCard) {
+                formCard.innerHTML = `
+                    <div style="padding: 2rem;">
+                        <h2 style="color: var(--success)">Institutional Access Granted</h2>
+                        <p>Your <strong>XORAS_PILOT_STARTER.zip</strong> should be downloading now.</p>
+                        <div style="margin-top: 2rem; background: rgba(0,0,0,0.3); padding: 1.5rem; border-radius: 12px; border: 1px solid var(--accent);">
+                            <h3 style="margin-bottom: 1rem; color: white;">Next Steps:</h3>
+                            <ol style="text-align: left; margin-left: 1.5rem; color: var(--text-dim);">
+                                <li>Unzip the starter pack and read <code>PILOT_ONBOARDING.md</code></li>
+                                <li>Add the <code>xoras.config.json</code> to your repo root.</li>
+                                <li>Configure your GitHub Action (v1).</li>
+                            </ol>
+                        </div>
+                        <p style="margin-top: 2rem;"><a href="https://github.com/aoxendine3/xoras" class="cta-button" style="text-decoration: none;">View Repository Docs</a></p>
+                    </div>
+                `;
+            }
+        });
+    }
 });
