@@ -23,41 +23,45 @@ document.addEventListener('DOMContentLoaded', () => {
     const scoreVal = document.getElementById('score-val');
     const output = document.getElementById('sim-output');
 
-    simulateBtn.addEventListener('click', () => {
-        simulateBtn.disabled = true;
-        output.innerText = "Analyzing release candidate...";
-        
-        setTimeout(() => {
-            driftVal.innerText = "133% (Critical)";
-            driftVal.style.color = "var(--danger)";
+    if (simulateBtn) {
+        simulateBtn.addEventListener('click', () => {
+            simulateBtn.disabled = true;
+            output.innerText = "Analyzing release candidate...";
             
             setTimeout(() => {
-                scoreVal.innerText = "60/1";
-                scoreVal.style.color = "var(--danger)";
+                driftVal.innerText = "133% (Critical)";
+                driftVal.style.color = "var(--danger)";
                 
-                statusIndicator.innerText = "DRIFT DETECTED";
-                statusIndicator.classList.add('drift');
-                
-                output.innerHTML = `<span style="color: var(--danger)">❌ Integrity Violation</span><br>
-                - Major latency regression detected in core API.<br>
-                - Unauthorized container layer detected (Docker).<br>
-                <br>
-                <span style="color: var(--warning)">⚠️ ADVISORY MODE: Drift recorded in ledger. Merge blocked.</span>`;
-                
-                simulateBtn.disabled = false;
-            }, 800);
-        }, 1200);
-    });
+                setTimeout(() => {
+                    scoreVal.innerText = "60/1";
+                    scoreVal.style.color = "var(--danger)";
+                    
+                    statusIndicator.innerText = "DRIFT DETECTED";
+                    statusIndicator.classList.add('drift');
+                    
+                    output.innerHTML = `<span style="color: var(--danger)">❌ Integrity Violation</span><br>
+                    - Major latency regression detected in core API.<br>
+                    - Unauthorized container layer detected (Docker).<br>
+                    <br>
+                    <span style="color: var(--warning)">⚠️ ADVISORY MODE: Drift recorded in ledger. Merge blocked.</span>`;
+                    
+                    simulateBtn.disabled = false;
+                }, 800);
+            }, 1200);
+        });
+    }
 
-    resetBtn.addEventListener('click', () => {
-        driftVal.innerText = "0%";
-        driftVal.style.color = "var(--text-bright)";
-        scoreVal.innerText = "100/1";
-        scoreVal.style.color = "var(--text-bright)";
-        statusIndicator.innerText = "HEALTHY";
-        statusIndicator.classList.remove('drift');
-        output.innerText = "Waiting for release signal...";
-    });
+    if (resetBtn) {
+        resetBtn.addEventListener('click', () => {
+            driftVal.innerText = "0%";
+            driftVal.style.color = "var(--text-bright)";
+            scoreVal.innerText = "100/1";
+            scoreVal.style.color = "var(--text-bright)";
+            statusIndicator.innerText = "HEALTHY";
+            statusIndicator.classList.remove('drift');
+            output.innerText = "Waiting for release signal...";
+        });
+    }
 
     // Pilot Intake Form & Payload Delivery
     const form = document.getElementById('pilot-form');
@@ -71,53 +75,41 @@ document.addEventListener('DOMContentLoaded', () => {
             const email = emailInput ? emailInput.value : "unknown";
             const ecosystem = select ? select.value : "unknown";
 
-            btn.innerText = "Sending...";
+            btn.innerText = "Verifying...";
             btn.disabled = true;
 
-            // --- WEBHOOK LOGIC (Placeholder for Anthony) ---
-            // Replace 'YOUR_WEBHOOK_URL' with your real Slack/Discord URL
-            const webhookUrl = 'YOUR_WEBHOOK_URL'; 
-            
-            if (webhookUrl !== 'YOUR_WEBHOOK_URL') {
-                try {
-                    await fetch(webhookUrl, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            content: `🚀 **New XORAS Pilot Lead!**\n**Email:** ${email}\n**Ecosystem:** ${ecosystem}\n**Status:** Payload Delivered.`
-                        })
-                    });
-                } catch (err) {
-                    console.error("Webhook failed:", err);
-                }
-            }
-
             // --- SUCCESS STATE & PAYLOAD DELIVERY ---
-            btn.innerText = "Welcome to XORAS! ✅";
-            btn.style.background = "var(--success)";
-            
-            // Instant Download of Starter Pack
-            window.location.href = 'XORAS_PILOT_STARTER.zip';
+            setTimeout(() => {
+                // Instant Download of Starter Pack
+                window.location.href = 'XORAS_PILOT_STARTER.zip';
 
-            // Update UI to show next steps
-            const formCard = document.querySelector('.form-card');
-            if (formCard) {
-                formCard.innerHTML = `
-                    <div style="padding: 2rem;">
-                        <h2 style="color: var(--success)">Institutional Access Granted</h2>
-                        <p>Your <strong>XORAS_PILOT_STARTER.zip</strong> should be downloading now.</p>
-                        <div style="margin-top: 2rem; background: rgba(0,0,0,0.3); padding: 1.5rem; border-radius: 12px; border: 1px solid var(--accent);">
-                            <h3 style="margin-bottom: 1rem; color: white;">Next Steps:</h3>
-                            <ol style="text-align: left; margin-left: 1.5rem; color: var(--text-dim);">
-                                <li>Unzip the starter pack and read <code>PILOT_ONBOARDING.md</code></li>
-                                <li>Add the <code>xoras.config.json</code> to your repo root.</li>
-                                <li>Configure your GitHub Action (v1).</li>
-                            </ol>
+                // Update UI to show next steps and Slack Support
+                const formCard = document.querySelector('.form-card');
+                if (formCard) {
+                    formCard.innerHTML = `
+                        <div style="padding: 2rem;">
+                            <h2 style="color: var(--success)">Institutional Access Granted</h2>
+                            <p style="margin-bottom: 1.5rem;">Your <strong>XORAS_PILOT_STARTER.zip</strong> is downloading.</p>
+                            
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 2rem;">
+                                <div style="background: rgba(255,255,255,0.03); padding: 1.5rem; border-radius: 12px; border: 1px solid var(--border); text-align: left;">
+                                    <h3 style="color: white; margin-bottom: 0.5rem; font-size: 1rem;">1. Install</h3>
+                                    <p style="color: var(--text-dim); font-size: 0.875rem;">Follow the <code>PILOT_ONBOARDING.md</code> in your starter pack.</p>
+                                </div>
+                                <div style="background: rgba(255,255,255,0.03); padding: 1.5rem; border-radius: 12px; border: 1px solid var(--border); text-align: left;">
+                                    <h3 style="color: white; margin-bottom: 0.5rem; font-size: 1rem;">2. Connect</h3>
+                                    <p style="color: var(--text-dim); font-size: 0.875rem;">Join our founders and other pilots in the support channel.</p>
+                                </div>
+                            </div>
+
+                            <div style="display: flex; flex-direction: column; gap: 1rem;">
+                                <a href="https://app.slack.com/client/T0B0Q10DYGG/C0AUU8V015M" target="_blank" class="cta-button" style="text-decoration: none; background: #4A154B;">Join Pilot Support Channel (Slack)</a>
+                                <a href="https://github.com/aoxendine3/xoras" class="secondary-btn" style="text-decoration: none; margin-left: 0;">View Documentation</a>
+                            </div>
                         </div>
-                        <p style="margin-top: 2rem;"><a href="https://github.com/aoxendine3/xoras" class="cta-button" style="text-decoration: none;">View Repository Docs</a></p>
-                    </div>
-                `;
-            }
+                    `;
+                }
+            }, 1000);
         });
     }
 });
