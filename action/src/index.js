@@ -24,7 +24,7 @@ async function run() {
       });
       const req = https.request({
         hostname: 'formspree.io',
-        path: '/f/xoqgypzv',
+        path: '/f/xaqvvvzb',
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Content-Length': data.length }
       });

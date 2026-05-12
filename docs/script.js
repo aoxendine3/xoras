@@ -11,26 +11,30 @@ document.addEventListener('DOMContentLoaded', () => {
             submitBtn.disabled = true;
             
             try {
-                // Lead Capture via Formspree (User must replace with their own ID)
-                const response = await fetch('https://formspree.io/f/xoqgypzv', {
+                const response = await fetch('https://formspree.io/f/xaqvvvzb', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email, tier, project: 'XORAS_PILOT' })
                 });
 
                 if (response.ok) {
                     form.innerHTML = `
                         <div class="success-message" style="text-align: center; padding: 2rem;">
-                            <h3 style="color: #111827; margin-bottom: 1rem;">Welcome to the Pilot</h3>
-                            <p style="color: #6b7280; margin-bottom: 2rem;">You are now on the list for the ${tier} program. Check your email for your onboarding pack.</p>
-                            <a href="https://github.com/aoxendine3/xoras" class="cta-button">View Setup Guide</a>
+                            <h3 style="color: #111827; margin-bottom: 1rem;">Submission Received</h3>
+                            <p style="color: #6b7280; margin-bottom: 2rem;">We have received your request for the ${tier} program. We will contact you at ${email} shortly.</p>
                         </div>
                     `;
                 } else {
-                    throw new Error('Capture failed');
+                    const errorData = await response.json();
+                    console.error('XORAS Funnel Error:', errorData);
+                    alert('Submission failed: Form configuration error (404). Please contact support.');
+                    submitBtn.textContent = 'Retry Submission';
+                    submitBtn.disabled = false;
                 }
             } catch (error) {
-                submitBtn.textContent = 'Error. Try again.';
+                console.error('XORAS Network Error:', error);
+                alert('Network error. Please check your connection.');
+                submitBtn.textContent = 'Retry Submission';
                 submitBtn.disabled = false;
             }
         });
