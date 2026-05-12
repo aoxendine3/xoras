@@ -1,0 +1,15 @@
+{
+  "budgets": {
+    "performance": {
+      "max_latency_drift_percent": 15,
+      "block_threshold_percent": 25
+    },
+    "security": {
+      "allowed_exposed_secrets": 0
+    },
+    "architecture": {
+      "max_dependencies": 40,
+      "bloat_warning_threshold": 30
+    }
+  }
+}
