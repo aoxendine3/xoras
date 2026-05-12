@@ -1,30 +1,20 @@
 {
-  "institutional_id": "XORAS_CORE_AUTHORITY",
-  "version": "1.1.0",
   "trust_anchors": [
     {
-      "id": "AUTH-ADMIN-001",
-      "name": "Global Governance Admin",
-      "roles": ["ADMIN"],
-      "scopes": ["*"],
-      "status": "ACTIVE",
-      "publicKey": "-----BEGIN PUBLIC KEY-----\nMFYwEAYHKoZIzj0CAQYFK4EEAAoDQgAEkpB00VbPjVNlxfBxjACZ8i5jLn3618Ll\nNZDsOpPB/jw4gvWiW/HUZnGtLvui3mT2fjXeb+FK0XJXyPkLz1QLMQ==\n-----END PUBLIC KEY-----\n"
+      "id": "XORAS-CORE-TECH-01",
+      "name": "XORAS Technical Lead",
+      "roles": ["ARCHITECT", "SECURITY_AUDITOR"],
+      "scopes": ["CODE_INTEGRITY", "REGISTRY_FINALITY"]
     },
     {
-      "id": "AUTH-SEC-002",
-      "name": "Chief Information Security Officer",
-      "roles": ["SECURITY_LEAD"],
-      "scopes": ["SEC"],
-      "status": "ACTIVE",
-      "publicKey": "-----BEGIN PUBLIC KEY-----\nMFYwEAYHKoZIzj0CAQYFK4EEAAoDQgAEy5+uo4doN1R2D0FD9rhLqOaVG+7uFi57\nF741OS2SLueXDU//8xUy0mdCA4iNTyTF+tmUCOtGehBGNvFF/WJMMA==\n-----END PUBLIC KEY-----\n"
-    },
-    {
-      "id": "AUTH-ENG-003",
-      "name": "Director of Engineering",
-      "roles": ["ENGINEERING_MANAGER"],
-      "scopes": ["PERF", "ARCH"],
-      "status": "ACTIVE",
-      "publicKey": "-----BEGIN PUBLIC KEY-----\nMFYwEAYHKoZIzj0CAQYFK4EEAAoDQgAEUxYBeJMrOxeJNLvdYg0xP5qXfEk1zV/4\naL6Wc2eDXL/PZ6OGaXuwQLwK9uXTTBpciGJcuciP2Xpbv8ObRe22mQ==\n-----END PUBLIC KEY-----\n"
+      "id": "XORAS-OPS-GATE-01",
+      "name": "XORAS Operations Lead",
+      "roles": ["OPERATIONS", "RELEASE_MANAGER"],
+      "scopes": ["PERFORMANCE_BUDGET", "EXCEPTION_APPROVAL"]
     }
-  ]
+  ],
+  "verification": {
+    "method": "ECDSA_P256",
+    "enforcement_mode": "ADVISORY"
+  }
 }

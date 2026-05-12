@@ -1,33 +1,36 @@
 {
+  "project": "XORAS",
   "history": [
     {
-      "id": "SNAP-68D33A",
-      "timestamp": "2026-05-12T00:59:02.675Z",
-      "status": "GOVERNANCE_ACTIVE",
+      "id": "REV-001",
+      "timestamp": "2026-05-12T00:00:00Z",
       "metrics": {
-        "latency": 0.0766,
+        "latency": 15,
         "security_findings": 0,
-        "dependency_count": 0,
-        "timestamp": "2026-05-12T00:59:02.674Z"
+        "dependency_count": 40,
+        "docker_tag_drift": false
+      }
+    },
+    {
+      "id": "REV-002",
+      "timestamp": "2026-05-12T04:17:00Z",
+      "metrics": {
+        "latency": 18,
+        "security_findings": 0,
+        "dependency_count": 42,
+        "docker_tag_drift": false
       }
     }
   ],
   "audit_log": [
     {
-      "id": "EVT-4335C09E",
-      "timestamp": "2026-05-12T00:59:02.716Z",
-      "origin": {
-        "hostname": "Mac.lan",
-        "user": "ajoxendine68",
-        "cwd": "/Users/ajoxendine68/Documents/GitHub/xoras"
-      },
-      "type": "REPAIR",
+      "id": "AUD-1001",
+      "timestamp": "2026-05-12T04:18:00Z",
+      "type": "REGISTRY_VERIFICATION",
       "details": {
-        "reason": "MISSING_LEDGER_AUTO_DETECT",
-        "original_ledger_exists": false,
-        "recovery_method": "AUTO_REBASELINE"
+        "reason": "Routine Registry Finality Check",
+        "status": "HEALTHY"
       }
     }
-  ],
-  "signature": "124dc46f00eaa8e313de11f68f8de08626294d52a2f4ab290b05cdf7cc785773"
+  ]
 }

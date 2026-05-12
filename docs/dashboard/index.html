@@ -39,11 +39,11 @@
         <section class="stat-grid">
             <div class="stat-card">
                 <div class="stat-label">Release Confidence</div>
-                <div class="stat-value" id="confidence-score">98%</div>
+                <div class="stat-value" id="confidence-score">--%</div>
             </div>
             <div class="stat-card">
                 <div class="stat-label">Active Risks</div>
-                <div class="stat-value" id="active-risks">0</div>
+                <div class="stat-value" id="active-risks">--</div>
             </div>
             <div class="stat-card">
                 <div class="stat-label">Registry Integrity</div>
@@ -52,7 +52,7 @@
         </section>
 
         <section class="chart-section">
-            <h3 class="stat-label">Latency Drift (7-Day Baseline)</h3>
+            <h3 class="stat-label">Latency Baseline (ms)</h3>
             <div style="height: 300px;">
                 <canvas id="latencyChart"></canvas>
             </div>
@@ -66,7 +66,7 @@
                         <th>Timestamp</th>
                         <th>Event</th>
                         <th>Status</th>
-                        <th>Drift Delta</th>
+                        <th>Impact</th>
                     </tr>
                 </thead>
                 <tbody id="log-body">
@@ -79,35 +79,45 @@
     <script>
         async function loadAuditData() {
             try {
-                // Fetch current ledger (Simulated for this build)
-                const auditLogs = [
-                    { time: "2026-05-12 02:45", event: "Docker Tag Finality Audit", status: "HEALTHY", drift: "0.00%" },
-                    { time: "2026-05-12 01:15", event: "Tier 2 Reasoning Scan", status: "HEALTHY", drift: "0.02%" },
-                    { time: "2026-05-11 23:45", event: "Registry Integrity Check", status: "HEALTHY", drift: "0.00%" },
-                    { time: "2026-05-11 18:30", event: "Dependency Bloat Alert", status: "WARNING", drift: "+4.2%" }
-                ];
+                // Fetch live data from repository root
+                const ledgerRes = await fetch('../../integrity_ledger.json');
+                const ledger = await ledgerRes.json();
+                
+                const latest = ledger.history[ledger.history.length - 1];
+                const metrics = latest.metrics;
 
+                // Update Stats
+                const confidence = (100 - (metrics.security_findings * 50)).toFixed(1);
+                document.getElementById('confidence-score').innerText = `${confidence}%`;
+                document.getElementById('active-risks').innerText = metrics.security_findings;
+                document.getElementById('registry-status').innerText = metrics.docker_tag_drift ? 'DRIFT' : 'STABLE';
+
+                // Populate Audit Logs
                 const logBody = document.getElementById('log-body');
-                auditLogs.forEach(log => {
+                logBody.innerHTML = '';
+                ledger.audit_log.slice(-10).reverse().forEach(log => {
                     const row = document.createElement('tr');
                     row.innerHTML = `
-                        <td>${log.time}</td>
-                        <td>${log.event}</td>
-                        <td><span class="status-pill status-${log.status.toLowerCase()}">${log.status}</span></td>
-                        <td>${log.drift}</td>
+                        <td>${new Date(log.timestamp).toLocaleString()}</td>
+                        <td>${log.type}</td>
+                        <td><span class="status-pill status-healthy">${log.details.status}</span></td>
+                        <td>${log.details.reason}</td>
                     `;
                     logBody.appendChild(row);
                 });
 
                 // Initialize Latency Chart
+                const latencyHistory = ledger.history.map(h => h.metrics.latency).slice(-7);
+                const labels = ledger.history.map(h => new Date(h.timestamp).toLocaleDateString()).slice(-7);
+                
                 const ctx = document.getElementById('latencyChart').getContext('2d');
                 new Chart(ctx, {
                     type: 'line',
                     data: {
-                        labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                        labels: labels,
                         datasets: [{
-                            label: 'Latency Drift (%)',
-                            data: [0.1, 0.3, 0.2, 0.8, 0.2, 0.1, 0.05],
+                            label: 'Latency (ms)',
+                            data: latencyHistory,
                             borderColor: '#2563eb',
                             tension: 0.4,
                             fill: true,
@@ -126,6 +136,7 @@
                 });
             } catch (e) {
                 console.error("Audit dashboard load failed:", e);
+                document.getElementById('confidence-score').innerText = "ERR";
             }
         }
         loadAuditData();
