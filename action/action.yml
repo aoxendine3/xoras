@@ -1,0 +1,20 @@
+name: 'XORAS Release Integrity'
+description: 'Enforce engineering integrity and prevent broken deployments. 30-Day Pilot Ready.'
+author: 'XORAS Engineering'
+branding:
+  icon: 'shield'
+  color: 'blue'
+
+inputs:
+  mode:
+    description: 'Governance mode: ADVISORY (default) or ENFORCEMENT'
+    required: false
+    default: 'ADVISORY'
+  config-path:
+    description: 'Path to xoras.config.json'
+    required: false
+    default: 'xoras.config.json'
+
+runs:
+  using: 'node20'
+  main: 'dist/index.js'
