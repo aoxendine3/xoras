@@ -16,25 +16,21 @@ jobs:
       actions: read
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v4 # Should be pinned to SHA for total finality
-
-      - name: Install Zizmor
-        run: |
-          curl -sSL https://github.com/woodruffw/zizmor/releases/latest/download/zizmor-x86_64-unknown-linux-musl -o zizmor
-          chmod +x zizmor
-          sudo mv zizmor /usr/local/bin/
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
 
       - name: Run Zizmor Audit
-        run: zizmor .github/workflows/ --format plain
+        uses: woodruffw/zizmor-action@072186716075191c0e3592c7309068032ec88313 # v0.1.1
+        with:
+          arguments: .github/workflows/ --format plain
 
   actionlint:
     name: Actionlint Syntax Audit
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
 
       - name: Run Actionlint
-        run: |
-          bash <(curl https://raw.githubusercontent.com/rhysd/actionlint/main/scripts/download-actionlint.bash)
-          ./actionlint -color
+        uses: rhysd/actionlint-action@7005470d062828e678396c21e6be3f48a1d1354a # v1.11.1
+        with:
+          flags: -color
