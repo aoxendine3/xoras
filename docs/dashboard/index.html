@@ -26,7 +26,10 @@
 
             <div class="dashboard-grid">
                 <div class="stat-card">
-                    <h3>Recent Findings</h3>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <h3>Recent Findings</h3>
+                        <span style="font-size: 0.65rem; padding: 0.25rem 0.5rem; background: rgba(34, 197, 94, 0.1); color: var(--green-500); border: 1px solid rgba(34, 197, 94, 0.2); border-radius: 4px; font-family: monospace;">SENTINEL: VERIFIED</span>
+                    </div>
                     <div class="audit-finding" style="background: transparent; border-color: var(--border);">
                         <div class="finding-header" style="color: var(--zinc-100); font-size: 0.8rem;">
                             12:09 PM • Secret Exposure
@@ -45,13 +48,15 @@
                     </div>
                 </div>
 
-                <div class="stat-card">
+                <div class="stat-card" id="trends">
                     <h3>Release Integrity</h3>
                     <div style="font-size: 2rem; font-weight: 700; color: var(--green-500); margin-top: 1rem;">98.2%</div>
-                    <p style="font-size: 0.75rem;">Deterministic Integrity Score</p>
-                    <div class="trend-line">
-                        <!-- Simplified Trend Mock -->
-                        <div style="height: 100%; border-left: 2px solid var(--blue-500); width: 0;"></div>
+                    <p style="font-size: 0.75rem; color: var(--zinc-400);">Deterministic Integrity Score (30D Trend)</p>
+                    
+                    <div class="trend-container">
+                        <svg width="100%" height="100%" viewBox="0 0 400 80" preserveAspectRatio="none">
+                            <path class="sparkline" d="M0,60 L40,55 L80,58 L120,40 L160,45 L200,30 L240,35 L280,20 L320,25 L360,10 L400,15" />
+                        </svg>
                     </div>
                 </div>
             </div>
