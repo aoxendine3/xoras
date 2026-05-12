@@ -1,0 +1,40 @@
+name: Security Audit
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  zizmor:
+    name: Zizmor Workflow Audit
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+      contents: read
+      actions: read
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4 # Should be pinned to SHA for total finality
+
+      - name: Install Zizmor
+        run: |
+          curl -sSL https://github.com/woodruffw/zizmor/releases/latest/download/zizmor-x86_64-unknown-linux-musl -o zizmor
+          chmod +x zizmor
+          sudo mv zizmor /usr/local/bin/
+
+      - name: Run Zizmor Audit
+        run: zizmor .github/workflows/ --format plain
+
+  actionlint:
+    name: Actionlint Syntax Audit
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Run Actionlint
+        run: |
+          bash <(curl https://raw.githubusercontent.com/rhysd/actionlint/main/scripts/download-actionlint.bash)
+          ./actionlint -color

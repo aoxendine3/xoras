@@ -32,7 +32,8 @@ async function performAudit() {
     security_findings: 0,
     dependency_count: 0,
     docker_tag_drift: false,
-    next_js_found: false
+    next_js_found: false,
+    workflow_risks: 0
   };
 
   const secretPatterns = [
@@ -50,10 +51,20 @@ async function performAudit() {
       secretPatterns.forEach(pattern => {
         if (pattern.test(content)) results.security_findings++;
       });
+      
+      // 2. Workflow Security Audit (Zizmor-Lite)
+      if (file.includes('.github/workflows/')) {
+        if (content.includes('pull_request_target')) results.workflow_risks++;
+        if (content.includes('run: |') && content.includes('${{ github.event')) results.workflow_risks++;
+        
+        // Count unpinned actions (looking for @v followed by a number instead of a long SHA)
+        const unpinnedMatches = content.match(/uses: [a-zA-Z0-9-]+\/[a-zA-Z0-9-]+@v[0-9]/g);
+        if (unpinnedMatches) results.workflow_risks += unpinnedMatches.length;
+      }
     } catch (e) { /* skip binary/unreadable files */ }
   });
 
-  // 2. Check Dependencies
+  // 3. Check Dependencies
   if (fs.existsSync('package.json')) {
     const pkg = JSON.parse(fs.readFileSync('package.json', 'utf8'));
     results.dependency_count = Object.keys(pkg.dependencies || {}).length;
@@ -93,6 +104,7 @@ function generateStepSummary(metrics) {
     .addTable([
       ['Audit Type', 'Result', 'Status'],
       ['Secret Scan', `${metrics.security_findings} found`, metrics.security_findings > 0 ? '❌ FAIL' : '✅ PASS'],
+      ['Workflow Audit', `${metrics.workflow_risks} risks`, metrics.workflow_risks > 0 ? '⚠️ WARNING' : '✅ PASS'],
       ['Docker Tags', metrics.docker_tag_drift ? 'Using :latest' : 'Stable', metrics.docker_tag_drift ? '❌ FAIL' : '✅ PASS'],
       ['Next.js Check', metrics.next_js_found ? 'Detected' : 'Not Found', metrics.next_js_found ? '✅ OK' : '⚪ N/A'],
       ['Dependencies', `${metrics.dependency_count} packages`, '✅ OK']
