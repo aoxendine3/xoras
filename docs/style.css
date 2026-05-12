@@ -40,11 +40,49 @@ header {
     border-bottom: 1px solid var(--border);
 }
 
+.logo-group {
+    display: flex;
+    flex-direction: column;
+}
+
 .logo {
-    font-weight: 700;
-    font-size: 1.5rem;
-    letter-spacing: -0.02em;
+    font-weight: 800;
+    font-size: 1.75rem;
+    letter-spacing: -0.04em;
     color: var(--text);
+    line-height: 1;
+}
+
+.acronym {
+    font-size: 0.625rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-top: 0.25rem;
+}
+
+.acronym strong {
+    color: var(--primary);
+}
+
+.integrity-pulse {
+    margin-left: 2rem;
+    flex-grow: 1;
+}
+
+.pulse-path {
+    stroke-dasharray: 100;
+    stroke-dashoffset: 100;
+    animation: pulse 4s linear infinite;
+}
+
+@keyframes pulse {
+    0% { stroke-dashoffset: 100; opacity: 0; }
+    10% { opacity: 1; }
+    40% { stroke-dashoffset: 0; }
+    60% { stroke-dashoffset: 0; opacity: 1; }
+    90% { opacity: 0; }
+    100% { stroke-dashoffset: -100; opacity: 0; }
 }
 
 nav {
@@ -211,6 +249,27 @@ nav a:hover {
     border: 1px solid var(--border);
     border-radius: 12px;
     background-color: white;
+    position: relative;
+    overflow: hidden;
+}
+
+.form-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background-color: var(--primary);
+}
+
+.card-brand {
+    font-size: 0.75rem;
+    font-weight: 800;
+    color: var(--primary);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 1rem;
 }
 
 .form-card h2 {

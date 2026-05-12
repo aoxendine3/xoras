@@ -1,0 +1,33 @@
+name: XORAS Intelligence Core
+on:
+  workflow_dispatch:
+    inputs:
+      tier:
+        description: 'Select Intelligence Tier'
+        required: true
+        default: 'EDGE_3B'
+        type: choice
+        options:
+          - EDGE_3B
+          - REASONER_12B
+          - APEX_120B
+
+jobs:
+  orchestrate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Initialize Intelligence Tier
+        run: |
+          echo "🧠 Initializing XORAS Intelligence Tier: ${{ github.event.inputs.tier }}..."
+          node intelligence_core/orchestrator.js --tier ${{ github.event.inputs.tier }}
+
+      - name: Scour Open Avenues (Scout Mode)
+        run: |
+          echo "🔍 Scouring GitHub for Intelligence Signals..."
+          node intelligence_core/scout.js
+
+      - name: Generate Audit Finality
+        run: |
+          echo "✅ Audit Complete. Finality recorded in intelligence_core/AUDIT_FINALITY.md"
