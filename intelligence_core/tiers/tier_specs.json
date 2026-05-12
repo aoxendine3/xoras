@@ -1,0 +1,31 @@
+{
+    "tier": "REASONER",
+    "parameters": "12B",
+    "mission": "Deep logic verification and architectural governance.",
+    "capabilities": [
+        "Cross-file Refactoring",
+        "Deterministic Policy Enforcement",
+        "Bug Localization",
+        "Dependency Drift Analysis"
+    ],
+    "constraints": {
+        "max_context": "32k",
+        "max_latency_ms": 500
+    }
+}
+<!-- slide -->
+{
+    "tier": "APEX",
+    "parameters": "120B",
+    "mission": "Global strategic finality and institutional risk management.",
+    "capabilities": [
+        "Market Supply-Chain Audits",
+        "Institutional Grant Analysis",
+        "Legal/Regulatory Compliance",
+        "Long-term Strategic Roadmap"
+    ],
+    "constraints": {
+        "max_context": "128k",
+        "max_latency_ms": 2000
+    }
+}

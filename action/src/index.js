@@ -32,14 +32,17 @@ async function run() {
 function simulateMetrics() {
   const depCount = 45;
   const securityFindings = Math.random() > 0.8 ? 1 : 0;
+  const dockerTagDrift = Math.random() > 0.9 ? true : false;
   
   return {
     latency: 18,
     security_findings: securityFindings,
     dependency_count: depCount,
+    docker_tag_drift: dockerTagDrift,
     baseline: {
       latency: 15,
-      dependency_count: 40
+      dependency_count: 40,
+      docker_tag_hash: "sha256:7b5a..."
     }
   };
 }
@@ -73,6 +76,10 @@ function evaluateMetrics(metrics, policy) {
     violations.push(`Dependency growth (+${depGrowth} packages) exceeds limits`);
   }
 
+  if (metrics.docker_tag_drift) {
+    violations.push(`Docker Tag Drift Detected: Tag hash has been modified in registry.`);
+  }
+
   let status = 'HEALTHY';
   let score = 100 - (violations.length * 20) - (warnings.length * 5);
   
@@ -103,15 +110,16 @@ async function generateStepSummary(evaluation, mode) {
 | :--- | :--- | :--- | :--- |
 | **Security Scan** | ${findings.security > 0 ? '❌ AT RISK' : '✅ HEALTHY'} | 0 Secrets | ${findings.security} detected |
 | **Performance Drift** | ${findings.performance > 25 ? '❌ REGRESSION' : findings.performance > 10 ? '⚠️ WARNING' : '✅ HEALTHY'} | <15% | +${findings.performance}% |
-| **Architectural Bloat** | ✅ HEALTHY | <100 deps | No new packages |
-| **Registry Integrity** | ✅ VERIFIED | Stable | No drift |
+| **Architecture Audit** | ✅ HEALTHY | <100 deps | No new packages |
+| **Docker Tag Finality** | ${metrics.docker_tag_drift ? '❌ DRIFT' : '✅ VERIFIED'} | sha256:... | ${metrics.docker_tag_drift ? 'Tampered' : 'Stable'} |
 
 ---
 
 ### 🚨 Prevention Summary
 ${findings.security > 0 ? `- **Security Violation**: Detected potential secret(s) in commit history.` : ''}
 ${findings.performance > 15 ? `- **Performance Regression**: Latency drift (+${findings.performance}%) exceeds engineering baseline.` : ''}
-${findings.security === 0 && findings.performance <= 15 ? '- ✅ All release metrics satisfy the production baseline.' : ''}
+${metrics.docker_tag_drift ? `- **Docker Tag Tampering**: Unauthorized hash modification detected in registry.` : ''}
+${findings.security === 0 && findings.performance <= 15 && !metrics.docker_tag_drift ? '- ✅ All release metrics satisfy the production baseline.' : ''}
 
 ### 🛠️ Recommendation
 * **Policy Status**: ${modeLabel}

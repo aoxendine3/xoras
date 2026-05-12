@@ -1,0 +1,15 @@
+{
+    "tier": "EDGE",
+    "parameters": "3B",
+    "mission": "High-velocity metadata and syntax governance.",
+    "capabilities": [
+        "Linting",
+        "Documentation Sync",
+        "Single-file Refactoring",
+        "README Maintenance"
+    ],
+    "constraints": {
+        "max_context": "8k",
+        "max_latency_ms": 100
+    }
+}
