@@ -12,8 +12,8 @@
 <body>
     <div class="crisis-banner">
         <span class="pulse"></span> 
-        <strong>May 2026 Alert:</strong> The TanStack npm compromise used "Pwn Requests" to extract OIDC tokens. 
-        <a href="https://github.com/aoxendine3/xoras/blob/main/docs/ARCHITECTURE.md#pwn-request-defense">Learn how XORAS intercepts this vector →</a>
+        <strong>Technical Post-Mortem:</strong> Analysis of the TanStack OIDC-drift attack and the XORAS interception logic. 
+        <a href="https://github.com/aoxendine3/xoras/blob/main/docs/TANSTACK_PWN_ANALYSIS.md">Read the Audit →</a>
     </div>
     <div class="glow-bg"></div>
     
@@ -109,14 +109,19 @@ LABEL org.opencontainers.image.description="XORAS Verified Image"</code></pre>
                     <h3>Live Drift Simulator</h3>
                     <div class="status-indicator" id="sim-status">HEALTHY</div>
                 </div>
-                <div class="sim-display">
-                    <div class="metric">
-                        <span class="label">Release Drift</span>
-                        <span class="value" id="latency-val">0%</span>
+                    <div class="feature-item">
+                        <div class="feature-icon">🛡️</div>
+                        <h3>Governance Policy</h3>
+                        <p>Deterministic gating for latency, bloat, and security. (BETA Enforcement Mode)</p>
                     </div>
                     <div class="metric">
                         <span class="label">Integrity Score</span>
                         <span class="value" id="score-val">100/1</span>
+                    </div>
+                <div class="sim-display">
+                    <div class="metric">
+                        <span class="label">Release Drift</span>
+                        <span class="value" id="latency-val">0%</span>
                     </div>
                 </div>
                 <div class="sim-controls">
