@@ -27,7 +27,7 @@ app.get('/orders/search', (req, res) => {
         const filtered = rows.filter(row => row.customer.includes(query));
         
         // Simulating "real-world" pressure blocking loop
-        for(let i=0; i<1e7; i++) { Math.sqrt(i); } 
+        for(let i=0; i<2e7; i++) { Math.sqrt(i); } 
 
         const end = Date.now();
         res.json({
