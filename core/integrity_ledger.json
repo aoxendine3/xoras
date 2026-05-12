@@ -1,0 +1,251 @@
+{
+  "history": [
+    {
+      "id": "SNAP-99CA07",
+      "timestamp": "2026-05-11T22:21:59.148Z",
+      "status": "GOVERNANCE_ACTIVE",
+      "metrics": {
+        "latency": 0.0388,
+        "security_findings": 0,
+        "dependency_count": 0,
+        "timestamp": "2026-05-11T22:21:59.147Z"
+      }
+    },
+    {
+      "id": "SNAP-7AA14B",
+      "timestamp": "2026-05-12T00:23:19.182Z",
+      "status": "SIMULATED_DRIFT",
+      "metrics": {
+        "latency": 500,
+        "security_findings": 0,
+        "dependency_count": 0,
+        "timestamp": "2026-05-12T00:23:19.177Z"
+      }
+    },
+    {
+      "id": "SNAP-EAFBEB",
+      "timestamp": "2026-05-12T00:23:19.239Z",
+      "status": "SIMULATED_DRIFT",
+      "metrics": {
+        "latency": 0.0388,
+        "security_findings": 1,
+        "dependency_count": 0,
+        "timestamp": "2026-05-12T00:23:19.238Z"
+      }
+    },
+    {
+      "id": "SNAP-86C92A",
+      "timestamp": "2026-05-12T00:23:19.294Z",
+      "status": "SIMULATED_DRIFT",
+      "metrics": {
+        "latency": 0.0388,
+        "security_findings": 0,
+        "dependency_count": 50,
+        "timestamp": "2026-05-12T00:23:19.293Z"
+      }
+    },
+    {
+      "id": "SNAP-93BBC3",
+      "timestamp": "2026-05-12T00:23:27.997Z",
+      "status": "SIMULATED_DRIFT",
+      "metrics": {
+        "latency": 0.0388,
+        "security_findings": 0,
+        "dependency_count": 50,
+        "timestamp": "2026-05-12T00:23:27.996Z"
+      }
+    },
+    {
+      "id": "SNAP-082616",
+      "timestamp": "2026-05-12T00:28:23.069Z",
+      "status": "SIMULATED_DRIFT",
+      "metrics": {
+        "latency": 500,
+        "security_findings": 0,
+        "dependency_count": 0,
+        "timestamp": "2026-05-12T00:28:23.067Z"
+      }
+    },
+    {
+      "id": "SNAP-4B906D",
+      "timestamp": "2026-05-12T00:28:23.147Z",
+      "status": "SIMULATED_DRIFT",
+      "metrics": {
+        "latency": 0.0388,
+        "security_findings": 1,
+        "dependency_count": 0,
+        "timestamp": "2026-05-12T00:28:23.145Z"
+      }
+    },
+    {
+      "id": "SNAP-D4E7C9",
+      "timestamp": "2026-05-12T00:28:23.227Z",
+      "status": "SIMULATED_DRIFT",
+      "metrics": {
+        "latency": 0.0388,
+        "security_findings": 0,
+        "dependency_count": 50,
+        "timestamp": "2026-05-12T00:28:23.225Z"
+      }
+    },
+    {
+      "id": "SNAP-637D28",
+      "timestamp": "2026-05-12T00:28:41.107Z",
+      "status": "SIMULATED_DRIFT",
+      "metrics": {
+        "latency": 0.0388,
+        "security_findings": 0,
+        "dependency_count": 50,
+        "timestamp": "2026-05-12T00:28:41.106Z"
+      }
+    }
+  ],
+  "audit_log": [
+    {
+      "id": "EVT-9A2EFB10",
+      "timestamp": "2026-05-11T22:22:01.592Z",
+      "origin": {
+        "hostname": "Mac.lan",
+        "user": "ajoxendine68",
+        "cwd": "/Users/ajoxendine68/Documents/GitHub/XORAS_SOVEREIGN_CORE"
+      },
+      "type": "EXCEPTION_REQUESTED",
+      "details": {
+        "requestId": "REQ-B8C59C",
+        "category": "PERF",
+        "reason": "Testing signature stability"
+      }
+    },
+    {
+      "id": "EVT-F9CFC57D",
+      "timestamp": "2026-05-12T00:23:19.187Z",
+      "origin": {
+        "hostname": "Mac.lan",
+        "user": "ajoxendine68",
+        "cwd": "/Users/ajoxendine68/Documents/GitHub/XORAS_SOVEREIGN_CORE"
+      },
+      "type": "GATE_WARNING",
+      "details": {
+        "violations": [
+          "LATENCY_DRIFT: 1288559.79%"
+        ],
+        "requestId": "REQ-F76E93"
+      }
+    },
+    {
+      "id": "EVT-BFE17D52",
+      "timestamp": "2026-05-12T00:23:19.241Z",
+      "origin": {
+        "hostname": "Mac.lan",
+        "user": "ajoxendine68",
+        "cwd": "/Users/ajoxendine68/Documents/GitHub/XORAS_SOVEREIGN_CORE"
+      },
+      "type": "GATE_WARNING",
+      "details": {
+        "violations": [
+          "SECURITY_VULNERABILITY: 1 findings"
+        ],
+        "requestId": "REQ-5E5914"
+      }
+    },
+    {
+      "id": "EVT-6404DF33",
+      "timestamp": "2026-05-12T00:23:19.296Z",
+      "origin": {
+        "hostname": "Mac.lan",
+        "user": "ajoxendine68",
+        "cwd": "/Users/ajoxendine68/Documents/GitHub/XORAS_SOVEREIGN_CORE"
+      },
+      "type": "GATE_WARNING",
+      "details": {
+        "violations": [
+          "ARCHITECTURE_BLOAT: 50 deps"
+        ],
+        "requestId": "REQ-51F0D0"
+      }
+    },
+    {
+      "id": "EVT-A8EAFE5F",
+      "timestamp": "2026-05-12T00:23:27.999Z",
+      "origin": {
+        "hostname": "Mac.lan",
+        "user": "ajoxendine68",
+        "cwd": "/Users/ajoxendine68/Documents/GitHub/XORAS_SOVEREIGN_CORE"
+      },
+      "type": "GATE_WARNING",
+      "details": {
+        "violations": [
+          "ARCHITECTURE_BLOAT: 50 deps"
+        ],
+        "requestId": "REQ-51F0D0"
+      }
+    },
+    {
+      "id": "EVT-0DEA03E1",
+      "timestamp": "2026-05-12T00:28:23.074Z",
+      "origin": {
+        "hostname": "Mac.lan",
+        "user": "ajoxendine68",
+        "cwd": "/Users/ajoxendine68/Documents/GitHub/XORAS_SOVEREIGN_CORE"
+      },
+      "type": "GATE_WARNING",
+      "details": {
+        "violations": [
+          "LATENCY_CRITICAL: 1288559.79% drift exceeds block threshold (25%)"
+        ],
+        "warnings": [],
+        "requestId": "REQ-A10463"
+      }
+    },
+    {
+      "id": "EVT-132612E4",
+      "timestamp": "2026-05-12T00:28:23.150Z",
+      "origin": {
+        "hostname": "Mac.lan",
+        "user": "ajoxendine68",
+        "cwd": "/Users/ajoxendine68/Documents/GitHub/XORAS_SOVEREIGN_CORE"
+      },
+      "type": "GATE_WARNING",
+      "details": {
+        "violations": [
+          "SECURITY_VULNERABILITY: 1 secrets detected"
+        ],
+        "warnings": [],
+        "requestId": "REQ-B5F32D"
+      }
+    },
+    {
+      "id": "EVT-C05F7C13",
+      "timestamp": "2026-05-12T00:28:23.230Z",
+      "origin": {
+        "hostname": "Mac.lan",
+        "user": "ajoxendine68",
+        "cwd": "/Users/ajoxendine68/Documents/GitHub/XORAS_SOVEREIGN_CORE"
+      },
+      "type": "GATE_WARNING",
+      "details": {
+        "warnings": [
+          "ARCHITECTURE_WARNING: 50 deps exceeds warning threshold (45)"
+        ],
+        "requestId": "REQ-1FF424"
+      }
+    },
+    {
+      "id": "EVT-0E78A678",
+      "timestamp": "2026-05-12T00:28:41.109Z",
+      "origin": {
+        "hostname": "Mac.lan",
+        "user": "ajoxendine68",
+        "cwd": "/Users/ajoxendine68/Documents/GitHub/XORAS_SOVEREIGN_CORE"
+      },
+      "type": "GATE_WARNING",
+      "details": {
+        "warnings": [
+          "ARCHITECTURE_WARNING: 50 deps exceeds warning threshold (45)"
+        ],
+        "requestId": "REQ-1FF424"
+      }
+    }
+  ],
+  "signature": "1fcfc949288a3b3b531367b67e395e3ca15f76abbb8817cb4bec6e99d72662de"
+}

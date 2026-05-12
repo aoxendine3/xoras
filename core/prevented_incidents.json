@@ -1,0 +1,282 @@
+[
+  {
+    "id": "INC-413A6B",
+    "timestamp": "2026-05-11T22:11:31.153Z",
+    "requestId": "REQ-CD1B62",
+    "violations": [
+      "LATENCY_DRIFT: 1354913.55%"
+    ],
+    "estimated_risk": "MEDIUM",
+    "status": "DETECTED"
+  },
+  {
+    "id": "INC-C38A35",
+    "timestamp": "2026-05-11T22:11:31.187Z",
+    "requestId": "REQ-21E3D2",
+    "violations": [
+      "SECURITY_VULNERABILITY: 1 findings"
+    ],
+    "estimated_risk": "MEDIUM",
+    "status": "DETECTED"
+  },
+  {
+    "id": "INC-50C16F",
+    "timestamp": "2026-05-11T22:11:53.427Z",
+    "requestId": "REQ-32757F",
+    "violations": [
+      "LATENCY_DRIFT: 853142.32%"
+    ],
+    "estimated_risk": "MEDIUM",
+    "status": "DETECTED"
+  },
+  {
+    "id": "INC-5A1EFF",
+    "timestamp": "2026-05-11T22:11:53.469Z",
+    "requestId": "REQ-0DEE94",
+    "violations": [
+      "SECURITY_VULNERABILITY: 1 findings"
+    ],
+    "estimated_risk": "MEDIUM",
+    "status": "DETECTED"
+  },
+  {
+    "id": "INC-DEAABE",
+    "timestamp": "2026-05-11T22:11:53.606Z",
+    "requestId": "REQ-007BF9",
+    "violations": [
+      "SECURITY_VULNERABILITY: 1 findings"
+    ],
+    "estimated_risk": "MEDIUM",
+    "status": "PREVENTED"
+  },
+  {
+    "id": "INC-13CB24",
+    "timestamp": "2026-05-11T22:11:53.741Z",
+    "requestId": "REQ-51E90C",
+    "violations": [
+      "SECURITY_VULNERABILITY: 1 findings"
+    ],
+    "estimated_risk": "MEDIUM",
+    "status": "PREVENTED"
+  },
+  {
+    "id": "INC-3B0E61",
+    "timestamp": "2026-05-11T22:12:12.371Z",
+    "requestId": "REQ-BCAB64",
+    "violations": [
+      "LATENCY_DRIFT: 1295236.79%"
+    ],
+    "estimated_risk": "MEDIUM",
+    "status": "DETECTED"
+  },
+  {
+    "id": "INC-BA007D",
+    "timestamp": "2026-05-11T22:12:12.407Z",
+    "requestId": "REQ-9AA06C",
+    "violations": [
+      "SECURITY_VULNERABILITY: 1 findings"
+    ],
+    "estimated_risk": "MEDIUM",
+    "status": "DETECTED"
+  },
+  {
+    "id": "INC-DA041F",
+    "timestamp": "2026-05-11T22:12:27.043Z",
+    "requestId": "REQ-4DC986",
+    "violations": [
+      "LATENCY_DRIFT: 925825.93%"
+    ],
+    "estimated_risk": "MEDIUM",
+    "status": "DETECTED"
+  },
+  {
+    "id": "INC-44EA35",
+    "timestamp": "2026-05-11T22:12:27.081Z",
+    "requestId": "REQ-2D6226",
+    "violations": [
+      "SECURITY_VULNERABILITY: 1 findings"
+    ],
+    "estimated_risk": "MEDIUM",
+    "status": "DETECTED"
+  },
+  {
+    "id": "INC-5CD0A3",
+    "timestamp": "2026-05-11T22:12:27.132Z",
+    "requestId": "REQ-6B2547",
+    "violations": [
+      "LATENCY_DRIFT: 26.30%"
+    ],
+    "estimated_risk": "MEDIUM",
+    "status": "DETECTED"
+  },
+  {
+    "id": "INC-75AFED",
+    "timestamp": "2026-05-11T22:12:27.196Z",
+    "requestId": "REQ-AEF2EA",
+    "violations": [
+      "SECURITY_VULNERABILITY: 1 findings"
+    ],
+    "estimated_risk": "MEDIUM",
+    "status": "PREVENTED"
+  },
+  {
+    "id": "INC-453CFB",
+    "timestamp": "2026-05-11T22:12:27.305Z",
+    "requestId": "REQ-E2EF68",
+    "violations": [
+      "SECURITY_VULNERABILITY: 1 findings"
+    ],
+    "estimated_risk": "MEDIUM",
+    "status": "PREVENTED"
+  },
+  {
+    "id": "INC-77DF03",
+    "timestamp": "2026-05-11T22:12:37.741Z",
+    "requestId": "REQ-835696",
+    "violations": [
+      "LATENCY_DRIFT: 1322651.32%"
+    ],
+    "estimated_risk": "MEDIUM",
+    "status": "DETECTED"
+  },
+  {
+    "id": "INC-926D48",
+    "timestamp": "2026-05-11T22:12:37.780Z",
+    "requestId": "REQ-5E5914",
+    "violations": [
+      "SECURITY_VULNERABILITY: 1 findings"
+    ],
+    "estimated_risk": "MEDIUM",
+    "status": "DETECTED"
+  },
+  {
+    "id": "INC-9DA1E6",
+    "timestamp": "2026-05-11T22:12:37.829Z",
+    "requestId": "REQ-1FBC08",
+    "violations": [
+      "LATENCY_DRIFT: 27.25%"
+    ],
+    "estimated_risk": "MEDIUM",
+    "status": "DETECTED"
+  },
+  {
+    "id": "INC-AAC743",
+    "timestamp": "2026-05-11T22:12:37.903Z",
+    "requestId": "REQ-5E5914",
+    "violations": [
+      "SECURITY_VULNERABILITY: 1 findings"
+    ],
+    "estimated_risk": "MEDIUM",
+    "status": "PREVENTED"
+  },
+  {
+    "id": "INC-924C96",
+    "timestamp": "2026-05-11T22:12:38.009Z",
+    "requestId": "REQ-5E5914",
+    "violations": [
+      "SECURITY_VULNERABILITY: 1 findings"
+    ],
+    "estimated_risk": "MEDIUM",
+    "status": "PREVENTED"
+  },
+  {
+    "id": "INC-D6C5CC",
+    "timestamp": "2026-05-11T22:12:50.974Z",
+    "requestId": "REQ-26FDAC",
+    "violations": [
+      "LATENCY_DRIFT: 1179145.28%"
+    ],
+    "estimated_risk": "MEDIUM",
+    "status": "DETECTED"
+  },
+  {
+    "id": "INC-64E3B8",
+    "timestamp": "2026-05-11T22:12:51.006Z",
+    "requestId": "REQ-5E5914",
+    "violations": [
+      "SECURITY_VULNERABILITY: 1 findings"
+    ],
+    "estimated_risk": "MEDIUM",
+    "status": "DETECTED"
+  },
+  {
+    "id": "INC-D28CEC",
+    "timestamp": "2026-05-11T22:12:51.103Z",
+    "requestId": "REQ-5E5914",
+    "violations": [
+      "SECURITY_VULNERABILITY: 1 findings"
+    ],
+    "estimated_risk": "MEDIUM",
+    "status": "PREVENTED"
+  },
+  {
+    "id": "INC-FA45A1",
+    "timestamp": "2026-05-11T22:12:51.177Z",
+    "requestId": "REQ-5E5914",
+    "violations": [
+      "SECURITY_VULNERABILITY: 1 findings"
+    ],
+    "estimated_risk": "MEDIUM",
+    "status": "PREVENTED"
+  },
+  {
+    "id": "INC-897C4E",
+    "timestamp": "2026-05-12T00:23:19.186Z",
+    "requestId": "REQ-F76E93",
+    "violations": [
+      "LATENCY_DRIFT: 1288559.79%"
+    ],
+    "estimated_risk": "MEDIUM",
+    "status": "DETECTED"
+  },
+  {
+    "id": "INC-D8BFFF",
+    "timestamp": "2026-05-12T00:23:19.240Z",
+    "requestId": "REQ-5E5914",
+    "violations": [
+      "SECURITY_VULNERABILITY: 1 findings"
+    ],
+    "estimated_risk": "MEDIUM",
+    "status": "DETECTED"
+  },
+  {
+    "id": "INC-C00EBA",
+    "timestamp": "2026-05-12T00:23:19.296Z",
+    "requestId": "REQ-51F0D0",
+    "violations": [
+      "ARCHITECTURE_BLOAT: 50 deps"
+    ],
+    "estimated_risk": "MEDIUM",
+    "status": "DETECTED"
+  },
+  {
+    "id": "INC-C91DE6",
+    "timestamp": "2026-05-12T00:23:27.998Z",
+    "requestId": "REQ-51F0D0",
+    "violations": [
+      "ARCHITECTURE_BLOAT: 50 deps"
+    ],
+    "estimated_risk": "MEDIUM",
+    "status": "DETECTED"
+  },
+  {
+    "id": "INC-B23897",
+    "timestamp": "2026-05-12T00:28:23.072Z",
+    "requestId": "REQ-A10463",
+    "violations": [
+      "LATENCY_CRITICAL: 1288559.79% drift exceeds block threshold (25%)"
+    ],
+    "estimated_risk": "MEDIUM",
+    "status": "DETECTED"
+  },
+  {
+    "id": "INC-D49D64",
+    "timestamp": "2026-05-12T00:28:23.149Z",
+    "requestId": "REQ-B5F32D",
+    "violations": [
+      "SECURITY_VULNERABILITY: 1 secrets detected"
+    ],
+    "estimated_risk": "MEDIUM",
+    "status": "DETECTED"
+  }
+]

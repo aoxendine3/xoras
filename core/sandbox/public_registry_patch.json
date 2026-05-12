@@ -1,0 +1,14 @@
+[
+  {
+    "id": "AUTH-ADMIN-001",
+    "publicKey": "-----BEGIN PUBLIC KEY-----\nMFYwEAYHKoZIzj0CAQYFK4EEAAoDQgAEkpB00VbPjVNlxfBxjACZ8i5jLn3618Ll\nNZDsOpPB/jw4gvWiW/HUZnGtLvui3mT2fjXeb+FK0XJXyPkLz1QLMQ==\n-----END PUBLIC KEY-----\n"
+  },
+  {
+    "id": "AUTH-SEC-002",
+    "publicKey": "-----BEGIN PUBLIC KEY-----\nMFYwEAYHKoZIzj0CAQYFK4EEAAoDQgAEy5+uo4doN1R2D0FD9rhLqOaVG+7uFi57\nF741OS2SLueXDU//8xUy0mdCA4iNTyTF+tmUCOtGehBGNvFF/WJMMA==\n-----END PUBLIC KEY-----\n"
+  },
+  {
+    "id": "AUTH-ENG-003",
+    "publicKey": "-----BEGIN PUBLIC KEY-----\nMFYwEAYHKoZIzj0CAQYFK4EEAAoDQgAEUxYBeJMrOxeJNLvdYg0xP5qXfEk1zV/4\naL6Wc2eDXL/PZ6OGaXuwQLwK9uXTTBpciGJcuciP2Xpbv8ObRe22mQ==\n-----END PUBLIC KEY-----\n"
+  }
+]

@@ -1,0 +1,33 @@
+{
+  "name": "xoras",
+  "version": "1.20.0",
+  "description": "Release Integrity Governance Infrastructure (RIGI) for Deterministic Engineering.",
+  "main": "xoras.cjs",
+  "bin": {
+    "xoras": "xoras.cjs"
+  },
+  "scripts": {
+    "start": "node xoras.cjs",
+    "dashboard": "node serve_dashboard.cjs",
+    "gate": "node xoras.cjs gate",
+    "sync": "node xoras.cjs sync"
+  },
+  "keywords": [
+    "governance",
+    "release-integrity",
+    "rigi",
+    "engineering-excellence",
+    "compliance",
+    "audit"
+  ],
+  "author": "XORAS Team",
+  "license": "SEE LICENSE IN LICENSE",
+  "dependencies": {
+    "chalk": "^4.1.2",
+    "cli-table3": "^0.6.3",
+    "commander": "^9.4.1",
+    "express": "^4.18.2",
+    "fs-extra": "^10.1.0",
+    "open": "^8.4.0"
+  }
+}
