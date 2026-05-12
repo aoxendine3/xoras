@@ -9,19 +9,31 @@ const { execSync } = require('child_process');
 function runLocalAudit() {
     console.log("🔒 XORAS Local Edge Audit Initialized...");
     
-    // 1. Secret Detection (Simple Regex)
-    const secretPattern = /(password|secret|key|token|api_key|client_secret)[\s:=]+['"][A-Za-z0-9\/+=]{16,}['"]/gi;
+    // 1. Refined Secret Detection Patterns
+    const secretPatterns = [
+        /api[_-]?key/i, /secret/i, /password/i, /token/i,
+        /A3T[A-Z0-9]{16}/, // AWS
+        /sk-[a-zA-Z0-9]{48}/ // OpenAI
+    ];
+
     const changedFiles = getChangedFiles();
-    
     let violations = 0;
     
     changedFiles.forEach(file => {
+        // Exclude node_modules, .git, and dist directories
+        if (file.includes('node_modules') || file.includes('.git') || file.includes('dist')) return;
+
         if (fs.existsSync(file) && fs.lstatSync(file).isFile()) {
             const content = fs.readFileSync(file, 'utf8');
-            if (secretPattern.test(content)) {
-                console.error(`❌ ERROR: Potential secret detected in ${file}`);
-                violations++;
-            }
+            secretPatterns.forEach(pattern => {
+                if (pattern.test(content)) {
+                    // Exclude the auditor itself to prevent self-detection of regex patterns
+                    if (file.includes('scripts/local_audit.js')) return;
+                    
+                    console.error(`❌ ERROR: Potential secret detected in ${file}`);
+                    violations++;
+                }
+            });
         }
     });
 
@@ -35,7 +47,9 @@ function runLocalAudit() {
 
 function getChangedFiles() {
     try {
-        return execSync('git diff --cached --name-only').toString().trim().split('\n').filter(f => f);
+        const staged = execSync('git diff --cached --name-only').toString().trim().split('\n');
+        const unstaged = execSync('git diff --name-only').toString().trim().split('\n');
+        return [...new Set([...staged, ...unstaged])].filter(f => f);
     } catch (e) {
         return [];
     }
