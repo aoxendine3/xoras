@@ -9,7 +9,6 @@ const { execSync } = require('child_process');
 function runLocalAudit() {
     console.log("🔒 XORAS Local Edge Audit Initialized...");
     
-    // 1. Refined Secret Detection Patterns
     const secretPatterns = [
         /api[_-]?key/i, /secret/i, /password/i, /token/i,
         /A3T[A-Z0-9]{16}/, // AWS
@@ -30,7 +29,7 @@ function runLocalAudit() {
             const content = fs.readFileSync(file, 'utf8');
             secretPatterns.forEach(pattern => {
                 if (pattern.test(content)) {
-                    // Exclude infrastructure setup and audit logic
+                    // Exclude infrastructure setup and audit logic to prevent self-detection
                     if (file.includes('scripts/local_audit.js') || 
                         file.includes('scripts/setup_xoras.js') || 
                         file.includes('action/src/index.js')) return;
