@@ -74,4 +74,4 @@ That's it. You now have deterministic release governance.
 * **Advisory-First**: Roll out governance without engineering rebellion. 
 * **Data-Driven Enforcement**: Once the team trusts the signal, flip `mode: ENFORCEMENT` to strictly gate releases based on your institutional baseline.
 
-[**Read the Technical Guide**](./TECHNICAL_GUIDE.md) | [**View the Synthetic Regression Lab**](../demo-vulnerable-app/)
+[**Technical Architecture & Security**](./ARCHITECTURE.md) | [**View the Synthetic Regression Lab**](../demo-vulnerable-app/)
