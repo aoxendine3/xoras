@@ -9,11 +9,13 @@
   "scripts": {
     "audit": "node action/src/index.js",
     "intel": "node intelligence.js",
-    "local": "node scripts/local_audit.js"
+    "local": "node scripts/local_audit.js",
+    "setup": "node scripts/setup_xoras.js"
   },
   "dependencies": {
     "@actions/core": "^1.10.1",
-    "commander": "^11.0.0"
+    "commander": "^11.0.0",
+    "node-fetch": "^2.6.7"
   },
   "license": "MIT"
 }
