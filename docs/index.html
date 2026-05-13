@@ -3,203 +3,254 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>XORAS | Release Integrity for CI</title>
-    <link rel="stylesheet" href="style.css">
+    <title>XORAS | Release Integrity Governance</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Outfit:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #050505;
+            --surface: #0a0a0a;
+            --primary: #6366f1;
+            --accent: #8b5cf6;
+            --text: #f8fafc;
+            --text-dim: #94a3b8;
+            --glow: rgba(99, 102, 241, 0.2);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        h1, h2, h3 {
+            font-family: 'Outfit', sans-serif;
+            letter-spacing: -0.02em;
+        }
+
+        .gradient-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(99, 102, 241, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(139, 92, 246, 0.05) 0%, transparent 50%);
+            z-index: -1;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        nav {
+            padding: 2rem 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: linear-gradient(to right, #fff, #94a3b8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 0.1em;
+        }
+
+        .hero {
+            padding: 8rem 0 4rem;
+            text-align: center;
+        }
+
+        .badge {
+            background: rgba(99, 102, 241, 0.1);
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            padding: 0.5rem 1.5rem;
+            border-radius: 100px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--primary);
+            display: inline-block;
+            margin-bottom: 2rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .hero h1 {
+            font-size: 4.5rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            line-height: 1.1;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            color: var(--text-dim);
+            max-width: 700px;
+            margin: 0 auto 3rem;
+        }
+
+        .cta-group {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 1rem 2.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 0 20px var(--glow);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 30px var(--glow);
+        }
+
+        .terminal {
+            background: var(--surface);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-top: 5rem;
+            text-align: left;
+            position: relative;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+        }
+
+        .terminal::before {
+            content: '•••';
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            color: rgba(255,255,255,0.2);
+            font-size: 1.2rem;
+            letter-spacing: 4px;
+        }
+
+        .terminal code {
+            font-family: 'Courier New', Courier, monospace;
+            color: #34d399;
+            font-size: 1rem;
+        }
+
+        .features {
+            padding: 8rem 0;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+        }
+
+        .feature-card {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.05);
+            padding: 2.5rem;
+            border-radius: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            background: rgba(255,255,255,0.04);
+            border-color: rgba(99, 102, 241, 0.3);
+            transform: translateY(-5px);
+        }
+
+        .feature-card h3 {
+            margin-bottom: 1rem;
+            font-size: 1.25rem;
+        }
+
+        .feature-card p {
+            color: var(--text-dim);
+            font-size: 0.95rem;
+        }
+
+        footer {
+            padding: 4rem 0;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            text-align: center;
+            color: var(--text-dim);
+            font-size: 0.8rem;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 3rem; }
+            .features { grid-template-columns: 1fr; }
+        }
+    </style>
 </head>
 <body>
+    <div class="gradient-bg"></div>
+
     <div class="container">
-        <header>
+        <nav>
             <div class="logo">XORAS</div>
-            <nav>
-                <a href="#how-it-works">How it works</a>
-                <a href="dashboard/index.html">Dashboard</a>
-                <a href="https://github.com/aoxendine3/xoras">GitHub</a>
-            </nav>
-        </header>
+            <div>
+                <a href="#features" style="color: var(--text-dim); text-decoration: none; margin-right: 2rem;">Features</a>
+                <a href="https://github.com/ajoxendine68/xoras-core" class="btn btn-primary" style="padding: 0.5rem 1.5rem;">GitHub</a>
+            </div>
+        </nav>
 
-        <main>
-            <section class="hero">
-                <h1>Release integrity checks for CI pipelines</h1>
-                <p>XORAS detects release drift, exposed secrets, dependency anomalies, and performance regressions during pull requests before deployment.</p>
-                <div class="cta-buttons">
-                    <a href="https://github.com/aoxendine3/xoras" class="btn primary">View CI Example</a>
-                    <a href="https://github.com/aoxendine3/xoras" class="btn secondary">Start Advisory Pilot</a>
-                </div>
-            </section>
+        <section class="hero">
+            <div class="badge">Sovereign Release Integrity</div>
+            <h1>Governance at Exascale.</h1>
+            <p>XORAS is a deterministic intelligence layer for your CI/CD pipelines. Verifiably catch drift, pin supply chains, and lock your integrity state in sub-30ms.</p>
+            
+            <div class="cta-group">
+                <a href="#" class="btn btn-primary">Get Started</a>
+                <a href="#" class="btn" style="border: 1px solid rgba(255,255,255,0.1);">Read the Blueprint</a>
+            </div>
 
-            <section class="metrics-strip">
-                <div class="metric-item">
-                    <span class="metric-val">~5 min</span>
-                    <span class="metric-label">Setup Time</span>
-                </div>
-                <div class="metric-item">
-                    <span class="metric-val">&lt;1s</span>
-                    <span class="metric-label">CI Runtime Impact</span>
-                </div>
-                <div class="metric-item">
-                    <span class="metric-val">None</span>
-                    <span class="metric-label">Hosting Required</span>
-                </div>
-                <div class="metric-item">
-                    <span class="metric-val">Advisory</span>
-                    <span class="metric-label">Pilot Mode</span>
-                </div>
-            </section>
+            <div class="terminal">
+                <pre><code>$ npx xoras init
+✅ Created xoras.config.json with institutional defaults.
 
-            <!-- Dominant Hero Asset: The PR Experience -->
-            <section class="pr-mockup">
-                <div class="pr-header">
-                    <span class="pr-badge">Open</span>
-                    <span class="pr-title">feat: add stripe integration #42</span>
-                </div>
-                <div class="pr-body">
-                    <div class="line" style="color: #8b949e;">@@ -12,4 +12,8 @@</div>
-                    <div class="line diff-add">+ const STRIPE_KEY = "sk_test_51...j9z2";</div>
-                    <div class="line"> </div>
-                    <div class="audit-finding">
-                        <div class="finding-header">
-                            ⚠️ XORAS: Secret Exposure Detected
-                        </div>
-                        <div class="finding-body">
-                            High-entropy string (4.82) detected in <code>stripe_integration.js</code>. <br>
-                            <strong>Remediation:</strong> Move secret to <code>process.env.STRIPE_KEY</code>.
-                        </div>
-                    </div>
-                </div>
-            </section>
+$ npx xoras audit
+🔍 XORAS: Initiating Local Governance Audit...
+📈 XORAS: Governance trend logged (100, delta: 0).
+✅ XORAS Release Confidence: 100/100 (PASSED)</code></pre>
+            </div>
+        </section>
 
-            <section class="grid-section">
-                <div>
-                    <h2>XORAS does not:</h2>
-                    <ul class="negative-list">
-                        <li>upload source code to external servers</li>
-                        <li>require hosted infrastructure</li>
-                        <li>modify application code</li>
-                        <li>block builds during pilots</li>
-                    </ul>
-                </div>
-                <div>
-                    <h2>Rules-based detection</h2>
-                    <p style="font-size: 1rem; color: var(--zinc-400);">XORAS provides repeatable CI outputs and auditable findings using a deterministic, scoped-detection engine. No black-box analysis.</p>
-                </div>
-            </section>
-
-            <section class="grid-section">
-                <div>
-                    <h2>Who is this for?</h2>
-                    <div class="target-list">
-                        <div class="target-item">
-                            <h3>Startups</h3>
-                            <p style="font-size: 0.9rem;">Shipping daily with lean teams.</p>
-                        </div>
-                        <div class="target-item">
-                            <h3>Platform Teams</h3>
-                            <p style="font-size: 0.9rem;">Hardening internal release pipelines.</p>
-                        </div>
-                        <div class="target-item">
-                            <h3>CI/CD Heavy Orgs</h3>
-                            <p style="font-size: 0.9rem;">Automating compliance at the edge.</p>
-                        </div>
-                        <div class="target-item">
-                            <h3>AI-Assisted Coding</h3>
-                            <p style="font-size: 0.9rem;">Verifying AI-generated secrets & config.</p>
-                        </div>
-                    </div>
-                </div>
-                <div id="how-it-works">
-                    <h2>How it works</h2>
-                    <div class="target-item" style="margin-bottom: 1.5rem;">
-                        <span style="color: var(--blue-500); font-family: monospace; font-size: 0.8rem;">STEP 1</span>
-                        <h3>Install GitHub Action</h3>
-                        <p style="font-size: 0.9rem;">Add XORAS to your <code>.github/workflows</code> in seconds.</p>
-                    </div>
-                    <div class="target-item">
-                        <span style="color: var(--blue-500); font-family: monospace; font-size: 0.8rem;">STEP 2</span>
-                        <h3>XORAS analyzes PR drift</h3>
-                        <p style="font-size: 0.9rem;">Automated feedback on secrets, dependency drift, and regressions.</p>
-                    </div>
-                </div>
-            </section>
-
-            <section style="padding: 6rem 0; border-bottom: 1px solid var(--border);">
-                <h2>Market Positioning & Differentiation</h2>
-                <div style="overflow-x: auto; margin-top: 2rem;">
-                    <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem; text-align: left;">
-                        <thead>
-                            <tr style="border-bottom: 2px solid var(--border); color: var(--zinc-400);">
-                                <th style="padding: 1rem;">Provider</th>
-                                <th style="padding: 1rem;">Entry Pricing</th>
-                                <th style="padding: 1rem;">Delivery Model</th>
-                                <th style="padding: 1rem;">Privacy Posture</th>
-                                <th style="padding: 1rem;">Primary Differentiator</th>
-                            </tr>
-                        </thead>
-                        <tbody style="color: var(--zinc-100);">
-                            <tr style="border-bottom: 1px solid var(--border);">
-                                <td style="padding: 1rem; font-weight: 600;">GitHub Adv. Security</td>
-                                <td style="padding: 1rem;">$49/user/month</td>
-                                <td style="padding: 1rem;">Cloud-native</td>
-                                <td style="padding: 1rem; color: var(--red-500);">Low (Repo Scans)</td>
-                                <td style="padding: 1rem;">Platform Integration</td>
-                            </tr>
-                            <tr style="border-bottom: 1px solid var(--border);">
-                                <td style="padding: 1rem; font-weight: 600;">Snyk</td>
-                                <td style="padding: 1rem;">$25-$89/user/month</td>
-                                <td style="padding: 1rem;">Hybrid / Cloud</td>
-                                <td style="padding: 1rem; color: var(--zinc-400);">Medium</td>
-                                <td style="padding: 1rem;">Vuln. Database Depth</td>
-                            </tr>
-                            <tr style="border-bottom: 1px solid var(--border);">
-                                <td style="padding: 1rem; font-weight: 600;">GitGuardian</td>
-                                <td style="padding: 1rem;">~$400/month (team)</td>
-                                <td style="padding: 1rem;">Cloud-first</td>
-                                <td style="padding: 1rem; color: var(--red-500);">Low</td>
-                                <td style="padding: 1rem;">Secret Logic Focus</td>
-                            </tr>
-                            <tr style="background: rgba(59, 130, 246, 0.05);">
-                                <td style="padding: 1rem; font-weight: 700; color: var(--blue-500);">XORAS Pilot v1.0</td>
-                                <td style="padding: 1rem;">$499 Pilot License</td>
-                                <td style="padding: 1rem;">Fully Local Binary</td>
-                                <td style="padding: 1rem; color: var(--green-500); font-weight: 600;">Highest (Local-Only)</td>
-                                <td style="padding: 1rem;">Signed OIDC Attestation</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div style="margin-top: 3rem; max-width: 800px; color: var(--zinc-400); font-size: 0.95rem; line-height: 1.6;">
-                    <p><strong>Clinical Conclusion:</strong> XORAS provides a privacy-first, locally executed CI integrity and secret scanning capability with cryptographically verifiable outputs. It is positioned for environments where repository sovereignty and data residency are non-negotiable. While it does not yet match the vulnerability database depth of mature SAST platforms, it delivers superior control and cost predictability for focused integrity workloads.</p>
-                </div>
-            </section>
-            <section style="padding: 6rem 0;">
-                <h2>Protected Infrastructure</h2>
-                <p style="color: var(--zinc-400); margin-top: 1rem;">XORAS Sentinel is currently enforcing release integrity across the following institutional assets:</p>
-                <div class="target-list" style="margin-top: 2rem;">
-                    <div class="target-item">
-                        <h3 style="font-size: 1rem; color: var(--zinc-100);">integrity-sentry-core</h3>
-                        <p style="font-size: 0.8rem; color: var(--green-500); font-family: monospace;">L6_HARDENED • VERIFIED</p>
-                    </div>
-                    <div class="target-item">
-                        <h3 style="font-size: 1rem; color: var(--zinc-100);">env-integrity-sentry</h3>
-                        <p style="font-size: 0.8rem; color: var(--green-500); font-family: monospace;">L6_HARDENED • VERIFIED</p>
-                    </div>
-                    <div class="target-item">
-                        <h3 style="font-size: 1rem; color: var(--zinc-100);">xoras-action</h3>
-                        <p style="font-size: 0.8rem; color: var(--green-500); font-family: monospace;">L6_HARDENED • VERIFIED</p>
-                    </div>
-                    <div class="target-item">
-                        <h3 style="font-size: 1rem; color: var(--zinc-100);">env-sanitizer</h3>
-                        <p style="font-size: 0.8rem; color: var(--green-500); font-family: monospace;">L6_HARDENED • VERIFIED</p>
-                    </div>
-                    <div class="target-item">
-                        <h3 style="font-size: 1rem; color: var(--zinc-100);">next-route-audit</h3>
-                        <p style="font-size: 0.8rem; color: var(--green-500); font-family: monospace;">L6_HARDENED • VERIFIED</p>
-                    </div>
-                </div>
-            </section>
-        </main>
+        <section class="features" id="features">
+            <div class="feature-card">
+                <h3>Truth Lock</h3>
+                <p>Immutable state verification using SHA-256 snapshots. Verifiably prevent temporal drift in your governance posture.</p>
+            </div>
+            <div class="feature-card">
+                <h3>Causal Intelligence</h3>
+                <p>Semantic reasoning over audit deltas. XORAS explains exactly why your score changed and what to fix.</p>
+            </div>
+            <div class="feature-card">
+                <h3>Exascale Velocity</h3>
+                <p>Optimized for massive monorepos. Sub-30ms audits through incremental hashing and parallel orchestration.</p>
+            </div>
+        </section>
 
         <footer>
-            <p>Quietly improving engineering discipline.</p>
+            &copy; 2026 XORAS Institutional Infrastructure. Optimized for Release Integrity.
         </footer>
     </div>
 </body>
