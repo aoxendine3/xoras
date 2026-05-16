@@ -4,12 +4,14 @@
   "description": "Static analysis and governance tool for GitHub release integrity.",
   "main": "action/src/index.js",
   "bin": {
-    "xoras-intel": "./intelligence.js"
+    "xoras-intel": "./intelligence.js",
+    "xoras-sentry": "./action/src/sentry.js"
   },
   "scripts": {
     "audit": "node action/src/index.js",
     "intel": "node intelligence.js",
     "local": "node scripts/local_audit.js",
+    "sentry": "node action/src/sentry.js",
     "setup": "node scripts/setup_xoras.js",
     "revops": "node intelligence_core/tools/xoras_revops_master.cjs",
     "test": "node intelligence_core/tests/memory_engine.test.cjs && node intelligence_core/tests/memory_index.test.cjs && node intelligence_core/tests/v8_benchmark.test.cjs"
