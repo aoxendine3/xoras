@@ -50,6 +50,7 @@ const getAllByStatus = db.prepare('SELECT * FROM episodic_logs WHERE status = ? 
 class MemoryLedger {
     constructor() {
         this.cache = new Map();
+        this.itemIndex = new Map(); // Direct O(1) item memory reference lookup
         this.isHydrated = false;
         this.lastHydratedTimestamp = 0;
     }
@@ -60,13 +61,17 @@ class MemoryLedger {
      */
     async hydrateMemoryCache() {
         const startMs = performance.now();
-        const statuses = ['STAGED', 'SUBMITTED', 'MERGED', 'CLOSED'];
+        const statuses = ['STAGED', 'SUBMITTED', 'MERGED', 'CLOSED', 'CLOSED_WON'];
         let totalRecords = 0;
 
         this.cache.clear();
+        this.itemIndex.clear();
         statuses.forEach(status => {
             const rows = getAllByStatus.all(status);
             this.cache.set(status, rows);
+            rows.forEach(row => {
+                this.itemIndex.set(row.id, row);
+            });
             totalRecords += rows.length;
         });
 
@@ -80,10 +85,11 @@ class MemoryLedger {
             durationMs,
             timestamp: new Date(this.lastHydratedTimestamp).toISOString(),
             distribution: {
-                STAGED: this.cache.get('STAGED').length,
-                SUBMITTED: this.cache.get('SUBMITTED').length,
-                MERGED: this.cache.get('MERGED').length,
-                CLOSED: this.cache.get('CLOSED').length
+                STAGED: (this.cache.get('STAGED') || []).length,
+                SUBMITTED: (this.cache.get('SUBMITTED') || []).length,
+                MERGED: (this.cache.get('MERGED') || []).length,
+                CLOSED: (this.cache.get('CLOSED') || []).length,
+                CLOSED_WON: (this.cache.get('CLOSED_WON') || []).length
             }
         };
     }
@@ -109,6 +115,16 @@ class MemoryLedger {
         return this.cache.get('SUBMITTED') || [];
     }
 
+    /**
+     * Direct $O(1)$ memory lookup for a specific item by ID.
+     */
+    async getLeadById(id) {
+        if (!this.isHydrated || !this.itemIndex.has(id)) {
+            await this.hydrateMemoryCache();
+        }
+        return this.itemIndex.get(id) || null;
+    }
+
     recordEpisode(query, manifest, status) {
         try {
             const result = insertLog.run(query, manifest, status);
@@ -122,8 +138,13 @@ class MemoryLedger {
             };
 
             // Instantly update V8 memory cache
-            if (this.isHydrated && this.cache.has(status)) {
-                this.cache.get(status).unshift(newRecord);
+            if (this.isHydrated) {
+                if (this.cache.has(status)) {
+                    this.cache.get(status).unshift(newRecord);
+                } else {
+                    this.cache.set(status, [newRecord]);
+                }
+                this.itemIndex.set(newRecord.id, newRecord);
             }
 
             return { status: 'LOGGED', id: result.lastInsertRowid };
@@ -139,8 +160,27 @@ class MemoryLedger {
                 db.prepare('UPDATE episodic_logs SET status = ? WHERE id = ?').run(newStatus, logId);
             }
 
-            // Force unblocked re-hydration to keep memory synchronized
-            this.hydrateMemoryCache();
+            // O(1) in-memory update if item is cached
+            if (this.isHydrated && this.itemIndex.has(logId)) {
+                const item = this.itemIndex.get(logId);
+                const oldStatus = item.status;
+                item.outcome = outcome;
+                if (newStatus && newStatus !== oldStatus) {
+                    item.status = newStatus;
+                    // Move between status arrays in memory
+                    if (this.cache.has(oldStatus)) {
+                        const arr = this.cache.get(oldStatus);
+                        const idx = arr.findIndex(x => x.id === logId);
+                        if (idx !== -1) arr.splice(idx, 1);
+                    }
+                    if (!this.cache.has(newStatus)) {
+                        this.cache.set(newStatus, []);
+                    }
+                    this.cache.get(newStatus).unshift(item);
+                }
+            } else {
+                this.hydrateMemoryCache();
+            }
 
             return { status: 'UPDATED' };
         } catch (e) {
@@ -150,6 +190,17 @@ class MemoryLedger {
 
     retrieveRecentEpisodes(limit = 5) {
         return getRecentLogs.all(limit);
+    }
+
+    /**
+     * Cache pruning and garbage collection safety valve.
+     */
+    purgeCache() {
+        this.cache.clear();
+        this.itemIndex.clear();
+        this.isHydrated = false;
+        this.lastHydratedTimestamp = 0;
+        return { status: 'PURGED' };
     }
 }
 
