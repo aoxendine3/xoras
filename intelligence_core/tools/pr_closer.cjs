@@ -16,24 +16,26 @@ class PRCloserWorker {
     async engageSingleDeal(payload) {
         const { id, repoUrl, repoHandle, prNumber, tierLabel } = payload;
         const labelStr = tierLabel ? ` [${tierLabel}]` : '';
-        console.log(`  ├── [outreach] engaging ${repoHandle} (pr #${prNumber || 8})${labelStr}`);
+        console.log(`  ├── [outreach_staged] staging commercial pilot proposal for ${repoHandle} (pr #${prNumber || 8})${labelStr}`);
 
         const updatedOutcome = JSON.stringify({
-            closed_won_at: new Date().toISOString(),
+            outreach_staged_at: new Date().toISOString(),
             pr_number: prNumber || 8,
             commercial_value: 2000,
             discount_applied: "50%",
-            engagement_status: `closed_won (pitched pilot)${labelStr}`,
-            outreach_tier: tierLabel || "PRIMARY_TARGET"
+            engagement_status: `proposal_staged (awaiting maintainer response)${labelStr}`,
+            outreach_tier: tierLabel || "PRIMARY_TARGET",
+            status: "WAITING_FOR_APPROVAL"
         });
 
-        memoryLedger.tagOutcome(id, updatedOutcome, 'CLOSED_WON');
-        console.log(`  └── [deal_won] commercial pilot accepted: ${repoHandle}`);
-        if (process.send) process.send({ event: 'DEAL_WON', payload: { id, repoUrl, repoHandle } });
+        memoryLedger.tagOutcome(id, updatedOutcome, 'WAITING_FOR_APPROVAL');
+        memoryLedger.tagExecutionMode(id, 'REAL');
+        console.log(`  └── [holding] outreach proposal locked in WAITING_FOR_APPROVAL state: ${repoHandle}`);
+        if (process.send) process.send({ event: 'OUTREACH_STAGED', payload: { id, repoUrl, repoHandle } });
     }
 
     async engageMergedDeals() {
-        console.log("[closer] sweeping ledger for newly merged accounts");
+        console.log("[closer] sweeping ledger for genuinely merged accounts");
         console.log("[closer] policy enforcement: strict throttling (1 primary + 1 secondary max)");
 
         const mergedDeals = await memoryLedger.getMergedLeads();
@@ -72,7 +74,7 @@ class PRCloserWorker {
             }
         }
 
-        console.log("[closer] commercial pitch cycle complete: exit 0");
+        console.log("[closer] commercial proposal cycle complete: exit 0");
         return { status: 'CLOSE_CYCLE_COMPLETE', engaged: dealsToProcess.length };
     }
 }

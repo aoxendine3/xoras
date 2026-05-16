@@ -10,15 +10,13 @@ class RevOpsSingularityMaster {
         this.drainInterval = null;
     }
 
-    async startSingularity(isReal = false) {
-        console.log(`[singularity] initializing simultaneous multi-agent ipc hub (mode: ${isReal ? 'real' : 'simulated'})`);
-        if (isReal) {
-            console.log(`[singularity] strict segregation: preventing simulated data from co-mingling in live ledger`);
-        }
+    async startSingularity() {
+        console.log(`[singularity] initializing simultaneous multi-agent ipc hub (mode: REAL / LIVE-FIRE)`);
+        console.log(`[singularity] strict institutional governance: zero mock simulation or placeholder workarounds`);
 
-        const spawnWorker = (name, scriptBasename, flags = []) => {
+        const spawnWorker = (name, scriptBasename) => {
             const workerPath = path.join(__dirname, scriptBasename);
-            const worker = fork(workerPath, ['--ipc', ...flags], { stdio: 'inherit' });
+            const worker = fork(workerPath, ['--ipc', '--real'], { stdio: 'inherit' });
             worker.on('message', (msg) => this.handleIPCMessage(name, msg));
             worker.on('error', (err) => console.error(`[singularity] worker error (${name}): ${err.message}`));
             worker.on('exit', (code) => {
@@ -28,11 +26,11 @@ class RevOpsSingularityMaster {
             return worker;
         };
 
-        spawnWorker('sniper', 'pr_sniper.cjs', isReal ? ['--real'] : []);
-        spawnWorker('prioritizer', 'queue_prioritizer.cjs', isReal ? ['--real'] : []);
-        spawnWorker('dispatcher', 'pr_dispatcher.cjs', isReal ? ['--real'] : ['--validate']);
-        spawnWorker('monitor', 'pr_monitor.cjs', isReal ? ['--real'] : []);
-        spawnWorker('closer', 'pr_closer.cjs', isReal ? ['--real'] : []);
+        spawnWorker('sniper', 'pr_sniper.cjs');
+        spawnWorker('prioritizer', 'queue_prioritizer.cjs');
+        spawnWorker('dispatcher', 'pr_dispatcher.cjs');
+        spawnWorker('monitor', 'pr_monitor.cjs');
+        spawnWorker('closer', 'pr_closer.cjs');
 
         if (this.workers['sniper']) {
             this.workers['sniper'].send({ event: 'START_HARVEST' });
@@ -76,7 +74,7 @@ class RevOpsSingularityMaster {
                 }
                 break;
 
-            case 'DEAL_WON':
+            case 'OUTREACH_STAGED':
                 this.stats.won++;
                 this.activeLeads.delete(msg.payload.repoUrl);
                 break;
@@ -115,11 +113,11 @@ class RevOpsSingularityMaster {
 
     reportAggregateMetricsAndExit() {
         console.log(`\n[singularity] pipeline execution aggregate metrics:`);
-        console.log(`  ├── leads staged     : ${this.stats.staged}`);
-        console.log(`  ├── leads qualified  : ${this.stats.qualified}`);
-        console.log(`  ├── leads dispatched : ${this.stats.dispatched}`);
-        console.log(`  ├── prs merged       : ${this.stats.monitored}`);
-        console.log(`  └── deals closed won : ${this.stats.won}`);
+        console.log(`  ├── leads staged       : ${this.stats.staged}`);
+        console.log(`  ├── leads qualified    : ${this.stats.qualified}`);
+        console.log(`  ├── leads dispatched   : ${this.stats.dispatched}`);
+        console.log(`  ├── prs live monitored : ${this.stats.monitored}`);
+        console.log(`  └── proposals staged   : ${this.stats.won}`);
         console.log("[singularity] simultaneous multi-agent loop complete: exit 0");
         this.terminateAllWorkers(0);
     }
@@ -138,8 +136,6 @@ class RevOpsSingularityMaster {
 module.exports = new RevOpsSingularityMaster();
 
 if (require.main === module) {
-    const args = process.argv.slice(2);
-    const isReal = args.includes('--real');
     const master = new RevOpsSingularityMaster();
-    master.startSingularity(isReal);
+    master.startSingularity();
 }
