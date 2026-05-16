@@ -3,6 +3,7 @@ const memoryLedger = require('../memory_ledger.cjs');
 const bridge = require('../local_inference/tri_model_bridge.cjs');
 
 const TIMEOUT_MS = 15000;
+const GITHUB_API_BASE = (process.env.GITHUB_API_BASE_URL || 'https://api.github.com').replace(/\/$/, '');
 
 class PRDispatcherWorker {
     constructor() {
@@ -54,7 +55,7 @@ class PRDispatcherWorker {
     }
 
     async verifyAuthenticatedUserAggressive(token) {
-        const url = 'https://api.github.com/user';
+        const url = `${GITHUB_API_BASE}/user`;
         const options = {
             headers: {
                 'Authorization': `Bearer ${token}`,
@@ -62,7 +63,7 @@ class PRDispatcherWorker {
                 'User-Agent': 'XORAS_SOVEREIGN_NODE'
             }
         };
-        const res = await fetchWithAggressiveRetry(url, options, 3);
+        const res = await this.fetchWithAggressiveRetry(url, options, 3);
         if (!res.ok) throw new Error(`http ${res.status}`);
         const data = await res.json();
         return data.login;
@@ -80,7 +81,7 @@ class PRDispatcherWorker {
 
             try {
                 const login = await this.verifyAuthenticatedUserAggressive(this.token);
-                const forkUrl = `https://api.github.com/repos/${repoHandle}/forks`;
+                const forkUrl = `${GITHUB_API_BASE}/repos/${repoHandle}/forks`;
                 const forkRes = await this.fetchWithAggressiveRetry(forkUrl, {
                     method: 'POST',
                     headers: {
@@ -115,7 +116,7 @@ class PRDispatcherWorker {
     }
 
     async executeUniversalForkAndPullDispatch() {
-        console.log("[dispatch] initiating aggressive real-fire fork-and-pull engine");
+        console.log(`[dispatch] initiating aggressive real-fire fork-and-pull engine (${GITHUB_API_BASE})`);
 
         const secretLock = process.env.AETHER_INSTITUTIONAL_SECRET;
         if (!secretLock || secretLock !== 'AETHER_DEFAULT_SECRET_2026') {
@@ -156,7 +157,7 @@ class PRDispatcherWorker {
             console.log(`[dispatch] processing target: ${repoHandle}`);
             
             try {
-                const forkUrl = `https://api.github.com/repos/${repoHandle}/forks`;
+                const forkUrl = `${GITHUB_API_BASE}/repos/${repoHandle}/forks`;
                 const forkRes = await this.fetchWithAggressiveRetry(forkUrl, {
                     method: 'POST',
                     headers: {
@@ -181,7 +182,7 @@ class PRDispatcherWorker {
     }
 
     async executeDispatch() {
-        console.log("[dispatch] initiating parallel memory cache dispatch");
+        console.log(`[dispatch] initiating parallel memory cache dispatch (${GITHUB_API_BASE})`);
 
         const startMs = performance.now();
         const rows = await memoryLedger.getStagedLeads();

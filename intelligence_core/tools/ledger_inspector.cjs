@@ -1,6 +1,8 @@
 const path = require('path');
 const memoryLedger = require('../memory_ledger.cjs');
 
+const GITHUB_API_BASE = (process.env.GITHUB_API_BASE_URL || 'https://api.github.com').replace(/\/$/, '');
+
 class LedgerInspector {
     async inspect() {
         console.log("[inspector] executing in-memory relational state audit");
@@ -32,14 +34,14 @@ class LedgerInspector {
     }
 
     async verifyLive(count) {
-        console.log(`[inspector] live external verification across top ${count} entries`);
+        console.log(`[inspector] live external verification across top ${count} entries (${GITHUB_API_BASE})`);
         const activeThreads = await memoryLedger.getAllActiveThreads();
         const targets = activeThreads.filter(t => t.status === 'SUBMITTED').slice(0, count);
 
         for (const t of targets) {
             const repoClean = (t.query || '').replace('AUDIT_REPO: https://github.com/', '').trim();
             try {
-                const url = `https://api.github.com/repos/${repoClean}`;
+                const url = `${GITHUB_API_BASE}/repos/${repoClean}`;
                 const res = await fetch(url, { headers: { 'User-Agent': 'XORAS_SOVEREIGN_NODE' } });
                 if (res.status === 404) {
                     console.log(`  ├── [error 404] ${repoClean}: repository not found`);
