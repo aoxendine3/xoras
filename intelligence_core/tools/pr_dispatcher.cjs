@@ -1,16 +1,11 @@
 /**
- * 🔬 XORAS // Institutional PR Dispatch Engine
+ * XORAS // Institutional PR Dispatch Engine
  * Location: /intelligence_core/tools/pr_dispatcher.cjs
- * Mandate: Automated parallel AST remediation generation and Git patch dispatching for staged candidate accounts.
- * Permanent Rule: No bandaids, no wraps, no workarounds. First-principles engineering.
+ * Mandate: Parallel AST remediation generation and Git patch dispatching using high-speed in-memory hydration cache.
  */
 
-const Database = require('better-sqlite3');
-const path = require('path');
+const memoryLedger = require('../memory_ledger.cjs');
 const bridge = require('../local_inference/tri_model_bridge.cjs');
-
-const ledgerDbPath = path.join(__dirname, '../../AETHER_KNOWLEDGE_BASE/aether_brain.sqlite');
-const db = new Database(ledgerDbPath);
 
 const TIMEOUT_MS = 15000;
 
@@ -18,7 +13,7 @@ async function generateRemediationPatch(repoHandle, issueTitle) {
     const prompt = `Generate a first-principles production AST patch or remediation script for repository '${repoHandle}' addressing issue: '${issueTitle}'. Output the exact git diff format.`;
     const context = `Target repository: ${repoHandle}. Objective is absolute release stability and zero-drift security.`;
     
-    console.log(`[INFERENCE] Invoking local Reasoner (apex-prime) for ${repoHandle}...`);
+    console.log(`[INFERENCE] Invoking local Reasoner for ${repoHandle}...`);
     
     const reasonerPromise = bridge.deepReason(prompt, context);
     const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('INFERENCE_TIMEOUT')), TIMEOUT_MS));
@@ -27,8 +22,7 @@ async function generateRemediationPatch(repoHandle, issueTitle) {
         const patch = await Promise.race([reasonerPromise, timeoutPromise]);
         return patch;
     } catch (e) {
-        console.warn(`[INFERENCE_WARN] Reasoner timeout or offline for ${repoHandle}. Generating sovereign AST remediation template.`);
-        return `diff --git a/src/index.js b/src/index.js\n--- a/src/index.js\n+++ b/src/index.js\n@@ -1,5 +1,6 @@\n+// Hardened via XORAS Sovereign PR Sniper\n+import { verifyAST } from '@xoras/core';\n function run() {\n-  console.log('Legacy Runtime');\n+  verifyAST(process.cwd());\n }`;
+        return `diff --git a/src/index.js b/src/index.js\n--- a/src/index.js\n+++ b/src/index.js\n@@ -1,5 +1,6 @@\n+// Hardened via XORAS PR Sniper\n+import { verifyAST } from '@xoras/core';\n function run() {\n-  console.log('Legacy Runtime');\n+  verifyAST(process.cwd());\n }`;
     }
 }
 
@@ -37,19 +31,20 @@ async function executeDispatch() {
     console.log("            XORAS // AUTONOMOUS PARALLEL PR DISPATCH SEQUENCE         ");
     console.log("======================================================================");
 
-    const rows = db.prepare("SELECT id, query, manifest FROM episodic_logs WHERE status = 'STAGED' LIMIT 25").all();
+    const startMs = performance.now();
+    const stagedRows = await memoryLedger.getStagedLeads();
+    const rows = stagedRows.slice(0, 25);
+    const durationMs = (performance.now() - startMs).toFixed(3);
 
     if (rows.length === 0) {
-        console.log("[DISPATCH] No staged targets pending submission in this sweep.");
+        console.log(`[DISPATCH] No staged targets pending submission in this sweep (Memory lookup: ${durationMs}ms).`);
         return;
     }
 
-    console.log(`[DISPATCH] Processing ${rows.length} staged candidate PR targets in parallel...`);
-
-    const updateStmt = db.prepare("UPDATE episodic_logs SET status = 'SUBMITTED', outcome = ? WHERE id = ?");
+    console.log(`[DISPATCH] Processing ${rows.length} staged candidate PR targets in parallel via $O(1)$ memory cache (Hydration latency: ${durationMs}ms)...`);
 
     const dispatchTasks = rows.map(async (r, i) => {
-        const fullUrl = r.query.replace(/^AUDIT_REPO:\s*/i, '').trim();
+        const fullUrl = (r.query || '').replace(/^AUDIT_REPO:\s*/i, '').trim();
         const repoHandle = fullUrl.replace(/^https?:\/\/github\.com\//i, '').replace(/\/$/, '').trim();
         let issueTitle = 'Security & AST Verification';
         try {
@@ -73,11 +68,11 @@ async function executeDispatch() {
 
     const results = await Promise.allSettled(dispatchTasks);
 
-    console.log("\n[RECORDING RESULTS TO INSTITUTIONAL LEDGER]");
+    console.log("\n[RECORDING RESULTS TO IN-MEMORY LEDGER CACHE]");
     for (const res of results) {
         if (res.status === 'fulfilled') {
-            const { id, repoHandle, fullUrl, issueTitle, outcomePayload } = res.value;
-            updateStmt.run(outcomePayload, id);
+            const { id, repoHandle, issueTitle, outcomePayload } = res.value;
+            memoryLedger.tagOutcome(id, outcomePayload, 'SUBMITTED');
             console.log(`  └── [SUBMITTED] ${repoHandle}: Recorded patch payload for '${issueTitle}'`);
         } else {
             console.error(`  └── [FAILED] Task failed with error:`, res.reason);
@@ -85,7 +80,7 @@ async function executeDispatch() {
     }
 
     console.log("\n======================================================================");
-    console.log("✅ Parallel dispatch sequence completed. Staged ledgers updated to SUBMITTED.");
+    console.log("✅ Parallel dispatch sequence completed. In-memory ledgers synchronized.");
 }
 
 if (require.main === module) {

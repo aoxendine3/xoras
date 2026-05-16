@@ -1,22 +1,18 @@
 /**
  * XORAS CORE: Autonomous Lead Triage & Queue Prioritizer
- * Purpose: Scans all STAGED records in aether_brain.sqlite, evaluates repository semantics 
- * and organizational naming signals, and categorizes leads into 3 distinct execution tiers.
+ * Purpose: Evaluates repository semantics and organizational naming signals from high-speed in-memory hydration cache,
+ * and categorizes leads into 3 distinct execution tiers with zero disk I/O latency.
  */
 
-const path = require('path');
-const db = require('better-sqlite3')(path.join(__dirname, '../../AETHER_KNOWLEDGE_BASE/aether_brain.sqlite'));
+const memoryLedger = require('../memory_ledger.cjs');
 
 class QueuePrioritizer {
-    prioritize() {
-        console.log("⚡ [QUEUE_PRIORITIZER] Executing Semantic Triage across 30 Staged Leads...\n");
+    async prioritize() {
+        const startMs = performance.now();
+        const stagedLeads = await memoryLedger.getStagedLeads();
+        const durationMs = (performance.now() - startMs).toFixed(3);
 
-        const stagedLeads = db.prepare(`
-            SELECT id, query, manifest, timestamp 
-            FROM episodic_logs 
-            WHERE status = 'STAGED'
-            ORDER BY id DESC
-        `).all();
+        console.log(`⚡ [QUEUE_PRIORITIZER] Triage executed across ${stagedLeads.length} Staged Leads via $O(1)$ memory cache (Hydration latency: ${durationMs}ms)\n`);
 
         const tiers = {
             TIER_1_TROPHY: [],
@@ -24,19 +20,19 @@ class QueuePrioritizer {
             TIER_3_LOW_SIGNAL: []
         };
 
-        // Scoring rules
-        const trophySignals = ['auth', 'protocol', 'cloud', 'engine', 'sentry', 'security', 'infrastructure', 'gravix'];
+        const trophySignals = ['auth', 'protocol', 'cloud', 'engine', 'sentry', 'security', 'infrastructure', 'gravix', 'namuh-eng'];
         const lowSignals = ['portfolio', 'portifolio', 'test', 'demo', 'sandbox', 'learning', '_r1'];
 
         stagedLeads.forEach(lead => {
-            const cleanHandle = lead.query.replace('AUDIT_REPO: https://github.com/', '').toLowerCase();
+            const cleanHandle = (lead.query || '').replace('AUDIT_REPO: https://github.com/', '').toLowerCase();
+            const rawRepo = (lead.query || '').replace('AUDIT_REPO: ', '');
             
             if (trophySignals.some(sig => cleanHandle.includes(sig))) {
-                tiers.TIER_1_TROPHY.push(lead.query.replace('AUDIT_REPO: ', ''));
+                tiers.TIER_1_TROPHY.push(rawRepo);
             } else if (lowSignals.some(sig => cleanHandle.includes(sig))) {
-                tiers.TIER_3_LOW_SIGNAL.push(lead.query.replace('AUDIT_REPO: ', ''));
+                tiers.TIER_3_LOW_SIGNAL.push(rawRepo);
             } else {
-                tiers.TIER_2_COMMERCIAL.push(lead.query.replace('AUDIT_REPO: ', ''));
+                tiers.TIER_2_COMMERCIAL.push(rawRepo);
             }
         });
 
@@ -57,6 +53,8 @@ class QueuePrioritizer {
             console.log(`[DISQUALIFIED] ${target}`);
         });
         console.log("======================================================");
+
+        return tiers;
     }
 }
 
