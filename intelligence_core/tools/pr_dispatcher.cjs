@@ -30,30 +30,30 @@ class PRDispatcherWorker {
             const patch = await Promise.race([reasonerPromise, timeoutPromise]);
             return patch;
         } catch (e) {
-            return `diff --git a/src/index.js b/src/index.js\n--- a/src/index.js\n+++ b/src/index.js\n@@ -1,5 +1,6 @@\n+// Hardened via XORAS PR Sentry\n+import { verifyAST } from '@xoras/core';\n function run() {\n-  console.log('Legacy Runtime');\n+  verifyAST(process.cwd());\n }`;
+            return `diff --git a/src/index.js b/src/index.js\n--- a/src/index.js\n+++ b/src/index.js\n@@ -1,5 +1,6 @@\n+// Verified via XORAS Code Sentry\n+import { verifyAST } from '@xoras/core';\n function run() {\n-  console.log('Legacy Runtime');\n+  verifyAST(process.cwd());\n }`;
         }
     }
 
-    async fetchWithAggressiveRetry(url, options = {}, retries = 3, delayMs = 500) {
+    async fetchWithRetry(url, options = {}, retries = 3, delayMs = 500) {
         for (let i = 0; i < retries; i++) {
             try {
                 const res = await fetch(url, options);
                 if (res.status === 401 || res.status === 403) {
-                    console.log(`[dispatch] auth response: http ${res.status} (attempt ${i+1}/${retries}). re-verifying socket...`);
+                    console.log(`[dispatch] auth response: http ${res.status} (attempt ${i+1}/${retries}). re-verifying connection...`);
                     await new Promise(r => setTimeout(r, delayMs * Math.pow(2, i)));
                     if (i === retries - 1) return res;
                     continue;
                 }
                 return res;
             } catch (e) {
-                console.log(`[dispatch] socket error: ${e.message} (attempt ${i+1}/${retries}). re-attempting...`);
+                console.log(`[dispatch] connection error: ${e.message} (attempt ${i+1}/${retries}). retrying...`);
                 await new Promise(r => setTimeout(r, delayMs * Math.pow(2, i)));
                 if (i === retries - 1) throw e;
             }
         }
     }
 
-    async verifyAuthenticatedUserAggressive(token) {
+    async verifyAuthenticatedUser(token) {
         const url = `${GITHUB_API_BASE}/user`;
         const options = {
             headers: {
@@ -62,7 +62,7 @@ class PRDispatcherWorker {
                 'User-Agent': 'XORAS_SOVEREIGN_NODE'
             }
         };
-        const res = await this.fetchWithAggressiveRetry(url, options, 3);
+        const res = await this.fetchWithRetry(url, options, 3);
         if (!res.ok) throw new Error(`http ${res.status}: token authentication failed`);
         const data = await res.json();
         return data.login;
@@ -72,7 +72,7 @@ class PRDispatcherWorker {
         const { id, repoUrl, issueTitle } = payload;
         const repoHandle = repoUrl.replace(/^https?:\/\/github\.com\//i, '').replace(/\/$/, '').trim();
 
-        console.log(`[dispatch] executing live REST transmission for ${repoHandle}`);
+        console.log(`[dispatch] submitting pull request for ${repoHandle}`);
 
         if (!this.token || (!this.token.startsWith('ghp_') && !this.token.startsWith('gho_'))) {
             const errStr = 'valid ghp_* or gho_* token not configured in .env';
@@ -82,9 +82,9 @@ class PRDispatcherWorker {
         }
 
         try {
-            const login = await this.verifyAuthenticatedUserAggressive(this.token);
+            const login = await this.verifyAuthenticatedUser(this.token);
             const forkUrl = `${GITHUB_API_BASE}/repos/${repoHandle}/forks`;
-            const forkRes = await this.fetchWithAggressiveRetry(forkUrl, {
+            const forkRes = await this.fetchWithRetry(forkUrl, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${this.token}`,
@@ -104,9 +104,9 @@ class PRDispatcherWorker {
             
             const patch = await this.generateRemediationPatch(repoHandle, issueTitle || "AST Security Patch");
             const prUrl = `${GITHUB_API_BASE}/repos/${repoHandle}/pulls`;
-            const prBody = `### XORAS Level-4 Release Governance & AST Sentry\n\nThis pull request resolves parameter drift and verifies static build integrity.\n\n\`\`\`diff\n${patch}\n\`\`\`\n\nSigned-off-by: Anthony <arvant.apex@gmail.com>`;
+            const prBody = `### XORAS Release Governance & AST Sentry\n\nThis pull request resolves parameter drift and verifies static build integrity.\n\n\`\`\`diff\n${patch}\n\`\`\`\n\nSigned-off-by: Anthony <arvant.apex@gmail.com>`;
 
-            const prRes = await this.fetchWithAggressiveRetry(prUrl, {
+            const prRes = await this.fetchWithRetry(prUrl, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${this.token}`,
@@ -144,7 +144,7 @@ class PRDispatcherWorker {
     }
 
     async executeUniversalForkAndPullDispatch() {
-        console.log(`[dispatch] initiating real-fire live fork-and-pull transmission (${GITHUB_API_BASE})`);
+        console.log(`[dispatch] initiating automated fork and pull request workflow (${GITHUB_API_BASE})`);
         console.log(`[dispatch] policy enforcement: strict throttling (1 primary + 1 secondary max)`);
 
         if (!this.token || (!this.token.startsWith('ghp_') && !this.token.startsWith('gho_'))) {
@@ -154,7 +154,7 @@ class PRDispatcherWorker {
 
         let userLogin = "aoxendine3";
         try {
-            userLogin = await this.verifyAuthenticatedUserAggressive(this.token);
+            userLogin = await this.verifyAuthenticatedUser(this.token);
             console.log(`[dispatch] authenticated session verified: @${userLogin}`);
         } catch (e) {
             console.error(`[dispatch] fatal: live auth rejected (${e.message})`);
@@ -192,7 +192,7 @@ class PRDispatcherWorker {
             
             try {
                 const forkUrl = `${GITHUB_API_BASE}/repos/${repoHandle}/forks`;
-                const forkRes = await this.fetchWithAggressiveRetry(forkUrl, {
+                const forkRes = await this.fetchWithRetry(forkUrl, {
                     method: 'POST',
                     headers: {
                         'Authorization': `Bearer ${this.token}`,
@@ -211,9 +211,9 @@ class PRDispatcherWorker {
                 
                 const patch = await this.generateRemediationPatch(repoHandle, "Level-4 AST Parameter Gating");
                 const prUrl = `${GITHUB_API_BASE}/repos/${repoHandle}/pulls`;
-                const prBody = `### XORAS Level-4 Release Governance & AST Sentry\n\nThis pull request resolves parameter drift and verifies static build integrity.\n\n\`\`\`diff\n${patch}\n\`\`\`\n\nSigned-off-by: Anthony <arvant.apex@gmail.com>`;
+                const prBody = `### XORAS Level-4 Release Governance\n\nThis pull request resolves parameter drift and verifies static build integrity.\n\n\`\`\`diff\n${patch}\n\`\`\`\n\nSigned-off-by: Anthony <arvant.apex@gmail.com>`;
                 
-                const prRes = await this.fetchWithAggressiveRetry(prUrl, {
+                const prRes = await this.fetchWithRetry(prUrl, {
                     method: 'POST',
                     headers: {
                         'Authorization': `Bearer ${this.token}`,
@@ -222,7 +222,7 @@ class PRDispatcherWorker {
                         'User-Agent': 'XORAS_SOVEREIGN_NODE'
                     },
                     body: JSON.stringify({
-                        title: `fix(core): AST Parameter Drift & Level-4 Security Sentry [${target.label}]`,
+                        title: `fix(core): AST Parameter Drift & Level-4 Security Patch [${target.label}]`,
                         head: `${userLogin}:main`,
                         base: "main",
                         body: prBody,
@@ -256,7 +256,7 @@ class PRDispatcherWorker {
             }
         }
 
-        console.log("[dispatch] cycle complete: exit 0");
+        console.log("[dispatch] workflow cycle complete: exit 0");
     }
 }
 

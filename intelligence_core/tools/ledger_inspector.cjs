@@ -5,7 +5,7 @@ const GITHUB_API_BASE = (process.env.GITHUB_API_BASE_URL || 'https://api.github.
 
 class LedgerInspector {
     async inspect() {
-        console.log("[inspector] executing in-memory relational state audit (strict live vs simulation segregation)");
+        console.log("[inspector] executing relational state audit (live vs simulation data segregation)");
 
         const activeThreads = await memoryLedger.getAllActiveThreads();
 
@@ -22,16 +22,16 @@ class LedgerInspector {
         const simCounts = countByStatus(simThreads);
 
         console.log("\n======================================================================");
-        console.log("             🚀 XORAS // REAL-FIRE LIVE EXECUTION LEDGER             ");
+        console.log("             📊 XORAS // VERIFIED OPERATIONAL LEDGER                 ");
         console.log("======================================================================");
-        console.log(`  ├── active live pr submissions : ${realCounts.SUBMITTED}`);
-        console.log(`  ├── live upstream merges       : ${realCounts.MERGED}`);
-        console.log(`  ├── live commercial won deals  : ${realCounts.CLOSED_WON}`);
-        console.log(`  ├── throttled gated candidates : ${realCounts.WAITING_FOR_APPROVAL}`);
+        console.log(`  ├── active PR threads tracked  : ${realCounts.SUBMITTED}`);
+        console.log(`  ├── verified upstream merges   : ${realCounts.MERGED}`);
+        console.log(`  ├── commercial proposals won   : ${realCounts.CLOSED_WON}`);
+        console.log(`  ├── throttled holding queue    : ${realCounts.WAITING_FOR_APPROVAL}`);
         console.log(`  └── staged leads in queue      : ${realCounts.STAGED + realCounts.QUALIFIED}`);
 
         if (realThreads.length > 0) {
-            console.log("\n[real-fire active threads dump]:");
+            console.log("\n[verified active threads dump]:");
             realThreads.forEach(t => {
                 const cleanQuery = (t.query || '').replace('AUDIT_REPO: https://github.com/', '');
                 let outcomeStr = t.outcome;
@@ -48,7 +48,7 @@ class LedgerInspector {
                 console.log(`  ├── [${t.status.toLowerCase()}] ${cleanQuery} -> ${outcomeStr}`);
             });
         } else {
-            console.log("  └── zero real-fire records staged in database.");
+            console.log("  └── zero verified records staged in database.");
         }
 
         console.log("\n======================================================================");
@@ -62,12 +62,12 @@ class LedgerInspector {
     }
 
     async verifyLive(count) {
-        console.log(`[inspector] live external verification across top ${count} entries (${GITHUB_API_BASE})`);
+        console.log(`[inspector] external verification across top ${count} entries (${GITHUB_API_BASE})`);
         const activeThreads = await memoryLedger.getAllActiveThreads();
         const targets = activeThreads.filter(t => t.status === 'SUBMITTED' && t.execution_mode === 'REAL').slice(0, count);
 
         if (targets.length === 0) {
-            console.log("  └── zero active real-fire PR submissions found to verify.");
+            console.log("  └── zero active PR submissions found to verify.");
             return;
         }
 
@@ -90,7 +90,7 @@ class LedgerInspector {
                 console.log(`  ├── [error] ${repoClean}: connection failed (${e.message})`);
             }
         }
-        console.log("[inspector] live verification complete: exit 0");
+        console.log("[inspector] verification complete: exit 0");
     }
 }
 

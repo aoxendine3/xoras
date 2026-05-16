@@ -11,14 +11,14 @@ class RevOpsSingularityMaster {
     }
 
     async startSingularity() {
-        console.log(`[singularity] initializing simultaneous multi-agent ipc hub (mode: REAL / LIVE-FIRE)`);
-        console.log(`[singularity] strict institutional governance: zero mock simulation or placeholder workarounds`);
+        console.log(`[orchestrator] initializing multi-agent workflow hub (mode: live-fire)`);
+        console.log(`[orchestrator] strict institutional governance: zero mock simulation or placeholder workarounds`);
 
         const spawnWorker = (name, scriptBasename) => {
             const workerPath = path.join(__dirname, scriptBasename);
             const worker = fork(workerPath, ['--ipc', '--real'], { stdio: 'inherit' });
             worker.on('message', (msg) => this.handleIPCMessage(name, msg));
-            worker.on('error', (err) => console.error(`[singularity] worker error (${name}): ${err.message}`));
+            worker.on('error', (err) => console.error(`[orchestrator] worker error (${name}): ${err.message}`));
             worker.on('exit', (code) => {
                 delete this.workers[name];
             });
@@ -85,8 +85,8 @@ class RevOpsSingularityMaster {
                 break;
 
             case 'FATAL_AUTH_ERROR':
-                console.error(`[singularity] fatal auth rejection received from dispatcher: ${msg.payload.error}`);
-                console.error(`[singularity] aborting active pipeline. user intervention required in .env`);
+                console.error(`[orchestrator] fatal auth rejection received from dispatcher: ${msg.payload.error}`);
+                console.error(`[orchestrator] aborting active workflow. user intervention required in .env`);
                 this.terminateAllWorkers(1);
                 break;
         }
@@ -112,13 +112,13 @@ class RevOpsSingularityMaster {
     }
 
     reportAggregateMetricsAndExit() {
-        console.log(`\n[singularity] pipeline execution aggregate metrics:`);
-        console.log(`  ├── leads staged       : ${this.stats.staged}`);
-        console.log(`  ├── leads qualified    : ${this.stats.qualified}`);
-        console.log(`  ├── leads dispatched   : ${this.stats.dispatched}`);
-        console.log(`  ├── prs live monitored : ${this.stats.monitored}`);
-        console.log(`  └── proposals staged   : ${this.stats.won}`);
-        console.log("[singularity] simultaneous multi-agent loop complete: exit 0");
+        console.log(`\n[orchestrator] workflow execution aggregate metrics:`);
+        console.log(`  ├── leads staged         : ${this.stats.staged}`);
+        console.log(`  ├── leads qualified      : ${this.stats.qualified}`);
+        console.log(`  ├── leads dispatched     : ${this.stats.dispatched}`);
+        console.log(`  ├── pr threads tracked   : ${this.stats.monitored}`);
+        console.log(`  └── proposals staged     : ${this.stats.won}`);
+        console.log("[orchestrator] multi-agent workflow loop complete: exit 0");
         this.terminateAllWorkers(0);
     }
 

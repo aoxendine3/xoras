@@ -22,7 +22,7 @@ class PRMonitorWorker {
         const { id, repoUrl, repoHandle } = payload;
 
         if (this.isReal) {
-            console.log(`  ├── [monitor] checking live GitHub pull request status: ${repoHandle}`);
+            console.log(`  ├── [monitor] tracking submission status for: ${repoHandle}`);
             if (!this.token) {
                 console.log(`  ├── [pr_active] ${repoHandle}: awaiting authorization credentials`);
                 return;
@@ -43,19 +43,19 @@ class PRMonitorWorker {
                     const ourPr = prs.find(p => p.head && p.head.label && p.head.label.includes('aoxendine3'));
                     if (ourPr) {
                         if (ourPr.merged_at) {
-                            console.log(`  ├── [pr_merged] ${repoHandle} (live pr #${ourPr.number})`);
+                            console.log(`  ├── [pr_merged] ${repoHandle} (pr #${ourPr.number})`);
                             const updatedOutcome = JSON.stringify({
                                 merged_at: ourPr.merged_at,
                                 pr_number: ourPr.number,
-                                status_log: `merged (pr #${ourPr.number}) [LIVE]`
+                                status_log: `merged (pr #${ourPr.number})`
                             });
                             memoryLedger.tagOutcome(id, updatedOutcome, 'MERGED');
                             if (process.send) process.send({ event: 'PR_MERGED', payload: { id, repoUrl, repoHandle, prNumber: ourPr.number } });
                         } else {
-                            console.log(`  ├── [pr_active] ${repoHandle} (live pr #${ourPr.number} state: ${ourPr.state})`);
+                            console.log(`  ├── [pr_active] ${repoHandle} (pr #${ourPr.number} state: ${ourPr.state})`);
                         }
                     } else {
-                        console.log(`  ├── [pr_active] ${repoHandle} (live pr branch tracking pending upstream sync)`);
+                        console.log(`  ├── [pr_active] ${repoHandle} (branch tracking pending upstream sync)`);
                     }
                 } else {
                     console.log(`  ├── [pr_active] ${repoHandle} (http ${res.status})`);
@@ -84,7 +84,7 @@ class PRMonitorWorker {
     }
 
     async monitorActiveSubmissions() {
-        console.log(`[monitor] sweeping active pr submissions in cache (mode: ${this.isReal ? 'REAL' : 'SIMULATED'})`);
+        console.log(`[monitor] following PR review progress in cache (mode: ${this.isReal ? 'live' : 'simulated'})`);
 
         const activeSubmissions = await memoryLedger.getSubmittedLeads();
 
@@ -99,7 +99,7 @@ class PRMonitorWorker {
             await this.monitorSingleLead({ id: sub.id, repoUrl, repoHandle });
         }
 
-        console.log("[monitor] surveillance cycle complete: exit 0");
+        console.log("[monitor] monitoring cycle complete: exit 0");
         return { status: 'MONITOR_CYCLE_COMPLETE', tracked: activeSubmissions.length };
     }
 }
