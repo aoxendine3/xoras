@@ -10,22 +10,22 @@ While the XORAS Technical Reasoner enforces Level-4 AST code governance and pre-
 ```mermaid
 graph TD
     subgraph Multi-Channel Social Ingestion
-        X[X/Twitter AI Stream] --> |Founder Signals| Ingestion
-        LI[LinkedIn Executive Feed] --> |Growth Milestones| Ingestion
-        PH[Product Hunt & HN] --> |New Launches| Ingestion
+        X["X/Twitter AI Stream"] -->|"Founder Signals"| Ingestion["Ingestion"]
+        LI["LinkedIn Executive Feed"] -->|"Growth Milestones"| Ingestion
+        PH["Product Hunt & HN"] -->|"New Launches"| Ingestion
     end
 
     subgraph CEO Orchestrator Engine
-        Ingestion --> Triage[Semantic Triage & V8 Map Index]
-        Triage --> Reasoner[Executive Outreach Reasoner]
-        Reasoner --> |Option A: $2,000 Direct Pilot| Outbound[Multi-Channel DM / Email]
-        Reasoner --> |Option B: Open-Source Value| PR[Trigger Technical PR Sniper]
+        Ingestion --> Triage["Semantic Triage & V8 Map Index"]
+        Triage --> Reasoner["Executive Outreach Reasoner"]
+        Reasoner -->|"Option A: $2,000 Direct Pilot"| Outbound["Multi-Channel DM / Email"]
+        Reasoner -->|"Option B: Open-Source Value"| PR["Trigger Technical PR Sniper"]
     end
 
     subgraph Commercial Pipeline & RevOps
-        Outbound --> Negotiation[Deal Closing]
-        PR --> |Merged PR Verified| ClosingPitch[Post-Merge Commercial Onboarding]
-        Negotiation --> Won[CLOSED_WON: $1,000 - $2,000 MRR]
+        Outbound --> Negotiation["Deal Closing"]
+        PR -->|"Merged PR Verified"| ClosingPitch["Post-Merge Commercial Onboarding"]
+        Negotiation --> Won["CLOSED_WON: $1,000 - $2,000 MRR"]
         ClosingPitch --> Won
     end
 ```

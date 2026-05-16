@@ -10,16 +10,16 @@ XORAS eliminates database locking bottlenecks by introducing a dual-layer in-mem
 ```mermaid
 graph TD
     subgraph V8 Memory Isolate
-        Cache[this.cache: Grouped by Status]
-        Index[this.itemIndex: Keyed by ID]
-        Lookup[O 1 Direct Memory Access]
+        Cache["this.cache: Grouped by Status"]
+        Index["this.itemIndex: Keyed by ID"]
+        Lookup["O(1) Direct Memory Access"]
     end
     subgraph Disk Storage
-        SQLite[SQLite WAL Database]
+        SQLite["SQLite WAL Database"]
     end
-    Cache <--> |Sub-millisecond Read/Write| Lookup
-    Index <--> |Sub-millisecond Read/Write| Lookup
-    Lookup --> |Asynchronous Batch Sync| SQLite
+    Cache <-->|"Sub-millisecond Read/Write"| Lookup
+    Index <-->|"Sub-millisecond Read/Write"| Lookup
+    Lookup -->|"Asynchronous Batch Sync"| SQLite
 ```
 
 ### 2.1 Data Structures

@@ -6,10 +6,8 @@ This document provides a high-fidelity overview of the XORAS Release Integrity e
 XORAS is designed to provide engineering governance without the security risks associated with traditional SaaS security tools. 
 
 - **Local Execution**: The XORAS engine runs entirely within your existing CI/CD runner (GitHub Actions). 
-- **Code Privacy**: Source code is analyzed locally. XORAS1. **Policy Orchestrator**: Hardens the CI/CD pipeline via deterministic baselines.
-2. **Pilot Audit Log**: A local-first, JSON-based ledger for recording integrity events.
-3. **Drift Analyzer**: (BETA) Detects regressions in performance, dependency bloat, and permissioning.
-gressions, and architectural bloat.
+- **Code Privacy**: Source code is analyzed locally. XORAS does not exfiltrate ASTs or proprietary algorithms.
+- **Continuous Gating**: Intercepts parameter drift, secret exposure, and architectural bloat before release.
 
 ---
 
@@ -51,12 +49,12 @@ Every release event is recorded in a local-first JSON ledger.
 ## 3. Data Flow & Integration
 ```mermaid
 graph TD
-    PR[Pull Request] --> CI[GitHub Action Runner]
-    CI --> XORAS[XORAS Engine]
-    XORAS --> Analysis[Local Analysis: Perf/Sec/Arch]
-    Analysis --> Feedback[GitHub Step Summary]
-    Analysis --> Ledger[Update Integrity Ledger]
-    Ledger --> Report[Weekly Management Report]
+    PR["Pull Request"] --> CI["GitHub Action Runner"]
+    CI --> XORAS["XORAS Engine"]
+    XORAS --> Analysis["Local Analysis: Perf/Sec/Arch"]
+    Analysis --> Feedback["GitHub Step Summary"]
+    Analysis --> Ledger["Update Integrity Ledger"]
+    Ledger --> Report["Weekly Management Report"]
 ```
 
 ## 4. Security & Compliance

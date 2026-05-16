@@ -7,22 +7,22 @@ The XORAS Universal Brain is a protocol-mediated reasoning engine that moves bey
 ```mermaid
 graph TD
     subgraph Signal Ingestion
-        Telemetry[Inbound Repository & Enterprise Telemetry] --> Cortex[Reasoning Cortex]
+        Telemetry["Inbound Repository & Enterprise Telemetry"] --> Cortex["Reasoning Cortex"]
     end
     subgraph Autonomous Tonal Modulation Matrix
-        Cortex --> Tech[TECH: Engineers & Maintainers]
-        Cortex --> CSuite[C_SUITE: Enterprise Leadership]
-        Cortex --> Capital[CAPITAL: Investors & M&A]
-        Cortex --> Founder[FOUNDER: Solopreneurs & Indie]
-        Cortex --> Legal[LEGAL: Compliance & Auditors]
+        Cortex --> Tech["TECH: Engineers & Maintainers"]
+        Cortex --> CSuite["C_SUITE: Enterprise Leadership"]
+        Cortex --> Capital["CAPITAL: Investors & M&A"]
+        Cortex --> Founder["FOUNDER: Solopreneurs & Indie"]
+        Cortex --> Legal["LEGAL: Compliance & Auditors"]
     end
     subgraph Outbound Dispatch Gate
-        Tech --> Gate[Zero-Theatrics Verification Gate]
+        Tech --> Gate["Zero-Theatrics Verification Gate"]
         CSuite --> Gate
         Capital --> Gate
         Founder --> Gate
         Legal --> Gate
-        Gate --> Outbound[Authorized Vector: arvant.apex@gmail.com]
+        Gate --> Outbound["Authorized Vector: arvant.apex@gmail.com"]
     end
 ```
 

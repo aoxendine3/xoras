@@ -62,16 +62,16 @@ To achieve true linear scalability, Anthony engineered a dual-layer in-memory ca
 ```mermaid
 graph TD
     subgraph V8 Memory Isolate
-        Cache[this.cache: Grouped by Status]
-        Index[this.itemIndex: Keyed by ID]
-        Lookup[O 1 Direct Memory Access]
+        Cache["this.cache: Grouped by Status"]
+        Index["this.itemIndex: Keyed by ID"]
+        Lookup["O(1) Direct Memory Access"]
     end
     subgraph Disk Storage
-        SQLite[SQLite WAL Database]
+        SQLite["SQLite WAL Database"]
     end
-    Cache <--> |Sub-millisecond Read/Write| Lookup
-    Index <--> |Sub-millisecond Read/Write| Lookup
-    Lookup --> |Asynchronous Batch Sync| SQLite
+    Cache <-->|"Sub-millisecond Read/Write"| Lookup
+    Index <-->|"Sub-millisecond Read/Write"| Lookup
+    Lookup -->|"Asynchronous Batch Sync"| SQLite
 ```
 
 By decoupling state transitions from disk synchronicity, read and triage operations across 100+ parallel targets executed in sub-millisecond time (`0.99ms`), entirely eliminating database locking exceptions. SQLite Write-Ahead Logging (WAL) was implemented as an asynchronous background checkpoint to ensure absolute data persistence without sacrificing execution speed.
@@ -161,12 +161,12 @@ Anthony taught the runtime to analyze target audience metadata and dynamically m
 
 ```mermaid
 graph TD
-    Inbound[Telemetry & Context] --> Reasoner[Cognitive Synthesizer]
-    Reasoner --> |Engineers & Maintainers| Tech[TECH: POSIX Exit Codes & AST Diffs]
-    Reasoner --> |CEOs & Risk Officers| CSuite[C_SUITE: SSR Failure Risk & ROI]
-    Reasoner --> |VCs & M&A LPs| Capital[CAPITAL: Unit Economics & V8 Map Moat]
-    Reasoner --> |Indie Solopreneurs| Founder[FOUNDER: Practical Staging Checks]
-    Reasoner --> |Compliance Auditors| Legal[LEGAL: Immutable WAL Logs & SHA-256]
+    Inbound["Telemetry & Context"] --> Reasoner["Cognitive Synthesizer"]
+    Reasoner -->|"Engineers & Maintainers"| Tech["TECH: POSIX Exit Codes & AST Diffs"]
+    Reasoner -->|"CEOs & Risk Officers"| CSuite["C_SUITE: SSR Failure Risk & ROI"]
+    Reasoner -->|"VCs & M&A LPs"| Capital["CAPITAL: Unit Economics & V8 Map Moat"]
+    Reasoner -->|"Indie Solopreneurs"| Founder["FOUNDER: Practical Staging Checks"]
+    Reasoner -->|"Compliance Auditors"| Legal["LEGAL: Immutable WAL Logs & SHA-256"]
 ```
 
 ### 8.2 The Mandatory Output Gate
