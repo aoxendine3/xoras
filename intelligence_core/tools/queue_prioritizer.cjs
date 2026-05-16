@@ -1,6 +1,35 @@
 const memoryLedger = require('../memory_ledger.cjs');
 
 class QueuePrioritizer {
+    constructor() {
+        this.isIPC = process.argv.includes('--ipc');
+        if (this.isIPC) {
+            process.on('message', async (msg) => {
+                if (msg && msg.event === 'TRIAGE_LEAD') {
+                    await this.triageSingleLead(msg.payload);
+                }
+            });
+        }
+    }
+
+    async triageSingleLead(payload) {
+        const { id, repoUrl, issueTitle } = payload;
+        const cleanHandle = repoUrl.toLowerCase();
+        
+        const trophySignals = ['auth', 'protocol', 'cloud', 'engine', 'sentry', 'security', 'infrastructure', 'gravix', 'namuh-eng'];
+        const lowSignals = ['portfolio', 'portifolio', 'test', 'demo', 'sandbox', 'learning', '_r1'];
+
+        let tier = 'COMMERCIAL';
+        if (trophySignals.some(sig => cleanHandle.includes(sig))) tier = 'TROPHY';
+        else if (lowSignals.some(sig => cleanHandle.includes(sig))) tier = 'DISQUALIFIED';
+
+        if (tier === 'DISQUALIFIED') {
+            process.send({ event: 'LEAD_DISQUALIFIED', payload: { id, repoUrl } });
+        } else {
+            process.send({ event: 'LEAD_QUALIFIED', payload: { id, repoUrl, issueTitle, tier } });
+        }
+    }
+
     async prioritize() {
         const startMs = performance.now();
         const stagedLeads = await memoryLedger.getStagedLeads();
@@ -51,7 +80,7 @@ class QueuePrioritizer {
 
 module.exports = new QueuePrioritizer();
 
-if (require.main === module) {
+if (require.main === module && !process.argv.includes('--ipc')) {
     const prioritizer = new QueuePrioritizer();
     prioritizer.prioritize();
 }
