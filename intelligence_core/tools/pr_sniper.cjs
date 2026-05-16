@@ -7,6 +7,7 @@ class PRSniper {
         this.scratchDir = path.join(__dirname, '../../scratch/repos');
         this.githubToken = process.env.GITHUB_TOKEN || '';
         this.isIPC = process.argv.includes('--ipc');
+        this.stagedCount = 0;
         if (!fs.existsSync(this.scratchDir)) {
             fs.mkdirSync(this.scratchDir, { recursive: true });
         }
@@ -23,7 +24,7 @@ class PRSniper {
     }
 
     async huntBrokenRepos() {
-        if (!this.isIPC) console.log("[sniper] initiating harvest across 100 targets");
+        if (!this.isIPC) console.log("[sniper] initiating progression harvest across candidate pool (enforcing deduplication)");
 
         const candidatePool = [
             { repo_url: "https://github.com/tailwindlabs/tailwindcss", title: "AST verification of PostCSS plugin configuration drift" },
@@ -127,12 +128,13 @@ class PRSniper {
             { repo_url: "https://github.com/mochajs/mocha", title: "Uncaught exception handler stack trace extraction check" }
         ];
 
+        this.stagedCount = 0;
         for (const issue of candidatePool) {
             await this.stageAndAudit(issue);
         }
 
-        if (!this.isIPC) console.log(`[sniper] harvest complete (${candidatePool.length} leads staged)`);
-        return { status: 'HUNT_COMPLETE', trapped: candidatePool.length };
+        if (!this.isIPC) console.log(`[sniper] harvest complete (${this.stagedCount} fresh leads staged. skipped existing records)`);
+        return { status: 'HUNT_COMPLETE', staged: this.stagedCount };
     }
 
     async stageAndAudit(issue) {
@@ -144,14 +146,18 @@ class PRSniper {
         
         const existing = await memoryLedger.getLeadByQuery(queryStr);
         let leadId = 1;
-        if (!existing) {
-            const recorded = memoryLedger.recordEpisode(queryStr, manifestStr, 'STAGED');
-            if (recorded && recorded.lastInsertRowid) leadId = recorded.lastInsertRowid;
-        } else {
+        if (existing) {
+            if (existing.status !== 'STAGED' && existing.status !== 'QUALIFIED') {
+                // Strictly enforce deduplication: do not reset or re-harvest already dispatched records
+                return;
+            }
             leadId = existing.id;
-            memoryLedger.tagOutcome(leadId, 'PENDING', 'STAGED');
+        } else {
+            const recorded = memoryLedger.recordEpisode(queryStr, manifestStr, 'STAGED');
+            if (recorded && recorded.id) leadId = recorded.id;
         }
 
+        this.stagedCount++;
         const prDraft = this.generatePRDraft(issue.title, repoUrl);
         const draftPath = path.join(this.scratchDir, `${repoName}_PR_DRAFT.md`);
         fs.writeFileSync(draftPath, prDraft);
