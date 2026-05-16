@@ -28,7 +28,8 @@ xoras-core/
 │   ├── map-index.md          # Sub-millisecond O(1) Cache Architecture
 │   └── ast-drift.md          # Deterministic Next.js 15 Trapping
 ├── research/
-│   └── comm-spec.md          # Protocol-Mediated 5-Tone Reasoning Matrix
+│   ├── comm-spec.md          # Protocol-Mediated 5-Tone Reasoning Matrix
+│   └── autobiography.md      # The Sovereign Operator: Living History
 ├── intelligence_core/        # Execution Daemons & In-Memory Map
 └── scratch/                  # Isolated & Gitignored Experimental Sandbox
 ```
@@ -43,6 +44,7 @@ xoras-core/
 
 ### 2.3 General Research Documentation
 *   [Universal Agentic Communication & Cognition Specification](research/comm-spec.md): Protocol-mediated reasoning engine enforcing five distinct commercial profiles (`TECH`, `C_SUITE`, `CAPITAL`, `FOUNDER`, `LEGAL`) under a permanently locked unembellished communication covenant.
+*   [The Sovereign Operator: An Autobiography](research/autobiography.md): The living history and foundational bare-metal evolution of the XORAS enterprise architecture.
 
 ---
 
