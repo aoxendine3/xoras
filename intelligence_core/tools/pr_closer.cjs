@@ -6,8 +6,7 @@
  */
 
 const path = require('path');
-const Database = require('better-sqlite3');
-const db = new Database(path.join(__dirname, '../../AETHER_KNOWLEDGE_BASE/aether_brain.sqlite'));
+const memoryLedger = require('../memory_ledger.cjs');
 
 class PRCloser {
     constructor() {
@@ -20,7 +19,7 @@ class PRCloser {
         console.log("======================================================================");
         console.log("[PR_CLOSER] Sweeping institutional ledger for newly MERGED PR submissions...");
 
-        const mergedDeals = db.prepare('SELECT id, query, outcome FROM episodic_logs WHERE status = ?').all('MERGED');
+        const mergedDeals = await memoryLedger.getMergedLeads();
 
         if (mergedDeals.length === 0) {
             console.log("[PR_CLOSER] No un-pitched merged submissions found.");
@@ -39,7 +38,7 @@ class PRCloser {
     }
 
     async _postClosingPitch(deal) {
-        const repoUrl = deal.query.replace('AUDIT_REPO: ', '').trim();
+        const repoUrl = (deal.query || '').replace('AUDIT_REPO: ', '').trim();
         const repoHandle = repoUrl.replace(/^https?:\/\/github\.com\//i, '').replace(/\/$/, '').trim();
 
         let prNumber = 8;
@@ -75,7 +74,7 @@ If you want automated release finality guarding your repository permanently, let
             engagement_status: "CLOSED_WON (Pitched Level-4 Pilot)"
         });
 
-        db.prepare('UPDATE episodic_logs SET status = ?, outcome = ? WHERE id = ?').run('CLOSED_WON', updatedOutcome, deal.id);
+        memoryLedger.tagOutcome(deal.id, updatedOutcome, 'CLOSED_WON');
         console.log(`✅ [PR_WON] Success! Account ${repoHandle} officially upgraded to CLOSED_WON.`);
     }
 }

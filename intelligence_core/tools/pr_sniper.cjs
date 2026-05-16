@@ -7,8 +7,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const Database = require('better-sqlite3');
-const db = new Database(path.join(__dirname, '../../AETHER_KNOWLEDGE_BASE/aether_brain.sqlite'));
+const memoryLedger = require('../memory_ledger.cjs');
 
 class PRSniper {
     constructor() {
@@ -55,22 +54,22 @@ class PRSniper {
         }
 
         console.log("\n======================================================================");
-        console.log(`✅ Staging complete. Exactly ${candidatePool.length} enterprise PR targets harvested into SQLite memory.`);
+        console.log(`✅ Staging complete. Exactly ${candidatePool.length} enterprise PR targets harvested into memory index.`);
         return { status: 'HUNT_COMPLETE', trapped: candidatePool.length };
     }
 
     async stageAndAudit(issue) {
         const repoName = issue.repo_url.split('/').slice(-2).join('_');
-
         console.log(`\n[PR_SNIPER] Staging Target: ${issue.repo_url} -> "${issue.title}"`);
 
-        try {
-            const stmt = db.prepare('INSERT INTO episodic_logs (query, manifest, status, outcome) VALUES (?, ?, ?, ?)');
-            stmt.run(`AUDIT_REPO: ${issue.repo_url}`, JSON.stringify({ issue_title: issue.title, issue_url: `${issue.repo_url}/issues/1` }), 'STAGED', 'PENDING');
-        } catch (e) {
-            // If duplicate query, update status back to STAGED to re-arm the dispatch loop
-            const stmt = db.prepare('UPDATE episodic_logs SET status = ?, outcome = ?, manifest = ? WHERE query = ?');
-            stmt.run('STAGED', 'PENDING', JSON.stringify({ issue_title: issue.title, issue_url: `${issue.repo_url}/issues/1` }), `AUDIT_REPO: ${issue.repo_url}`);
+        const queryStr = `AUDIT_REPO: ${issue.repo_url}`;
+        const manifestStr = JSON.stringify({ issue_title: issue.title, issue_url: `${issue.repo_url}/issues/1` });
+        
+        const existing = await memoryLedger.getLeadByQuery(queryStr);
+        if (!existing) {
+            memoryLedger.recordEpisode(queryStr, manifestStr, 'STAGED');
+        } else {
+            memoryLedger.tagOutcome(existing.id, 'PENDING', 'STAGED');
         }
 
         const prDraft = this.generatePRDraft(issue.title, issue.repo_url);

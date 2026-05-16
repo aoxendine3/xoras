@@ -116,6 +116,16 @@ class MemoryLedger {
     }
 
     /**
+     * High-speed $O(1)$ memory lookup for merged leads.
+     */
+    async getMergedLeads() {
+        if (!this.isHydrated || (Date.now() - this.lastHydratedTimestamp > 60000)) {
+            await this.hydrateMemoryCache();
+        }
+        return this.cache.get('MERGED') || [];
+    }
+
+    /**
      * Direct $O(1)$ memory lookup for a specific item by ID.
      */
     async getLeadById(id) {
@@ -123,6 +133,48 @@ class MemoryLedger {
             await this.hydrateMemoryCache();
         }
         return this.itemIndex.get(id) || null;
+    }
+
+    /**
+     * O(N) memory scan for query exact match without hitting SQLite B-Tree.
+     */
+    async getLeadByQuery(queryStr) {
+        if (!this.isHydrated) {
+            await this.hydrateMemoryCache();
+        }
+        for (const [id, item] of this.itemIndex) {
+            if (item.query === queryStr) return item;
+        }
+        return null;
+    }
+
+    /**
+     * High-speed memory snapshot of pipeline counts.
+     */
+    async getStatsSummary() {
+        if (!this.isHydrated || (Date.now() - this.lastHydratedTimestamp > 60000)) {
+            await this.hydrateMemoryCache();
+        }
+        return {
+            STAGED: (this.cache.get('STAGED') || []).length,
+            SUBMITTED: (this.cache.get('SUBMITTED') || []).length,
+            MERGED: (this.cache.get('MERGED') || []).length,
+            CLOSED_WON: (this.cache.get('CLOSED_WON') || []).length
+        };
+    }
+
+    /**
+     * Returns combined list of all active operational threads.
+     */
+    async getAllActiveThreads() {
+        if (!this.isHydrated || (Date.now() - this.lastHydratedTimestamp > 60000)) {
+            await this.hydrateMemoryCache();
+        }
+        const staged = this.cache.get('STAGED') || [];
+        const submitted = this.cache.get('SUBMITTED') || [];
+        const merged = this.cache.get('MERGED') || [];
+        const won = this.cache.get('CLOSED_WON') || [];
+        return [...won, ...merged, ...submitted, ...staged];
     }
 
     recordEpisode(query, manifest, status) {
