@@ -2,8 +2,11 @@ const { execSync } = require('child_process');
 const path = require('path');
 
 class RevOpsMaster {
-    async executeFullLoop() {
-        console.log("XORAS REVOPS ENGINE: INITIATING MASTER LOOP\n");
+    async executeFullLoop(isReal = false) {
+        console.log("=========================================================================");
+        console.log("🚀 XORAS AUTONOMOUS REVOPS MASTER LOOP // SOVEREIGN ORCHESTRATION");
+        console.log(`   Mode: ${isReal ? 'AGGRESSIVE REAL-FIRE (Live Rest API)' : 'PARALLEL SIMULATED LEDGER TRIAGE'}`);
+        console.log("=========================================================================\n");
 
         try {
             console.log(">>> STAGE 1: PR SNIPER <<<");
@@ -13,7 +16,8 @@ class RevOpsMaster {
             this._runChildNode('queue_prioritizer.cjs');
 
             console.log("\n>>> STAGE 3: PR DISPATCHER <<<");
-            this._runChildNode('pr_dispatcher.cjs');
+            const dispatchFlag = isReal ? '--real' : '';
+            this._runChildNode(`pr_dispatcher.cjs ${dispatchFlag}`);
 
             console.log("\n>>> STAGE 4: SURVEILLANCE MONITOR <<<");
             this._runChildNode('pr_monitor.cjs');
@@ -27,15 +31,19 @@ class RevOpsMaster {
             console.log("\nMASTER REVOPS CYCLE COMPLETE: All systems synchronized.");
         } catch (error) {
             console.error("\n[REVOPS_FATAL] Master loop aborted due to child node failure:", error.message);
+            process.exit(1);
         }
     }
 
-    _runChildNode(scriptBasename) {
-        const fullPath = path.join(__dirname, scriptBasename);
+    _runChildNode(scriptArgs) {
+        const parts = scriptArgs.split(' ');
+        const basename = parts[0];
+        const flags = parts.slice(1).join(' ');
+        const fullPath = path.join(__dirname, basename);
         try {
-            execSync(`node "${fullPath}"`, { stdio: 'inherit' });
+            execSync(`node "${fullPath}" ${flags}`, { stdio: 'inherit' });
         } catch (e) {
-            throw new Error(`Child execution failed on ${scriptBasename}`);
+            throw new Error(`Child execution failed on ${basename}`);
         }
     }
 }
@@ -43,6 +51,8 @@ class RevOpsMaster {
 module.exports = new RevOpsMaster();
 
 if (require.main === module) {
+    const args = process.argv.slice(2);
+    const isReal = args.includes('--real');
     const master = new RevOpsMaster();
-    master.executeFullLoop();
+    master.executeFullLoop(isReal);
 }

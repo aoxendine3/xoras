@@ -21,15 +21,38 @@ async function generateRemediationPatch(repoHandle, issueTitle) {
     }
 }
 
-async function verifyAuthenticatedUser(token) {
-    const res = await fetch('https://api.github.com/user', {
+async function fetchWithAggressiveRetry(url, options = {}, retries = 3, delayMs = 500) {
+    for (let i = 0; i < retries; i++) {
+        try {
+            const res = await fetch(url, options);
+            if (res.status === 401 || res.status === 403) {
+                console.log(`  [RETRY #${i+1}] GitHub API returned HTTP_${res.status}. Aggressively re-attempting connection socket...`);
+                await new Promise(r => setTimeout(r, delayMs * Math.pow(2, i)));
+                if (i === retries - 1) return res;
+                continue;
+            }
+            return res;
+        } catch (e) {
+            console.log(`  [RETRY #${i+1}] Socket connection error (${e.message}). Re-attempting...`);
+            await new Promise(r => setTimeout(r, delayMs * Math.pow(2, i)));
+            if (i === retries - 1) throw e;
+        }
+    }
+}
+
+async function verifyAuthenticatedUserAggressive(token) {
+    const url = 'https://api.github.com/user';
+    const options = {
         headers: {
             'Authorization': `Bearer ${token}`,
             'Accept': 'application/vnd.github.v3+json',
             'User-Agent': 'XORAS_SOVEREIGN_NODE'
         }
-    });
-    if (!res.ok) throw new Error(`HTTP_${res.status} Token authentication failed.`);
+    };
+    const res = await fetchWithAggressiveRetry(url, options, 3);
+    if (!res.ok) {
+        throw new Error(`HTTP_${res.status} Authentication rejected across all retry attempts.`);
+    }
     const data = await res.json();
     return data.login;
 }
@@ -72,28 +95,35 @@ async function executeValidationSandbox() {
 }
 
 async function executeUniversalForkAndPullDispatch() {
-    console.log("XORAS AUTONOMOUS REAL GITHUB FORK-AND-PULL DISPATCH ENGINE\n");
+    console.log("XORAS AUTONOMOUS AGGRESSIVE REAL GITHUB DISPATCH ENGINE\n");
 
     const secretLock = process.env.AETHER_INSTITUTIONAL_SECRET;
     if (!secretLock || secretLock !== 'AETHER_DEFAULT_SECRET_2026') {
-        console.error("[SECURITY_LOCK] Proprietary dispatch engine locked. Valid AETHER_INSTITUTIONAL_SECRET password protocol required in .env.");
+        console.error("[SECURITY_LOCK] Proprietary dispatch engine locked. Valid password protocol required in .env.");
         process.exit(1);
     }
 
     const token = process.env.GITHUB_TOKEN;
     if (!token || !token.startsWith('ghp_')) {
-        console.error("[ERROR] Valid GITHUB_TOKEN (ghp_*) environment variable not configured in .env.");
-        console.error("Execution halted safely to prevent unauthenticated network failures.");
+        console.error("[ACTION REQUIRED] USER INTERVENTION REQUIRED.");
+        console.error("Valid GITHUB_TOKEN (ghp_*) environment variable not configured in .env.");
         process.exit(1);
     }
 
+    console.log("[AUTH] Establishing live authenticated session with aggressive backoff...");
+
     let userLogin = "aoxendine3";
     try {
-        userLogin = await verifyAuthenticatedUser(token);
-        console.log(`[AUTH] Authenticated session established for user: @${userLogin}`);
+        userLogin = await verifyAuthenticatedUserAggressive(token);
+        console.log(`[AUTH SUCCESS] Authenticated session established for user: @${userLogin}`);
     } catch (e) {
-        console.log(`[AUTH_WARNING] Unable to verify active GitHub session (${e.message}). Transitioning to secure validation sandbox...`);
-        return executeValidationSandbox();
+        console.error(`\n=============================================================================`);
+        console.error(`❌ [ACTION REQUIRED] USER INTERVENTION REQUIRED.`);
+        console.error(`   All aggressive live network authentication attempts rejected (${e.message}).`);
+        console.error(`   Ensure a valid Personal Access Token (PAT) with explicit 'repo' permissions`);
+        console.error(`   is configured in .env before re-attempting live execution.`);
+        console.error(`=============================================================================\n`);
+        process.exit(1);
     }
 
     const rows = await memoryLedger.getStagedLeads();
@@ -108,7 +138,7 @@ async function executeUniversalForkAndPullDispatch() {
         return;
     }
 
-    console.log(`[UNIVERSAL_DISPATCH] Executing secure Fork-and-Pull pipeline across top ${candidates.length} target repositories...\n`);
+    console.log(`[UNIVERSAL_DISPATCH] Executing aggressive Fork-and-Pull pipeline across top ${candidates.length} target repositories...\n`);
 
     for (const c of candidates) {
         const repoHandle = (c.query || '').replace(/^AUDIT_REPO:\s*https?:\/\/github\.com\//i, '').replace(/\/$/, '').trim();
@@ -116,17 +146,17 @@ async function executeUniversalForkAndPullDispatch() {
         
         try {
             const forkUrl = `https://api.github.com/repos/${repoHandle}/forks`;
-            const forkRes = await fetch(forkUrl, {
+            const forkRes = await fetchWithAggressiveRetry(forkUrl, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Accept': 'application/vnd.github.v3+json',
                     'User-Agent': 'XORAS_SOVEREIGN_NODE'
                 }
-            });
+            }, 3);
 
             if (forkRes.status === 401 || forkRes.status === 403) {
-                console.log(`  ➔ [HTTP_${forkRes.status}] Forking rejected due to token permission boundaries.`);
+                console.log(`  ➔ [HTTP_${forkRes.status}] Forking rejected across all aggressive retry attempts.`);
                 continue;
             }
 
@@ -141,7 +171,7 @@ async function executeUniversalForkAndPullDispatch() {
                 base: "main"
             };
 
-            const prRes = await fetch(prUrl, {
+            const prRes = await fetchWithAggressiveRetry(prUrl, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -149,7 +179,7 @@ async function executeUniversalForkAndPullDispatch() {
                     'User-Agent': 'XORAS_SOVEREIGN_NODE'
                 },
                 body: JSON.stringify(prPayload)
-            });
+            }, 3);
 
             if (prRes.status === 201) {
                 const prData = await prRes.json();
@@ -157,14 +187,14 @@ async function executeUniversalForkAndPullDispatch() {
             } else if (prRes.status === 422) {
                 console.log(`  ➔ [HTTP_422] Cross-fork branch '${userLogin}:ast-patch-next15' awaiting remote indexing synchronization.`);
             } else {
-                console.log(`  ➔ [HTTP_${prRes.status}] External upstream PR endpoint response.`);
+                console.log(`  ➔ [HTTP_${prRes.status}] External upstream PR response.`);
             }
         } catch (e) {
             console.log(`  ➔ [ERROR] Pipeline connection exception: ${e.message}`);
         }
     }
 
-    console.log("\n[UNIVERSAL_DISPATCH_COMPLETE] Sovereign fork-and-pull verification loop completed.");
+    console.log("\n[UNIVERSAL_DISPATCH_COMPLETE] Sovereign fork-and-pull loop complete.");
 }
 
 async function executeDispatch() {
