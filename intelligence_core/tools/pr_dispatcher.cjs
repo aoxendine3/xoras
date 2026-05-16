@@ -74,8 +74,8 @@ class PRDispatcherWorker {
         const repoHandle = repoUrl.replace(/^https?:\/\/github\.com\//i, '').replace(/\/$/, '').trim();
 
         if (this.isReal) {
-            if (!this.token || !this.token.startsWith('ghp_')) {
-                if (process.send) process.send({ event: 'FATAL_AUTH_ERROR', payload: { error: 'valid ghp_* token not configured in .env' } });
+            if (!this.token || (!this.token.startsWith('ghp_') && !this.token.startsWith('gho_'))) {
+                if (process.send) process.send({ event: 'FATAL_AUTH_ERROR', payload: { error: 'valid ghp_* or gho_* token not configured in .env' } });
                 return;
             }
 
@@ -125,8 +125,8 @@ class PRDispatcherWorker {
         }
 
         const token = process.env.GITHUB_TOKEN;
-        if (!token || !token.startsWith('ghp_')) {
-            console.error("[dispatch] error: user intervention required (valid ghp_* token not configured in .env)");
+        if (!token || (!token.startsWith('ghp_') && !token.startsWith('gho_'))) {
+            console.error("[dispatch] error: user intervention required (valid ghp_* or gho_* token not configured in .env)");
             process.exit(1);
         }
 
