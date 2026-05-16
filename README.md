@@ -22,27 +22,27 @@ This repository serves as the primary flagship hub for XORAS enterprise products
 ```text
 xoras-core/
 ├── products/
-│   ├── 01_LEVEL_4_SENTRY_PILOT.md       # CI/CD Security Hook ($2,000 / mo)
-│   └── 02_ZENITH_SOVEREIGN_NODE.md      # Air-Gapped Bare-Metal Security Vault
+│   ├── sentry-pilot.md       # CI/CD Security Hook ($2,000 / mo)
+│   └── zenith-node.md        # Air-Gapped Bare-Metal Security Vault
 ├── advanced_tech/
-│   ├── 01_IN_MEMORY_MAP_INDEXING.md     # Sub-millisecond O(1) Cache Architecture
-│   └── 02_AST_DRIFT_TRAPPING.md         # Deterministic Next.js 15 Trapping
+│   ├── map-index.md          # Sub-millisecond O(1) Cache Architecture
+│   └── ast-drift.md          # Deterministic Next.js 15 Trapping
 ├── research/
-│   └── 01_UNIVERSAL_COMMUNICATION.md    # Protocol-Mediated 5-Tone Reasoning Matrix
-├── intelligence_core/                   # Execution Daemons & In-Memory Map
-└── scratch/                             # Isolated & Gitignored Experimental Sandbox
+│   └── comm-spec.md          # Protocol-Mediated 5-Tone Reasoning Matrix
+├── intelligence_core/        # Execution Daemons & In-Memory Map
+└── scratch/                  # Isolated & Gitignored Experimental Sandbox
 ```
 
 ### 2.1 Outgoing Enterprise Products
-*   [Level-4 Continuous Integration Governance Sentry](products/01_LEVEL_4_SENTRY_PILOT.md): Autonomous AST security verification daemon preventing parameter panics and configuration drift before staging deployments.
-*   [Zenith Sovereign Node](products/02_ZENITH_SOVEREIGN_NODE.md): Cryptographically verified, air-gapped hardware and software orchestration appliance designed for high-net-worth institutional treasuries.
+*   [Level-4 Continuous Integration Governance Sentry](products/sentry-pilot.md): Autonomous AST security verification daemon preventing parameter panics and configuration drift before staging deployments.
+*   [Zenith Sovereign Node](products/zenith-node.md): Cryptographically verified, air-gapped hardware and software orchestration appliance designed for high-net-worth institutional treasuries.
 
 ### 2.2 Advanced Technical Specifications
-*   [O(1) Dual V8 In-Memory Cache Indexing](advanced_tech/01_IN_MEMORY_MAP_INDEXING.md): High-concurrency relational state synchronizer eliminating disk I/O lock contention (`SQLITE_BUSY`) under multi-core parallel workloads.
-*   [Abstract Syntax Tree (AST) Drift Trapping](advanced_tech/02_AST_DRIFT_TRAPPING.md): Deterministic visitor verification algorithm wrapping Next.js 15 asynchronous routing parameters and masking high-entropy secrets.
+*   [O(1) Dual V8 In-Memory Cache Indexing](advanced_tech/map-index.md): High-concurrency relational state synchronizer eliminating disk I/O lock contention (`SQLITE_BUSY`) under multi-core parallel workloads.
+*   [Abstract Syntax Tree (AST) Drift Trapping](advanced_tech/ast-drift.md): Deterministic visitor verification algorithm wrapping Next.js 15 asynchronous routing parameters and masking high-entropy secrets.
 
 ### 2.3 General Research Documentation
-*   [Universal Agentic Communication & Cognition Specification](research/01_UNIVERSAL_COMMUNICATION_COGNITION_SPEC.md): Protocol-mediated reasoning engine enforcing five distinct commercial profiles (`TECH`, `C_SUITE`, `CAPITAL`, `FOUNDER`, `LEGAL`) under a permanently locked unembellished communication covenant.
+*   [Universal Agentic Communication & Cognition Specification](research/comm-spec.md): Protocol-mediated reasoning engine enforcing five distinct commercial profiles (`TECH`, `C_SUITE`, `CAPITAL`, `FOUNDER`, `LEGAL`) under a permanently locked unembellished communication covenant.
 
 ---
 
@@ -67,6 +67,8 @@ Detects successfully merged Pull Requests instantly and posts a professional ins
 
 ### 3.6 The Inspector (`ledger_inspector.cjs`)
 Delivers an immediate, audited relational summary of all staged pipeline states directly to the terminal.
+
+> **Executive Governance:** For multi-channel social positioning, brand growth, and outbound founder outreach, review the [CEO Orchestrator Specification](docs/ceo-spec.md).
 
 ---
 
