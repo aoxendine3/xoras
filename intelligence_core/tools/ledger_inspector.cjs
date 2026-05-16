@@ -92,6 +92,13 @@ class LedgerInspector {
         }
         console.log("[inspector] verification complete: exit 0");
     }
+
+    async releaseQueue() {
+        console.log("[inspector] releasing throttled candidate holding queue...");
+        const res = memoryLedger.releaseHoldingQueue();
+        console.log(`  └── [released] ${res.releasedCount || 0} candidate leads un-gated back to STAGED status.`);
+        console.log("[inspector] queue release complete: exit 0");
+    }
 }
 
 module.exports = new LedgerInspector();
@@ -99,10 +106,15 @@ module.exports = new LedgerInspector();
 if (require.main === module) {
     const args = process.argv.slice(2);
     const verifyIndex = args.indexOf('--verify');
+    const releaseIndex = args.indexOf('--release');
+
     if (verifyIndex !== -1) {
         const count = parseInt(args[verifyIndex + 1], 10) || 5;
         const inspector = new LedgerInspector();
         inspector.verifyLive(count);
+    } else if (releaseIndex !== -1) {
+        const inspector = new LedgerInspector();
+        inspector.releaseQueue();
     } else {
         const inspector = new LedgerInspector();
         inspector.inspect();

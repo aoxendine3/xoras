@@ -267,6 +267,18 @@ class MemoryLedger {
             return { status: 'FAILED', reason: e.message };
         }
     }
+
+    releaseHoldingQueue() {
+        try {
+            const countStmt = db.prepare("SELECT count(*) as c FROM episodic_logs WHERE status = 'WAITING_FOR_APPROVAL'");
+            const count = countStmt.get().c;
+            db.prepare("UPDATE episodic_logs SET status = 'STAGED', outcome = 'PENDING' WHERE status = 'WAITING_FOR_APPROVAL'").run();
+            this.purgeCache();
+            return { status: 'QUEUE_RELEASED', releasedCount: count };
+        } catch (e) {
+            return { status: 'FAILED', reason: e.message };
+        }
+    }
 }
 
 module.exports = new MemoryLedger();
