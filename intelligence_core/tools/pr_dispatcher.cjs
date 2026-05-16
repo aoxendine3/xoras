@@ -24,8 +24,7 @@ async function executeDispatch() {
     console.log("XORAS AUTONOMOUS PARALLEL PR DISPATCH SEQUENCE\n");
 
     const startMs = performance.now();
-    const stagedRows = await memoryLedger.getStagedLeads();
-    const rows = stagedRows.slice(0, 25);
+    const rows = await memoryLedger.getStagedLeads();
     const durationMs = (performance.now() - startMs).toFixed(3);
 
     if (rows.length === 0) {
