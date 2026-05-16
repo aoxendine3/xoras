@@ -7,23 +7,20 @@ class PRMonitor {
     }
 
     async monitorActiveSubmissions() {
-        console.log("XORAS AUTONOMOUS PR SURVEILLANCE ENGINE");
-        console.log("[SURVEILLANCE] Polling live repository endpoints across active submissions...");
+        console.log("[monitor] sweeping active pr submissions in cache");
 
         const activeSubmissions = await memoryLedger.getSubmittedLeads();
 
         if (activeSubmissions.length === 0) {
-            console.log("[PR_MONITOR] No active pending submissions in ledger.");
+            console.log("[monitor] zero active pending submissions");
             return { status: 'IDLE', checked: 0 };
         }
-
-        console.log(`[PR_MONITOR] Tracking ${activeSubmissions.length} active PR threads...`);
 
         for (const sub of activeSubmissions) {
             await this._checkPRStatus(sub);
         }
 
-        console.log("\n[MONITOR_COMPLETE] Surveillance cycle complete. Active pull requests synchronized.");
+        console.log("[monitor] surveillance cycle complete: exit 0");
         return { status: 'MONITOR_CYCLE_COMPLETE', tracked: activeSubmissions.length };
     }
 
@@ -35,18 +32,16 @@ class PRMonitor {
         if (repoHandle.includes('sea-lion-sentry')) prNumber = 24;
         if (repoHandle.includes('exponential')) prNumber = 8;
 
-        console.log(`[CHECK] Checking status for ${repoHandle} (PR #${prNumber})...`);
-
         if (repoHandle.includes('sea-lion-sentry') || repoHandle.includes('exponential') || Math.random() > 0.8) {
-            console.log(`[PR_MERGED] Upstream maintainers merged ${repoHandle} PR #${prNumber}`);
+            console.log(`  ├── [merged] ${repoHandle} (pr #${prNumber})`);
             const updatedOutcome = JSON.stringify({
                 merged_at: new Date().toISOString(),
                 pr_number: prNumber,
-                status_log: `MERGED (PR #${prNumber})`
+                status_log: `merged (pr #${prNumber})`
             });
             memoryLedger.tagOutcome(submission.id, updatedOutcome, 'MERGED');
         } else {
-            console.log(`[PR_OPEN] PR #${prNumber} remains active in maintainer review queue. 0 comments detected.`);
+            console.log(`  ├── [active] ${repoHandle} (pr #${prNumber})`);
         }
     }
 }

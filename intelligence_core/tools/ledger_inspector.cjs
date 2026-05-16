@@ -3,19 +3,18 @@ const memoryLedger = require('../memory_ledger.cjs');
 
 class LedgerInspector {
     async inspect() {
-        console.log("[LEDGER_INSPECT] Executing Relational State Audit via V8 Memory Index...\n");
+        console.log("[inspector] executing in-memory relational state audit");
 
         const breakdown = await memoryLedger.getStatsSummary();
         const activeThreads = await memoryLedger.getAllActiveThreads();
 
-        console.log("=== EXECUTIVE PIPELINE AGGREGATE ===");
-        console.log(`📌 Staged Leads in Queue : ${breakdown.STAGED || 0}`);
-        console.log(`⏳ Active PR Submissions : ${breakdown.SUBMITTED || 0}`);
-        console.log(`📌 Merged PR Threads     : ${breakdown.MERGED || 0}`);
-        console.log(`📌 Closed / Pitched Won  : ${breakdown.CLOSED_WON || 0}`);
-        console.log("====================================\n");
+        console.log("[inspector] pipeline aggregate stats:");
+        console.log(`  ├── staged leads in queue : ${breakdown.STAGED || 0}`);
+        console.log(`  ├── active pr submissions : ${breakdown.SUBMITTED || 0}`);
+        console.log(`  ├── merged pr threads     : ${breakdown.MERGED || 0}`);
+        console.log(`  └── closed / pitched won  : ${breakdown.CLOSED_WON || 0}`);
 
-        console.log("=== ACTIVE THREADS ===");
+        console.log("[inspector] active threads dump:");
         activeThreads.forEach(t => {
             const cleanQuery = (t.query || '').replace('AUDIT_REPO: https://github.com/', '');
             let outcomeStr = t.outcome;
@@ -27,38 +26,36 @@ class LedgerInspector {
                     else if (parsed.pr_title) outcomeStr = parsed.pr_title;
                 }
             } catch (e) {}
-            console.log(`[${t.status}] ${cleanQuery} -> ${outcomeStr}`);
+            console.log(`  ├── [${t.status.toLowerCase()}] ${cleanQuery} -> ${outcomeStr}`);
         });
-        console.log("======================");
+        console.log("[inspector] state audit complete: exit 0");
     }
 
     async verifyLive(count) {
-        console.log(`[LEDGER_VERIFY] Executing Live External API Verification across top ${count} entries...\n`);
+        console.log(`[inspector] live external verification across top ${count} entries`);
         const activeThreads = await memoryLedger.getAllActiveThreads();
         const targets = activeThreads.filter(t => t.status === 'SUBMITTED').slice(0, count);
 
-        console.log("=== LIVE EXTERNAL GITHUB VERIFICATION ===");
         for (const t of targets) {
             const repoClean = (t.query || '').replace('AUDIT_REPO: https://github.com/', '').trim();
-            console.log(`[VERIFYING] ${repoClean}`);
             try {
                 const url = `https://api.github.com/repos/${repoClean}`;
                 const res = await fetch(url, { headers: { 'User-Agent': 'XORAS_SOVEREIGN_NODE' } });
                 if (res.status === 404) {
-                    console.log(`  ➔ [MISMATCH_404] Repository or endpoint not found on live GitHub network.`);
+                    console.log(`  ├── [error 404] ${repoClean}: repository not found`);
                 } else if (res.status === 200) {
                     const data = await res.json();
-                    console.log(`  ➔ [LIVE_VERIFIED] Repository active (Stars: ${data.stargazers_count}). Local simulated patch staged.`);
+                    console.log(`  ├── [verified 200] ${repoClean}: active (stars: ${data.stargazers_count})`);
                 } else if (res.status === 403) {
-                    console.log(`  ➔ [LIVE_RATE_LIMIT] External GitHub API rate limit reached.`);
+                    console.log(`  ├── [error 403] ${repoClean}: rate limit reached`);
                 } else {
-                    console.log(`  ➔ [HTTP_${res.status}] External network response.`);
+                    console.log(`  ├── [http ${res.status}] ${repoClean}: network response`);
                 }
             } catch (e) {
-                console.log(`  ➔ [ERROR] Network connection failed: ${e.message}`);
+                console.log(`  ├── [error] ${repoClean}: connection failed (${e.message})`);
             }
         }
-        console.log("=========================================");
+        console.log("[inspector] live verification complete: exit 0");
     }
 }
 

@@ -3,34 +3,31 @@ const path = require('path');
 
 class RevOpsMaster {
     async executeFullLoop(isReal = false) {
-        console.log("=========================================================================");
-        console.log("🚀 XORAS AUTONOMOUS REVOPS MASTER LOOP // SOVEREIGN ORCHESTRATION");
-        console.log(`   Mode: ${isReal ? 'AGGRESSIVE REAL-FIRE (Live Rest API)' : 'PARALLEL SIMULATED LEDGER TRIAGE'}`);
-        console.log("=========================================================================\n");
+        console.log(`[revops] init master loop (mode: ${isReal ? 'real' : 'simulated'})`);
 
         try {
-            console.log(">>> STAGE 1: PR SNIPER <<<");
+            console.log("[revops] stage 1/6: pr_sniper");
             this._runChildNode('pr_sniper.cjs');
 
-            console.log("\n>>> STAGE 2: TRIAGE ENGINE <<<");
+            console.log("[revops] stage 2/6: queue_prioritizer");
             this._runChildNode('queue_prioritizer.cjs');
 
-            console.log("\n>>> STAGE 3: PR DISPATCHER <<<");
+            console.log("[revops] stage 3/6: pr_dispatcher");
             const dispatchFlag = isReal ? '--real' : '';
             this._runChildNode(`pr_dispatcher.cjs ${dispatchFlag}`);
 
-            console.log("\n>>> STAGE 4: SURVEILLANCE MONITOR <<<");
+            console.log("[revops] stage 4/6: pr_monitor");
             this._runChildNode('pr_monitor.cjs');
 
-            console.log("\n>>> STAGE 5: POST-MERGE CLOSER <<<");
+            console.log("[revops] stage 5/6: pr_closer");
             this._runChildNode('pr_closer.cjs');
 
-            console.log("\n>>> STAGE 6: LEDGER AUDIT <<<");
+            console.log("[revops] stage 6/6: ledger_inspector");
             this._runChildNode('ledger_inspector.cjs');
 
-            console.log("\nMASTER REVOPS CYCLE COMPLETE: All systems synchronized.");
+            console.log("[revops] master loop complete: exit 0");
         } catch (error) {
-            console.error("\n[REVOPS_FATAL] Master loop aborted due to child node failure:", error.message);
+            console.error(`[revops] fatal error: ${error.message}`);
             process.exit(1);
         }
     }
@@ -43,7 +40,7 @@ class RevOpsMaster {
         try {
             execSync(`node "${fullPath}" ${flags}`, { stdio: 'inherit' });
         } catch (e) {
-            throw new Error(`Child execution failed on ${basename}`);
+            throw new Error(`child execution failed (${basename})`);
         }
     }
 }
