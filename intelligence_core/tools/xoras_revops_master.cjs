@@ -12,6 +12,9 @@ class RevOpsSingularityMaster {
 
     async startSingularity(isReal = false) {
         console.log(`[singularity] initializing simultaneous multi-agent ipc hub (mode: ${isReal ? 'real' : 'simulated'})`);
+        if (isReal) {
+            console.log(`[singularity] strict segregation: preventing simulated data from co-mingling in live ledger`);
+        }
 
         const spawnWorker = (name, scriptBasename, flags = []) => {
             const workerPath = path.join(__dirname, scriptBasename);
@@ -25,11 +28,11 @@ class RevOpsSingularityMaster {
             return worker;
         };
 
-        spawnWorker('sniper', 'pr_sniper.cjs');
-        spawnWorker('prioritizer', 'queue_prioritizer.cjs');
+        spawnWorker('sniper', 'pr_sniper.cjs', isReal ? ['--real'] : []);
+        spawnWorker('prioritizer', 'queue_prioritizer.cjs', isReal ? ['--real'] : []);
         spawnWorker('dispatcher', 'pr_dispatcher.cjs', isReal ? ['--real'] : ['--validate']);
-        spawnWorker('monitor', 'pr_monitor.cjs');
-        spawnWorker('closer', 'pr_closer.cjs');
+        spawnWorker('monitor', 'pr_monitor.cjs', isReal ? ['--real'] : []);
+        spawnWorker('closer', 'pr_closer.cjs', isReal ? ['--real'] : []);
 
         if (this.workers['sniper']) {
             this.workers['sniper'].send({ event: 'START_HARVEST' });

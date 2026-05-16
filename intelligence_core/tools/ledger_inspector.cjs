@@ -5,38 +5,71 @@ const GITHUB_API_BASE = (process.env.GITHUB_API_BASE_URL || 'https://api.github.
 
 class LedgerInspector {
     async inspect() {
-        console.log("[inspector] executing in-memory relational state audit");
+        console.log("[inspector] executing in-memory relational state audit (strict live vs simulation segregation)");
 
-        const breakdown = await memoryLedger.getStatsSummary();
         const activeThreads = await memoryLedger.getAllActiveThreads();
 
-        console.log("[inspector] pipeline aggregate stats:");
-        console.log(`  ├── staged leads in queue : ${breakdown.STAGED || 0}`);
-        console.log(`  ├── active pr submissions : ${breakdown.SUBMITTED || 0}`);
-        console.log(`  ├── merged pr threads     : ${breakdown.MERGED || 0}`);
-        console.log(`  └── closed / pitched won  : ${breakdown.CLOSED_WON || 0}`);
+        const realThreads = activeThreads.filter(t => t.execution_mode === 'REAL');
+        const simThreads = activeThreads.filter(t => t.execution_mode !== 'REAL');
 
-        console.log("[inspector] active threads dump:");
-        activeThreads.forEach(t => {
-            const cleanQuery = (t.query || '').replace('AUDIT_REPO: https://github.com/', '');
-            let outcomeStr = t.outcome;
-            try {
-                if (t.outcome && t.outcome.startsWith('{')) {
-                    const parsed = JSON.parse(t.outcome);
-                    if (parsed.status_log) outcomeStr = parsed.status_log;
-                    else if (parsed.engagement_status) outcomeStr = parsed.engagement_status;
-                    else if (parsed.pr_title) outcomeStr = parsed.pr_title;
-                }
-            } catch (e) {}
-            console.log(`  ├── [${t.status.toLowerCase()}] ${cleanQuery} -> ${outcomeStr}`);
-        });
-        console.log("[inspector] state audit complete: exit 0");
+        const countByStatus = (threads) => {
+            const counts = { STAGED: 0, QUALIFIED: 0, SUBMITTED: 0, MERGED: 0, CLOSED_WON: 0, WAITING_FOR_APPROVAL: 0 };
+            threads.forEach(t => { if (t.status in counts) counts[t.status]++; });
+            return counts;
+        };
+
+        const realCounts = countByStatus(realThreads);
+        const simCounts = countByStatus(simThreads);
+
+        console.log("\n======================================================================");
+        console.log("             🚀 XORAS // REAL-FIRE LIVE EXECUTION LEDGER             ");
+        console.log("======================================================================");
+        console.log(`  ├── active live pr submissions : ${realCounts.SUBMITTED}`);
+        console.log(`  ├── live upstream merges       : ${realCounts.MERGED}`);
+        console.log(`  ├── live commercial won deals  : ${realCounts.CLOSED_WON}`);
+        console.log(`  ├── throttled gated candidates : ${realCounts.WAITING_FOR_APPROVAL}`);
+        console.log(`  └── staged leads in queue      : ${realCounts.STAGED + realCounts.QUALIFIED}`);
+
+        if (realThreads.length > 0) {
+            console.log("\n[real-fire active threads dump]:");
+            realThreads.forEach(t => {
+                const cleanQuery = (t.query || '').replace('AUDIT_REPO: https://github.com/', '');
+                let outcomeStr = t.outcome;
+                try {
+                    if (t.outcome && t.outcome.startsWith('{')) {
+                        const parsed = JSON.parse(t.outcome);
+                        if (parsed.status_log) outcomeStr = parsed.status_log;
+                        else if (parsed.engagement_status) outcomeStr = parsed.engagement_status;
+                        else if (parsed.pr_title) outcomeStr = parsed.pr_title;
+                        else if (parsed.html_url) outcomeStr = parsed.html_url;
+                        else if (parsed.status) outcomeStr = parsed.status;
+                    }
+                } catch (e) {}
+                console.log(`  ├── [${t.status.toLowerCase()}] ${cleanQuery} -> ${outcomeStr}`);
+            });
+        } else {
+            console.log("  └── zero real-fire records staged in database.");
+        }
+
+        console.log("\n======================================================================");
+        console.log("              🛠️ XORAS // SIMULATED VALIDATION SANDBOX               ");
+        console.log("======================================================================");
+        console.log(`  ├── simulated commercial won   : ${simCounts.CLOSED_WON}`);
+        console.log(`  ├── simulated pr submissions   : ${simCounts.SUBMITTED}`);
+        console.log(`  └── simulated staged in queue  : ${simCounts.STAGED + simCounts.QUALIFIED}`);
+
+        console.log("\n[inspector] state audit complete: exit 0");
     }
 
     async verifyLive(count) {
         console.log(`[inspector] live external verification across top ${count} entries (${GITHUB_API_BASE})`);
         const activeThreads = await memoryLedger.getAllActiveThreads();
-        const targets = activeThreads.filter(t => t.status === 'SUBMITTED').slice(0, count);
+        const targets = activeThreads.filter(t => t.status === 'SUBMITTED' && t.execution_mode === 'REAL').slice(0, count);
+
+        if (targets.length === 0) {
+            console.log("  └── zero active real-fire PR submissions found to verify.");
+            return;
+        }
 
         for (const t of targets) {
             const repoClean = (t.query || '').replace('AUDIT_REPO: https://github.com/', '').trim();

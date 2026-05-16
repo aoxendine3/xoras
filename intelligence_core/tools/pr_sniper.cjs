@@ -7,6 +7,7 @@ class PRSniper {
         this.scratchDir = path.join(__dirname, '../../scratch/repos');
         this.githubToken = process.env.GITHUB_TOKEN || '';
         this.isIPC = process.argv.includes('--ipc');
+        this.isReal = process.argv.includes('--real');
         this.stagedCount = 0;
         if (!fs.existsSync(this.scratchDir)) {
             fs.mkdirSync(this.scratchDir, { recursive: true });
@@ -24,7 +25,7 @@ class PRSniper {
     }
 
     async huntBrokenRepos() {
-        if (!this.isIPC) console.log("[sniper] initiating progression harvest across candidate pool (enforcing deduplication)");
+        if (!this.isIPC) console.log(`[sniper] initiating progression harvest across candidate pool (mode: ${this.isReal ? 'REAL' : 'SIMULATED'})`);
 
         const candidatePool = [
             { repo_url: "https://github.com/tailwindlabs/tailwindcss", title: "AST verification of PostCSS plugin configuration drift" },
@@ -133,7 +134,7 @@ class PRSniper {
             await this.stageAndAudit(issue);
         }
 
-        if (!this.isIPC) console.log(`[sniper] harvest complete (${this.stagedCount} fresh leads staged. skipped existing records)`);
+        if (!this.isIPC) console.log(`[sniper] harvest complete (${this.stagedCount} fresh leads staged. mode: ${this.isReal ? 'REAL' : 'SIMULATED'})`);
         return { status: 'HUNT_COMPLETE', staged: this.stagedCount };
     }
 
@@ -148,12 +149,14 @@ class PRSniper {
         let leadId = 1;
         if (existing) {
             if (existing.status !== 'STAGED' && existing.status !== 'QUALIFIED') {
-                // Strictly enforce deduplication: do not reset or re-harvest already dispatched records
                 return;
             }
             leadId = existing.id;
+            if (this.isReal && existing.execution_mode !== 'REAL') {
+                memoryLedger.tagExecutionMode(leadId, 'REAL');
+            }
         } else {
-            const recorded = memoryLedger.recordEpisode(queryStr, manifestStr, 'STAGED');
+            const recorded = memoryLedger.recordEpisode(queryStr, manifestStr, 'STAGED', this.isReal ? 'REAL' : 'SIMULATED');
             if (recorded && recorded.id) leadId = recorded.id;
         }
 
