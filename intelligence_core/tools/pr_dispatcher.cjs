@@ -1,9 +1,3 @@
-/**
- * XORAS // Institutional PR Dispatch Engine
- * Location: /intelligence_core/tools/pr_dispatcher.cjs
- * Mandate: Parallel AST remediation generation and Git patch dispatching using high-speed in-memory hydration cache.
- */
-
 const memoryLedger = require('../memory_ledger.cjs');
 const bridge = require('../local_inference/tri_model_bridge.cjs');
 
@@ -11,7 +5,7 @@ const TIMEOUT_MS = 15000;
 
 async function generateRemediationPatch(repoHandle, issueTitle) {
     const prompt = `Generate a first-principles production AST patch or remediation script for repository '${repoHandle}' addressing issue: '${issueTitle}'. Output the exact git diff format.`;
-    const context = `Target repository: ${repoHandle}. Objective is absolute release stability and zero-drift security.`;
+    const context = `Target repository: ${repoHandle}. Objective is release stability and zero-drift security.`;
     
     console.log(`[INFERENCE] Invoking local Reasoner for ${repoHandle}...`);
     
@@ -27,9 +21,7 @@ async function generateRemediationPatch(repoHandle, issueTitle) {
 }
 
 async function executeDispatch() {
-    console.log("======================================================================");
-    console.log("            XORAS // AUTONOMOUS PARALLEL PR DISPATCH SEQUENCE         ");
-    console.log("======================================================================");
+    console.log("XORAS AUTONOMOUS PARALLEL PR DISPATCH SEQUENCE\n");
 
     const startMs = performance.now();
     const stagedRows = await memoryLedger.getStagedLeads();
@@ -41,7 +33,7 @@ async function executeDispatch() {
         return;
     }
 
-    console.log(`[DISPATCH] Processing ${rows.length} staged candidate PR targets in parallel via $O(1)$ memory cache (Hydration latency: ${durationMs}ms)...`);
+    console.log(`[DISPATCH] Processing ${rows.length} staged candidate PR targets in parallel via O(1) memory cache (Lookup: ${durationMs}ms)...`);
 
     const dispatchTasks = rows.map(async (r, i) => {
         const fullUrl = (r.query || '').replace(/^AUDIT_REPO:\s*/i, '').trim();
@@ -68,7 +60,7 @@ async function executeDispatch() {
 
     const results = await Promise.allSettled(dispatchTasks);
 
-    console.log("\n[RECORDING RESULTS TO IN-MEMORY LEDGER CACHE]");
+    console.log("\n[RECORDING RESULTS TO LEDGER CACHE]");
     for (const res of results) {
         if (res.status === 'fulfilled') {
             const { id, repoHandle, issueTitle, outcomePayload } = res.value;
@@ -79,8 +71,7 @@ async function executeDispatch() {
         }
     }
 
-    console.log("\n======================================================================");
-    console.log("✅ Parallel dispatch sequence completed. In-memory ledgers synchronized.");
+    console.log("\n[DISPATCH_COMPLETE] Parallel dispatch sequence completed. Ledgers synchronized.");
 }
 
 if (require.main === module) {

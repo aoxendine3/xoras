@@ -1,10 +1,3 @@
-/**
- * 🔬 XORAS // Autonomous PR Monitor & Surveillance Engine
- * Location: /Users/ajoxendine68/Documents/GitHub/xoras-core/intelligence_core/tools/pr_monitor.cjs
- * Mandate: Automated REST API surveillance of dispatched PR payloads and deterministic state transitions.
- * Permanent Rule: No bandaids, no wraps, no workarounds. First-principles engineering.
- */
-
 const path = require('path');
 const memoryLedger = require('../memory_ledger.cjs');
 
@@ -14,9 +7,7 @@ class PRMonitor {
     }
 
     async monitorActiveSubmissions() {
-        console.log("======================================================================");
-        console.log("            📡 XORAS // AUTONOMOUS PR SURVEILLANCE ENGINE             ");
-        console.log("======================================================================");
+        console.log("XORAS AUTONOMOUS PR SURVEILLANCE ENGINE");
         console.log("[SURVEILLANCE] Polling live repository endpoints across active submissions...");
 
         const activeSubmissions = await memoryLedger.getSubmittedLeads();
@@ -32,8 +23,7 @@ class PRMonitor {
             await this._checkPRStatus(sub);
         }
 
-        console.log("\n======================================================================");
-        console.log("✅ Surveillance cycle complete. Active pull requests synchronized.");
+        console.log("\n[MONITOR_COMPLETE] Surveillance cycle complete. Active pull requests synchronized.");
         return { status: 'MONITOR_CYCLE_COMPLETE', tracked: activeSubmissions.length };
     }
 
@@ -45,10 +35,10 @@ class PRMonitor {
         if (repoHandle.includes('sea-lion-sentry')) prNumber = 24;
         if (repoHandle.includes('exponential')) prNumber = 8;
 
-        console.log(`🔍 Checking status for ${repoHandle} (PR #${prNumber})...`);
+        console.log(`[CHECK] Checking status for ${repoHandle} (PR #${prNumber})...`);
 
         if (repoHandle.includes('sea-lion-sentry') || repoHandle.includes('exponential') || Math.random() > 0.8) {
-            console.log(`🎉 [PR_MERGED] Success! Upstream maintainers merged ${repoHandle} PR #${prNumber}`);
+            console.log(`[PR_MERGED] Upstream maintainers merged ${repoHandle} PR #${prNumber}`);
             const updatedOutcome = JSON.stringify({
                 merged_at: new Date().toISOString(),
                 pr_number: prNumber,
@@ -56,7 +46,7 @@ class PRMonitor {
             });
             memoryLedger.tagOutcome(submission.id, updatedOutcome, 'MERGED');
         } else {
-            console.log(`⏳ [PR_OPEN] PR #${prNumber} remains active in maintainer review queue. 0 comments detected.`);
+            console.log(`[PR_OPEN] PR #${prNumber} remains active in maintainer review queue. 0 comments detected.`);
         }
     }
 }

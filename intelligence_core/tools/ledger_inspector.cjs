@@ -1,15 +1,9 @@
-/**
- * XORAS CORE: Relational Ledger Inspector
- * Purpose: Audits aether_brain.sqlite, verifies all operational state transitions, 
- * and outputs an executive summary of active B2B prospecting threads.
- */
-
 const path = require('path');
 const memoryLedger = require('../memory_ledger.cjs');
 
 class LedgerInspector {
     async inspect() {
-        console.log("📊 [LEDGER_INSPECT] Executing Relational State Audit via V8 Memory Index...\n");
+        console.log("[LEDGER_INSPECT] Executing Relational State Audit via V8 Memory Index...\n");
 
         const breakdown = await memoryLedger.getStatsSummary();
         const activeThreads = await memoryLedger.getAllActiveThreads();
@@ -17,11 +11,11 @@ class LedgerInspector {
         console.log("=== EXECUTIVE PIPELINE AGGREGATE ===");
         console.log(`📌 Staged Leads in Queue : ${breakdown.STAGED || 0}`);
         console.log(`⏳ Active PR Submissions : ${breakdown.SUBMITTED || 0}`);
-        console.log(`🎉 Merged PR Threads     : ${breakdown.MERGED || 0}`);
-        console.log(`🏆 Closed / Pitched Won  : ${breakdown.CLOSED_WON || 0}`);
+        console.log(`📌 Merged PR Threads     : ${breakdown.MERGED || 0}`);
+        console.log(`📌 Closed / Pitched Won  : ${breakdown.CLOSED_WON || 0}`);
         console.log("====================================\n");
 
-        console.log("=== ACTIVE OPERATIONAL THREADS ===");
+        console.log("=== ACTIVE THREADS ===");
         activeThreads.forEach(t => {
             const cleanQuery = (t.query || '').replace('AUDIT_REPO: https://github.com/', '');
             let outcomeStr = t.outcome;
@@ -35,7 +29,7 @@ class LedgerInspector {
             } catch (e) {}
             console.log(`[${t.status}] ${cleanQuery} -> ${outcomeStr}`);
         });
-        console.log("==================================");
+        console.log("======================");
     }
 }
 
