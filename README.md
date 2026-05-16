@@ -24,9 +24,9 @@ npm run revops
 
 ---
 
-## 🛠️ The 5-Stage RevOps Master Loop (`xoras_revops_master.cjs`)
+## 🛠️ The 6-Stage RevOps Master Loop (`xoras_revops_master.cjs`)
 
-When `npm run revops` is executed, the runtime orchestrates five specialized daemons synchronously:
+When `npm run revops` is executed, the runtime orchestrates six specialized daemons synchronously via an $O(1)$ V8 in-memory hydration index:
 
 ### 1. The PR Sniper (`pr_sniper.cjs`)
 Queries GitHub REST APIs for enterprise repositories suffering from build failures, Next.js dynamic routing parameter drift, or secret exposure. Clones candidate repositories into `/scratch/repos/` and formats tailored PR patch markdown files.
@@ -34,14 +34,19 @@ Queries GitHub REST APIs for enterprise repositories suffering from build failur
 ### 2. The Triage Engine (`queue_prioritizer.cjs`)
 Ranks staged target repositories based on security profile and commercial viability into Tier 1 (Trophy) or Tier 2 (Commercial Reserve), ensuring zero CPU cycles are wasted on unqualified accounts.
 
-### 3. The Surveillance Daemon (`pr_monitor.cjs`)
+### 3. The Parallel Dispatcher (`pr_dispatcher.cjs`)
+Executes parallel AST analysis and generates localized reasoner inferences across all triaged candidate targets.
+
+### 4. The Surveillance Daemon (`pr_monitor.cjs`)
 Continuously polls active Pull Request review queues on GitHub, tracking developer comments, CI test runner pass states, and merge events.
 
-### 4. The Closer (`pr_closer.cjs`)
+### 5. The Closer (`pr_closer.cjs`)
 Detects successfully merged Pull Requests instantly and posts a professional institutional follow-up offering our $2,000 Level-4 sentry pilot. It dynamically pairs this with an exclusive **50% Open-Source Maintainer Incentive** ($1,000 total + fee waiver).
 
-### 5. The Inspector (`ledger_inspector.cjs`)
+### 6. The Inspector (`ledger_inspector.cjs`)
 Delivers an immediate, audited relational summary of all staged pipeline states directly to the terminal.
+
+> 👑 **Executive Governance:** For multi-channel social positioning, viral brand growth, and outbound founder outreach, review the [CEO Orchestrator (Social + Growth) Specification](docs/CEO_ORCHESTRATOR_SPEC.md).
 
 ---
 
