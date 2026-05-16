@@ -14,15 +14,17 @@ class PRCloserWorker {
     }
 
     async engageSingleDeal(payload) {
-        const { id, repoUrl, repoHandle, prNumber } = payload;
-        console.log(`  ├── [outreach] engaging ${repoHandle} (pr #${prNumber || 8})`);
+        const { id, repoUrl, repoHandle, prNumber, tierLabel } = payload;
+        const labelStr = tierLabel ? ` [${tierLabel}]` : '';
+        console.log(`  ├── [outreach] engaging ${repoHandle} (pr #${prNumber || 8})${labelStr}`);
 
         const updatedOutcome = JSON.stringify({
             closed_won_at: new Date().toISOString(),
             pr_number: prNumber || 8,
             commercial_value: 2000,
             discount_applied: "50%",
-            engagement_status: "closed_won (pitched pilot)"
+            engagement_status: `closed_won (pitched pilot)${labelStr}`,
+            outreach_tier: tierLabel || "PRIMARY_TARGET"
         });
 
         memoryLedger.tagOutcome(id, updatedOutcome, 'CLOSED_WON');
@@ -32,6 +34,7 @@ class PRCloserWorker {
 
     async engageMergedDeals() {
         console.log("[closer] sweeping ledger for newly merged accounts");
+        console.log("[closer] policy enforcement: strict throttling (1 primary + 1 secondary max)");
 
         const mergedDeals = await memoryLedger.getMergedLeads();
 
@@ -40,7 +43,17 @@ class PRCloserWorker {
             return { status: 'IDLE', engaged: 0 };
         }
 
-        for (const deal of mergedDeals) {
+        const primaryDeal = mergedDeals[0];
+        const secondaryDeal = mergedDeals.length > 1 ? mergedDeals[1] : null;
+        const throttledDeals = mergedDeals.slice(2);
+
+        const dealsToProcess = [
+            { deal: primaryDeal, label: "PRIMARY_TARGET" },
+            ...(secondaryDeal ? [{ deal: secondaryDeal, label: "SECONDARY_TARGET" }] : [])
+        ];
+
+        for (const target of dealsToProcess) {
+            const deal = target.deal;
             const repoUrl = (deal.query || '').replace('AUDIT_REPO: ', '').trim();
             const repoHandle = repoUrl.replace(/^https?:\/\/github\.com\//i, '').replace(/\/$/, '').trim();
             let prNumber = 8;
@@ -48,11 +61,19 @@ class PRCloserWorker {
                 const parsed = JSON.parse(deal.outcome);
                 if (parsed.pr_number) prNumber = parsed.pr_number;
             } catch (e) {}
-            await this.engageSingleDeal({ id: deal.id, repoUrl, repoHandle, prNumber });
+            await this.engageSingleDeal({ id: deal.id, repoUrl, repoHandle, prNumber, tierLabel: target.label });
+        }
+
+        if (throttledDeals.length > 0) {
+            console.log(`\n[closer] outreach limit reached. throttling remaining ${throttledDeals.length} accounts`);
+            console.log(`[closer] status update: halting commercial outreach. entering WAITING_FOR_APPROVAL state`);
+            for (const rem of throttledDeals) {
+                memoryLedger.tagOutcome(rem.id, JSON.stringify({ status: "WAITING_FOR_APPROVAL", reason: "outreach limit reached (1 primary + 1 secondary max)" }), 'MERGED');
+            }
         }
 
         console.log("[closer] commercial pitch cycle complete: exit 0");
-        return { status: 'CLOSE_CYCLE_COMPLETE', engaged: mergedDeals.length };
+        return { status: 'CLOSE_CYCLE_COMPLETE', engaged: dealsToProcess.length };
     }
 }
 

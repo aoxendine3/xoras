@@ -117,6 +117,7 @@ class PRDispatcherWorker {
 
     async executeUniversalForkAndPullDispatch() {
         console.log(`[dispatch] initiating aggressive real-fire fork-and-pull engine (${GITHUB_API_BASE})`);
+        console.log(`[dispatch] policy enforcement: strict throttling (1 primary + 1 secondary max)`);
 
         const secretLock = process.env.AETHER_INSTITUTIONAL_SECRET;
         if (!secretLock || secretLock !== 'AETHER_DEFAULT_SECRET_2026') {
@@ -141,21 +142,32 @@ class PRDispatcherWorker {
         }
 
         const rows = await memoryLedger.getStagedLeads();
-        let candidates = rows.slice(0, 5);
-        if (candidates.length === 0) {
-            const active = await memoryLedger.getAllActiveThreads();
-            candidates = active.filter(t => t.status === 'SUBMITTED').slice(0, 5);
+        const activeThreads = await memoryLedger.getAllActiveThreads();
+
+        let candidateRows = rows.filter(r => r.status === 'STAGED' || r.status === 'QUALIFIED');
+        if (candidateRows.length === 0) {
+            candidateRows = activeThreads.filter(t => t.status === 'SUBMITTED');
         }
 
-        if (candidates.length === 0) {
-            console.log("[dispatch] no candidate leads available");
+        if (candidateRows.length === 0) {
+            console.log("[dispatch] no candidate leads available in queue");
             return;
         }
 
-        for (const c of candidates) {
+        const primaryCandidate = candidateRows[0];
+        const secondaryCandidate = candidateRows.length > 1 ? candidateRows[1] : null;
+        const throttledCandidates = candidateRows.slice(2);
+
+        const targetsToProcess = [
+            { lead: primaryCandidate, label: "PRIMARY_TARGET" },
+            ...(secondaryCandidate ? [{ lead: secondaryCandidate, label: "SECONDARY_TARGET" }] : [])
+        ];
+
+        for (const target of targetsToProcess) {
+            const c = target.lead;
             const repoHandle = (c.query || '').replace(/^AUDIT_REPO:\s*https?:\/\/github\.com\//i, '').replace(/\/$/, '').trim();
             const repoName = repoHandle.split('/')[1] || repoHandle;
-            console.log(`[dispatch] processing target: ${repoHandle}`);
+            console.log(`[dispatch] executing [${target.label}]: ${repoHandle}`);
             
             try {
                 const forkUrl = `${GITHUB_API_BASE}/repos/${repoHandle}/forks`;
@@ -169,11 +181,11 @@ class PRDispatcherWorker {
                 }, 3);
 
                 if (forkRes.status === 401 || forkRes.status === 403) {
-                    console.log(`[dispatch] fork rejected: http ${forkRes.status}`);
+                    console.log(`  ├── [error] fork rejected: http ${forkRes.status}`);
                     continue;
                 }
 
-                console.log(`[dispatch] fork success: @${userLogin}/${repoName}`);
+                console.log(`  ├── [fork_success] @${userLogin}/${repoName}`);
                 
                 const patch = await this.generateRemediationPatch(repoHandle, "Level-4 AST Parameter Gating");
                 const prUrl = `${GITHUB_API_BASE}/repos/${repoHandle}/pulls`;
@@ -188,7 +200,7 @@ class PRDispatcherWorker {
                         'User-Agent': 'XORAS_SOVEREIGN_NODE'
                     },
                     body: JSON.stringify({
-                        title: "fix(core): AST Parameter Drift & Level-4 Security Sentry",
+                        title: `fix(core): AST Parameter Drift & Level-4 Security Sentry [${target.label}]`,
                         head: `${userLogin}:main`,
                         base: "main",
                         body: prBody,
@@ -199,15 +211,23 @@ class PRDispatcherWorker {
                 if (prRes.status === 201) {
                     const prData = await prRes.json();
                     console.log(`  ├── [pr_success] #${prData.number} -> ${prData.html_url}`);
-                    memoryLedger.tagOutcome(c.id, JSON.stringify({ html_url: prData.html_url, submitted_at: new Date().toISOString() }), 'SUBMITTED');
+                    memoryLedger.tagOutcome(c.id, JSON.stringify({ html_url: prData.html_url, submitted_at: new Date().toISOString(), outreach_tier: target.label }), 'SUBMITTED');
                 } else if (prRes.status === 422) {
                     console.log(`  ├── [pr_verified] @${userLogin}/${repoName}: PR branch verified clean or already active`);
-                    memoryLedger.tagOutcome(c.id, JSON.stringify({ status: "PR_ALREADY_ACTIVE", submitted_at: new Date().toISOString() }), 'SUBMITTED');
+                    memoryLedger.tagOutcome(c.id, JSON.stringify({ status: "PR_ALREADY_ACTIVE", submitted_at: new Date().toISOString(), outreach_tier: target.label }), 'SUBMITTED');
                 } else {
                     console.log(`  ├── [pr_status] http ${prRes.status}`);
                 }
             } catch (e) {
-                console.log(`[dispatch] connection exception: ${e.message}`);
+                console.log(`  ├── [connection_exception] ${e.message}`);
+            }
+        }
+
+        if (throttledCandidates.length > 0) {
+            console.log(`\n[dispatch] policy enforcement: throttling remaining ${throttledCandidates.length} candidate leads`);
+            console.log(`[dispatch] status update: halting automation. entering WAITING_FOR_APPROVAL state`);
+            for (const rem of throttledCandidates) {
+                memoryLedger.tagOutcome(rem.id, JSON.stringify({ status: "WAITING_FOR_APPROVAL", reason: "outreach limit reached (1 primary + 1 secondary max)" }), 'STAGED');
             }
         }
 
