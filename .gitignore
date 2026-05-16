@@ -1,4 +1,13 @@
-
-# XORAS Audit Artifacts
-AUDIT_FINALITY.jws
-REMEDIATION_PLAN.md
+node_modules/
+dist/
+.env
+AETHER_KNOWLEDGE_BASE/
+scratch/
+google-cloud-sdk/
+*.sqlite
+*.db
+*.log
+*.jws
+*.zip
+*.tar.gz
+*.bak

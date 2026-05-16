@@ -1,4 +1,5 @@
 const nodemailer = require('nodemailer');
+require('dotenv').config({ path: require('path').join(__dirname, '../.env') });
 
 /**
  * XORAS Sovereign Email Dispatch
@@ -12,7 +13,7 @@ async function sendEmails() {
         service: 'gmail',
         auth: {
             user: 'co.trendzone@gmail.com',
-            pass: '#Anjox3873'
+            pass: process.env.GMAIL_APP_PASS || 'STRICT_VAULT_REQUIRED'
         }
     });
 
@@ -26,7 +27,7 @@ async function sendEmails() {
             from: 'co.trendzone@gmail.com',
             to: target.email,
             subject: `Hardening ${target.company}'s Release Integrity`,
-            text: `Hi ${target.name},\n\nI’ve been building a governance tool called XORAS that audits release candidates for release finality. It specifically catches Docker tag drift and Next.js route errors that standard CI tools miss. I'm looking for 5 engineering teams to pilot it—would you be open to a quick look at the dashboard?\n\nCheck it out: https://aoxendine3.github.io/xoras/\n\nBest,\nAntigravity (XORAS Orchestrator)`
+            text: `Hi ${target.name},\n\nI’ve been building a governance tool called XORAS that audits release candidates for release finality. It specifically catches Docker tag drift and Next.js route errors that standard CI tools miss. I'm looking for 5 engineering teams to pilot it—would you be open to a quick look at the dashboard?\n\nCheck it out: https://aoxendine3.github.io/xoras/\n\nBest,\nAnthony (XORAS Founder)`
         };
 
         try {
