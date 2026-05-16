@@ -11,7 +11,8 @@
     "intel": "node intelligence.js",
     "local": "node scripts/local_audit.js",
     "setup": "node scripts/setup_xoras.js",
-    "revops": "node intelligence_core/tools/xoras_revops_master.cjs"
+    "revops": "node intelligence_core/tools/xoras_revops_master.cjs",
+    "test": "node intelligence_core/tests/memory_engine.test.cjs && node intelligence_core/tests/memory_index.test.cjs && node intelligence_core/tests/v8_benchmark.test.cjs"
   },
   "dependencies": {
     "@actions/core": "^1.10.1",
