@@ -7,7 +7,7 @@ let DANGEROUS_PATTERNS = [
   /system\s*:\s*ignore|override|forget|new instructions/i,
   /DAN|do anything now|jailbreak/i,
   /<|>|[\[\]]{2,}|```/g,
-  /(?i)(?:you are now|act as|pretend you are|role-play)/,
+  /(?:you are now|act as|pretend you are|role-play)/i,
   /base64|encoded|hex|rot13/i,
   /repeat this|ignore previous|new rules/i,
   /disregard all prior instructions/i
