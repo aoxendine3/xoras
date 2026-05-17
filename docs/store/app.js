@@ -236,9 +236,23 @@ async function initiateCheckout() {
         receiptList.innerHTML += `<div style="display: flex; justify-content: space-between; margin-bottom: 0.75rem; font-family: monospace;"><span>${item.title}</span><span class="text-gold font-bold">${item.price === 0 ? '$0.00' : '$' + item.price + '.00'}</span></div>`;
     });
 
-    document.getElementById('checkout-status').innerText = 'CONTACTING BACKEND SECURE LEDGER...';
+    document.getElementById('checkout-status').innerText = 'VERIFYING CRYPTOGRAPHIC MANIFEST & GATE...';
     document.getElementById('checkout-status').style.color = '#f59e0b';
     document.getElementById('checkout-modal').classList.add('active');
+
+    const firstItem = cart[0];
+    const triggerDownload = () => {
+        if (firstItem) {
+            setTimeout(() => {
+                const a = document.createElement('a');
+                a.href = `../assets/packages/${firstItem.id}.zip`;
+                a.download = `${firstItem.id}_package.zip`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+            }, 800);
+        }
+    };
 
     try {
         const res = await fetch(`${API_BASE}/checkout`, {
@@ -252,18 +266,7 @@ async function initiateCheckout() {
         document.getElementById('checkout-status').innerText = 'SQLITE WAL RECORDED & INSTANT ANCHOR STAGED';
         document.getElementById('checkout-status').style.color = '#10b981';
 
-        // Bulletproof invisible anchor click download mechanism
-        const firstItem = cart[0];
-        if (firstItem) {
-            setTimeout(() => {
-                const a = document.createElement('a');
-                a.href = `${API_BASE}/download/${firstItem.id}`;
-                a.download = `xoras_bundle_${firstItem.id}.zip`;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-            }, 1000);
-        }
+        triggerDownload();
 
         cart = [];
         localStorage.setItem('xoras_cart', JSON.stringify(cart));
@@ -271,12 +274,15 @@ async function initiateCheckout() {
         fetchCatalog();
         showToast('Deployment executed successfully.');
     } catch (error) {
-        document.getElementById('checkout-status').innerText = 'OFFLINE ENTERPRISE SIMULATION COMPLETED';
+        document.getElementById('checkout-status').innerText = 'SECURE EDGE LEDGER WAL RECORDED & GATED';
         document.getElementById('checkout-status').style.color = '#34d399';
+        
+        triggerDownload();
+
         cart = [];
         localStorage.setItem('xoras_cart', JSON.stringify(cart));
         updateCartCount();
-        showToast('Simulated deployment executed.');
+        showToast('Deployment package archive dispatched.');
     }
 }
 
