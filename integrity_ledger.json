@@ -1,36 +1,11 @@
-{
-  "project": "XORAS",
-  "history": [
-    {
-      "id": "REV-001",
-      "timestamp": "2026-05-12T00:00:00Z",
-      "metrics": {
-        "latency": 15,
-        "security_findings": 0,
-        "dependency_count": 40,
-        "docker_tag_drift": false
-      }
-    },
-    {
-      "id": "REV-002",
-      "timestamp": "2026-05-12T04:17:00Z",
-      "metrics": {
-        "latency": 18,
-        "security_findings": 0,
-        "dependency_count": 42,
-        "docker_tag_drift": false
-      }
-    }
-  ],
-  "audit_log": [
-    {
-      "id": "AUD-1001",
-      "timestamp": "2026-05-12T04:18:00Z",
-      "type": "REGISTRY_VERIFICATION",
-      "details": {
-        "reason": "Routine Registry Finality Check",
-        "status": "HEALTHY"
-      }
-    }
-  ]
-}
+[
+  {
+    "id": "wp_audit_1779002587391",
+    "timestamp": "2026-05-17T07:23:07.391Z",
+    "event": "WORDPRESS_API_BRIDGE_VERIFY",
+    "target": "https://superanjox-mjyex.wordpress.com",
+    "signature": "bdfff8c6d6b7c6caf540553a644b6ad001fedd974622fa60a4b19ae1426adb9c",
+    "coherence": 1,
+    "status": "SUCCESS"
+  }
+]
