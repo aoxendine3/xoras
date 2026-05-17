@@ -1,0 +1,12 @@
+{
+  "name": "@xoras/secure-env-loader",
+  "version": "1.0.0",
+  "description": "Lightweight .env credential loader for Node and PHP environments with zero dependencies.",
+  "main": "index.js",
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": ["env", "credentials", "loader", "zero-dependency", "security"],
+  "author": "XORAS Institutional Core",
+  "license": "MIT"
+}

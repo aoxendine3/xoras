@@ -1,0 +1,12 @@
+{
+  "name": "@xoras/wp-jwt-auth",
+  "version": "1.0.0",
+  "description": "Clean, lightweight JWT authentication endpoint handler for WordPress REST API.",
+  "main": "index.js",
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": ["wordpress", "jwt", "auth", "rest-api", "security"],
+  "author": "XORAS Institutional Core",
+  "license": "MIT"
+}

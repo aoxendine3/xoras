@@ -1,0 +1,12 @@
+{
+  "name": "@xoras/form-honeypot",
+  "version": "1.0.0",
+  "description": "Drop-in vanilla JS and PHP spam honeypot validator for web forms.",
+  "main": "index.js",
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": ["spam", "honeypot", "forms", "security", "validation"],
+  "author": "XORAS Institutional Core",
+  "license": "MIT"
+}

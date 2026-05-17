@@ -1,0 +1,12 @@
+{
+  "name": "@xoras/simple-cache-purge",
+  "version": "1.0.0",
+  "description": "Instant WordPress Redis and object cache invalidation webhook utility.",
+  "main": "index.js",
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": ["wordpress", "cache", "redis", "purge", "invalidation"],
+  "author": "XORAS Institutional Core",
+  "license": "MIT"
+}

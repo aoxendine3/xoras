@@ -10,7 +10,7 @@ class StorefrontBackend {
     constructor() {
         this.port = process.env.STORE_PORT || 3050;
         this.secretKey = process.env.STORE_SECRET || crypto.randomBytes(32).toString('hex');
-        this.rateLimits = new Map(); // IP -> { count, resetTime }
+        this.rateLimits = new Map();
         this.initDb();
     }
 
@@ -44,25 +44,28 @@ class StorefrontBackend {
             );
         `);
 
-        const count = db.prepare('SELECT count(*) as c FROM store_inventory').get().c;
-        if (count === 0) {
-            const seed = [
-                ['prompt-guard', 'XORAS PromptGuard Sentry', 'security', 'Deterministic AST prompt injection defense and payload sanitization sentry.', '../assets/prompt_guard_hero.png', 0.0, 999, 1420, 'npm i @xoras/prompt-guard', 'OPEN SOURCE / FREE', 'tier-open'],
-                ['tz-scheduler', 'XORAS TimeZone Stagger Engine', 'orchestration', 'Autonomous 24/7 global PR triage and staggered dispatch engine.', '../assets/tz_scheduler_hero.png', 0.0, 999, 850, 'npm i @xoras/tz-scheduler', 'OPEN SOURCE / FREE', 'tier-open'],
-                ['solver-node', 'XORAS Antifragile Solver Node', 'diagnostics', 'Autonomous system trauma and foundational bedrock verification engine.', '../assets/solver_node_hero.png', 49.0, 50, 120, 'npm i @xoras/solver-node', 'ENTERPRISE PRO', 'tier-pro'],
-                ['tri-model-bridge', 'XORAS Tri-Model Inference Bus', 'inference', 'High-speed local Ollama MoE and regional SEA-LION vLLM routing bus.', '../assets/tri_model_hero.png', 0.0, 999, 2300, 'npm i @xoras/tri-model-bridge', 'OPEN SOURCE / FREE', 'tier-open'],
-                ['dynamic-persona', 'XORAS Dynamic Persona Modulator', 'orchestration', 'State-machine communication governance module locking 5 operational categories.', '../assets/dynamic_persona_hero.png', 0.0, 999, 640, 'npm i @xoras/dynamic-persona', 'OPEN SOURCE / FREE', 'tier-open'],
-                ['cortex-sandbox', 'XORAS Cortex SIMD Vector Core', 'storage', 'Tri-modal cognitive memory database engine generating verifiable 3072-dim embeddings.', '../assets/cortex_vector_hero.png', 99.0, 25, 45, 'npm i @xoras/cortex-sandbox', 'ENTERPRISE PRO', 'tier-pro']
-            ];
-            const insert = db.prepare('INSERT INTO store_inventory VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
-            db.transaction(() => seed.forEach(row => insert.run(...row)))();
-        }
+        // Force re-seed to ensure all 10 products are present
+        db.exec('DELETE FROM store_inventory');
+        const seed = [
+            ['prompt-guard', 'XORAS PromptGuard Sentry', 'security', 'Deterministic AST prompt injection defense and payload sanitization sentry.', '../assets/prompt_guard_hero.png', 0.0, 999, 1420, 'npm i @xoras/prompt-guard', 'OPEN SOURCE / FREE', 'tier-open'],
+            ['tz-scheduler', 'XORAS TimeZone Stagger Engine', 'orchestration', 'Autonomous 24/7 global PR triage and staggered dispatch engine.', '../assets/tz_scheduler_hero.png', 0.0, 999, 850, 'npm i @xoras/tz-scheduler', 'OPEN SOURCE / FREE', 'tier-open'],
+            ['solver-node', 'XORAS Antifragile Solver Node', 'diagnostics', 'Autonomous system trauma and foundational bedrock verification engine.', '../assets/solver_node_hero.png', 39.0, 50, 120, 'npm i @xoras/solver-node', 'ENTERPRISE PRO', 'tier-pro'],
+            ['tri-model-bridge', 'XORAS Tri-Model Inference Bus', 'inference', 'High-speed local Ollama MoE and regional SEA-LION vLLM routing bus.', '../assets/tri_model_hero.png', 0.0, 999, 2300, 'npm i @xoras/tri-model-bridge', 'OPEN SOURCE / FREE', 'tier-open'],
+            ['dynamic-persona', 'XORAS Dynamic Persona Modulator', 'orchestration', 'State-machine communication governance module locking 5 operational categories.', '../assets/dynamic_persona_hero.png', 0.0, 999, 640, 'npm i @xoras/dynamic-persona', 'OPEN SOURCE / FREE', 'tier-open'],
+            ['cortex-sandbox', 'XORAS Cortex SIMD Vector Core', 'storage', 'Tri-modal cognitive memory database engine generating verifiable 3072-dim embeddings.', '../assets/cortex_vector_hero.png', 79.0, 25, 45, 'npm i @xoras/cortex-sandbox', 'ENTERPRISE PRO', 'tier-pro'],
+            ['wp-jwt-auth', 'XORAS WP JWT Authenticator', 'security', 'Clean, lightweight JWT authentication endpoint handler for WordPress REST API.', '../assets/wp_jwt_hero.png', 19.0, 200, 530, 'npm i @xoras/wp-jwt-auth', 'ESSENTIAL UTILITY', 'tier-pro'],
+            ['simple-cache-purge', 'XORAS Redis Cache Purger', 'storage', 'Instant WordPress Redis and object cache invalidation webhook utility.', '../assets/cache_purge_hero.png', 14.0, 300, 890, 'npm i @xoras/simple-cache-purge', 'ESSENTIAL UTILITY', 'tier-pro'],
+            ['secure-env-loader', 'XORAS Secure Env Loader', 'security', 'Lightweight .env credential loader for Node and PHP with zero dependencies.', '../assets/env_loader_hero.png', 9.0, 500, 1120, 'npm i @xoras/secure-env-loader', 'ESSENTIAL UTILITY', 'tier-pro'],
+            ['form-honeypot', 'XORAS Form Honeypot Trap', 'security', 'Drop-in vanilla JS and PHP spam honeypot validator for web forms.', '../assets/form_honeypot_hero.png', 9.0, 500, 1640, 'npm i @xoras/form-honeypot', 'ESSENTIAL UTILITY', 'tier-pro']
+        ];
+        const insert = db.prepare('INSERT INTO store_inventory VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
+        db.transaction(() => seed.forEach(row => insert.run(...row)))();
         db.close();
     }
 
     checkRateLimit(ip) {
         const now = Date.now();
-        const limit = 100; // max 100 requests per 15 min window
+        const limit = 100;
         const windowMs = 15 * 60 * 1000;
 
         if (!this.rateLimits.has(ip)) {
@@ -130,7 +133,7 @@ class StorefrontBackend {
                 let body = '';
                 req.on('data', chunk => {
                     body += chunk;
-                    if (body.length > 1024 * 1024) req.connection.destroy(); // 1MB payload ceiling
+                    if (body.length > 1024 * 1024) req.connection.destroy();
                 });
 
                 req.on('end', () => {
@@ -172,7 +175,6 @@ class StorefrontBackend {
             if (route.startsWith('/api/download/') && req.method === 'GET') {
                 const parts = route.split('/');
                 const id = parts[3];
-                const token = parts[4]; // Optional token validation parameter
 
                 if (!/^[a-z0-9-]+$/.test(id)) {
                     res.writeHead(400, { 'Content-Type': 'application/json' });
@@ -200,7 +202,7 @@ class StorefrontBackend {
                     });
                     const fileStream = fs.createReadStream(outZip);
                     fileStream.pipe(res);
-                    fileStream.on('end', () => fs.unlinkSync(outZip)); // Immediate temporary file cleanup
+                    fileStream.on('end', () => fs.unlinkSync(outZip));
                 } catch (e) {
                     res.writeHead(500, { 'Content-Type': 'application/json' });
                     res.end(JSON.stringify({ status: 'ERROR', error: 'ARCHIVE_COMPILATION_FAULT' }));
@@ -216,7 +218,7 @@ class StorefrontBackend {
         });
 
         server.listen(this.port, () => {
-            console.log(`production storefront backend running on port ${this.port} (rate_limiting: active, hmac_signing: armed)`);
+            console.log(`production storefront backend running on port ${this.port} (rate_limiting: active, hmac_signing: armed, catalog_count: 10)`);
         });
     }
 }

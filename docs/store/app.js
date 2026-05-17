@@ -35,7 +35,6 @@ async function fetchCatalog() {
         if (!res.ok) throw new Error('Backend unlocatable.');
         catalogData = await res.json();
         
-        // Populate features array
         catalogData.forEach(item => {
             item.features = [
                 'Verifiable cryptographic execution',
@@ -48,10 +47,17 @@ async function fetchCatalog() {
         renderGrid(catalogData);
     } catch (error) {
         showToast('Operating offline fallback cache.');
-        // Fallback
         catalogData = [
             { id: 'prompt-guard', title: 'XORAS PromptGuard Sentry', category: 'security', desc: 'Deterministic AST prompt injection defense.', img: '../assets/prompt_guard_hero.png', price: 0, stock_qty: 999, cli: 'npm i @xoras/prompt-guard', tier: 'OPEN SOURCE', tierClass: 'tier-open', features: ['AST Sanitization'] },
-            { id: 'solver-node', title: 'XORAS Antifragile Solver Node', category: 'diagnostics', desc: 'Bedrock primitive verification.', img: '../assets/solver_node_hero.png', price: 49, stock_qty: 50, cli: 'npm i @xoras/solver-node', tier: 'ENTERPRISE PRO', tierClass: 'tier-pro', features: ['IPC/WAL Verification'] }
+            { id: 'tz-scheduler', title: 'XORAS TimeZone Stagger Engine', category: 'orchestration', desc: 'Autonomous 24/7 global PR triage engine.', img: '../assets/tz_scheduler_hero.png', price: 0, stock_qty: 999, cli: 'npm i @xoras/tz-scheduler', tier: 'OPEN SOURCE', tierClass: 'tier-open', features: ['Global Triage'] },
+            { id: 'solver-node', title: 'XORAS Antifragile Solver Node', category: 'diagnostics', desc: 'Bedrock primitive verification.', img: '../assets/solver_node_hero.png', price: 39, stock_qty: 50, cli: 'npm i @xoras/solver-node', tier: 'ENTERPRISE PRO', tierClass: 'tier-pro', features: ['IPC/WAL Verification'] },
+            { id: 'tri-model-bridge', title: 'XORAS Tri-Model Inference Bus', category: 'inference', desc: 'Disaggregated Ollama/vLLM routing bus.', img: '../assets/tri_model_hero.png', price: 0, stock_qty: 999, cli: 'npm i @xoras/tri-model-bridge', tier: 'OPEN SOURCE', tierClass: 'tier-open', features: ['MoE Bus'] },
+            { id: 'dynamic-persona', title: 'XORAS Dynamic Persona Modulator', category: 'orchestration', desc: 'State-machine communication governance.', img: '../assets/dynamic_persona_hero.png', price: 0, stock_qty: 999, cli: 'npm i @xoras/dynamic-persona', tier: 'OPEN SOURCE', tierClass: 'tier-open', features: ['5 Locked Categories'] },
+            { id: 'cortex-sandbox', title: 'XORAS Cortex SIMD Vector Core', category: 'storage', desc: '3072-dim C-level vector memory engine.', img: '../assets/cortex_vector_hero.png', price: 79, stock_qty: 25, cli: 'npm i @xoras/cortex-sandbox', tier: 'ENTERPRISE PRO', tierClass: 'tier-pro', features: ['3072-dim Vector'] },
+            { id: 'wp-jwt-auth', title: 'XORAS WP JWT Authenticator', category: 'security', desc: 'Clean JWT authentication handler for WP REST API.', img: '../assets/wp_jwt_hero.png', price: 19, stock_qty: 200, cli: 'npm i @xoras/wp-jwt-auth', tier: 'ESSENTIAL UTILITY', tierClass: 'tier-pro', features: ['JWT Auth'] },
+            { id: 'simple-cache-purge', title: 'XORAS Redis Cache Purger', category: 'storage', desc: 'Instant WP Redis cache invalidation webhook.', img: '../assets/cache_purge_hero.png', price: 14, stock_qty: 300, cli: 'npm i @xoras/simple-cache-purge', tier: 'ESSENTIAL UTILITY', tierClass: 'tier-pro', features: ['Cache Purge'] },
+            { id: 'secure-env-loader', title: 'XORAS Secure Env Loader', category: 'security', desc: 'Lightweight .env credential loader with zero dependencies.', img: '../assets/env_loader_hero.png', price: 9, stock_qty: 500, cli: 'npm i @xoras/secure-env-loader', tier: 'ESSENTIAL UTILITY', tierClass: 'tier-pro', features: ['Env Loader'] },
+            { id: 'form-honeypot', title: 'XORAS Form Honeypot Trap', category: 'security', desc: 'Drop-in vanilla JS/PHP spam honeypot validator.', img: '../assets/form_honeypot_hero.png', price: 9, stock_qty: 500, cli: 'npm i @xoras/form-honeypot', tier: 'ESSENTIAL UTILITY', tierClass: 'tier-pro', features: ['Honeypot Trap'] }
         ];
         renderGrid(catalogData);
     }
@@ -212,18 +218,23 @@ async function initiateCheckout() {
         document.getElementById('checkout-status').innerText = 'TRANSACTION LOGGED IN SQLITE WAL: INVENTORY DECREMENTED';
         document.getElementById('checkout-status').style.color = '#10b981';
 
-        // Trigger real cryptographic ZIP bundle download for the first staged item
+        // Bulletproof invisible anchor click download mechanism
         const firstItem = cart[0];
         if (firstItem) {
             setTimeout(() => {
-                window.location.href = `${API_BASE}/download/${firstItem.id}`;
+                const a = document.createElement('a');
+                a.href = `${API_BASE}/download/${firstItem.id}`;
+                a.download = `xoras_bundle_${firstItem.id}.zip`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
             }, 1000);
         }
 
         cart = [];
         localStorage.setItem('xoras_cart', JSON.stringify(cart));
         updateCartCount();
-        fetchCatalog(); // Refresh live stock counts
+        fetchCatalog();
         showToast('Deployment executed successfully.');
     } catch (error) {
         document.getElementById('checkout-status').innerText = 'OFFLINE CHECKOUT SIMULATION COMPLETED';
