@@ -24,10 +24,9 @@ class QueuePrioritizer {
         if (trophySignals.some(sig => cleanHandle.includes(sig))) tier = 'TROPHY';
         else if (lowSignals.some(sig => cleanHandle.includes(sig))) tier = 'DISQUALIFIED';
 
-        // Regional Boost: Active time-zone targets get ranked higher
         const isRegionActive = TimeZoneScheduler.isTargetActive(cleanHandle);
         if (isRegionActive && tier === 'COMMERCIAL') {
-            tier = 'TROPHY'; // Boost active regional leads
+            tier = 'TROPHY';
         }
 
         if (tier === 'DISQUALIFIED') {
@@ -41,10 +40,12 @@ class QueuePrioritizer {
         const startMs = performance.now();
         const stagedLeads = await memoryLedger.getStagedLeads();
         const durationMs = (performance.now() - startMs).toFixed(3);
-        const activeRegion = TimeZoneScheduler.getCurrentActiveRegion();
+        
+        const overrideHour = process.argv.includes('--hour') ? parseInt(process.argv[process.argv.indexOf('--hour') + 1], 10) : null;
+        const activeRegion = TimeZoneScheduler.getCurrentActiveRegion(overrideHour);
 
-        console.log(`triage lookup: ${stagedLeads.length} leads in ${durationMs}ms`);
-        console.log(`active global tranche: ${activeRegion.region} (${activeRegion.label})`);
+        console.log(`triage: ${stagedLeads.length} leads (${durationMs}ms)`);
+        console.log(`region: ${activeRegion.region}`);
 
         const tiers = {
             TIER_1_TROPHY: [],
@@ -59,7 +60,7 @@ class QueuePrioritizer {
             const cleanHandle = (lead.query || '').replace('AUDIT_REPO: https://github.com/', '').toLowerCase();
             const rawRepo = (lead.query || '').replace('AUDIT_REPO: ', '');
             
-            if (trophySignals.some(sig => cleanHandle.includes(sig)) || TimeZoneScheduler.isTargetActive(cleanHandle)) {
+            if (trophySignals.some(sig => cleanHandle.includes(sig)) || TimeZoneScheduler.isTargetActive(cleanHandle, overrideHour)) {
                 tiers.TIER_1_TROPHY.push(rawRepo);
             } else if (lowSignals.some(sig => cleanHandle.includes(sig))) {
                 tiers.TIER_3_LOW_SIGNAL.push(rawRepo);
@@ -68,19 +69,19 @@ class QueuePrioritizer {
             }
         });
 
-        console.log("tier 1 (core & active regional targets):");
+        console.log("tier 1:");
         [...new Set(tiers.TIER_1_TROPHY)].slice(0, 5).forEach((target) => {
-            console.log(`  target: ${target}`);
+            console.log(`  ${target}`);
         });
 
-        console.log("tier 2 (commercial saas accounts):");
+        console.log("tier 2:");
         [...new Set(tiers.TIER_2_COMMERCIAL)].slice(0, 5).forEach((target) => {
-            console.log(`  target: ${target}`);
+            console.log(`  ${target}`);
         });
 
-        console.log("tier 3 (disqualified portfolio repos):");
+        console.log("tier 3:");
         [...new Set(tiers.TIER_3_LOW_SIGNAL)].slice(0, 3).forEach((target) => {
-            console.log(`  bypass: ${target}`);
+            console.log(`  ${target}`);
         });
 
         return tiers;
