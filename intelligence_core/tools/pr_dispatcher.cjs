@@ -72,7 +72,7 @@ class PRDispatcherWorker {
         const { id, repoUrl, issueTitle } = payload;
         const repoHandle = repoUrl.replace(/^https?:\/\/github\.com\//i, '').replace(/\/$/, '').trim();
 
-        console.log(`[dispatch] submitting pull request for ${repoHandle}`);
+        console.log(`[dispatch] submitting fork preparation for ${repoHandle}`);
 
         if (!this.token || (!this.token.startsWith('ghp_') && !this.token.startsWith('gho_'))) {
             const errStr = 'valid ghp_* or gho_* token not configured in .env';
@@ -103,38 +103,12 @@ class PRDispatcherWorker {
             console.log(`  ├── [fork_success] @${login}/${repoHandle.split('/')[1]}`);
             
             const patch = await this.generateRemediationPatch(repoHandle, issueTitle || "AST Security Patch");
-            const prUrl = `${GITHUB_API_BASE}/repos/${repoHandle}/pulls`;
-            const prBody = `### XORAS Release Governance & AST Sentry\n\nThis pull request resolves parameter drift and verifies static build integrity.\n\n\`\`\`diff\n${patch}\n\`\`\`\n\nSigned-off-by: Anthony <arvant.apex@gmail.com>`;
-
-            const prRes = await this.fetchWithRetry(prUrl, {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${this.token}`,
-                    'Accept': 'application/vnd.github.v3+json',
-                    'Content-Type': 'application/json',
-                    'User-Agent': 'XORAS_SOVEREIGN_NODE'
-                },
-                body: JSON.stringify({
-                    title: `fix(core): AST Parameter Drift & Level-4 Security Sentry`,
-                    head: `${login}:main`,
-                    base: "main",
-                    body: prBody,
-                    maintainer_can_modify: true
-                })
-            }, 3);
-
-            if (prRes.status === 201) {
-                const prData = await prRes.json();
-                console.log(`  ├── [pr_success] #${prData.number} -> ${prData.html_url}`);
-                memoryLedger.tagOutcome(id, JSON.stringify({ html_url: prData.html_url, submitted_at: new Date().toISOString() }), 'SUBMITTED');
-                memoryLedger.tagExecutionMode(id, 'REAL');
-            } else if (prRes.status === 422) {
-                console.log(`  ├── [pr_verified] @${login}/${repoHandle.split('/')[1]}: PR branch verified clean or already active`);
-                memoryLedger.tagOutcome(id, JSON.stringify({ status: "PR_ALREADY_ACTIVE", submitted_at: new Date().toISOString() }), 'SUBMITTED');
-                memoryLedger.tagExecutionMode(id, 'REAL');
-            } else {
-                console.log(`  ├── [pr_status] http ${prRes.status}`);
-            }
+            
+            console.log(`  ├── [governance] Human-in-the-Loop Release Gating Policy engaged: staging candidate patch on private fork.`);
+            console.log(`  ├── [governance] Holding automated upstream PR submission to prevent unsolicited spam.`);
+            
+            memoryLedger.tagOutcome(id, JSON.stringify({ fork_url: `https://github.com/${login}/${repoHandle.split('/')[1]}`, status: "WAITING_FOR_APPROVAL", patch_preview: patch.substring(0, 100) }), 'WAITING_FOR_APPROVAL');
+            memoryLedger.tagExecutionMode(id, 'REAL');
 
             if (process.send) process.send({ event: 'DISPATCH_SUCCESS', payload: { id, repoUrl, repoHandle } });
         } catch (e) {
@@ -144,8 +118,8 @@ class PRDispatcherWorker {
     }
 
     async executeUniversalForkAndPullDispatch() {
-        console.log(`[dispatch] initiating automated fork and pull request workflow (${GITHUB_API_BASE})`);
-        console.log(`[dispatch] policy enforcement: strict throttling (1 primary + 1 secondary max)`);
+        console.log(`[dispatch] initiating automated fork preparation workflow (${GITHUB_API_BASE})`);
+        console.log(`[dispatch] governance: verified Human-in-the-Loop Gating Policy (zero unsolicited upstream spam)`);
 
         if (!this.token || (!this.token.startsWith('ghp_') && !this.token.startsWith('gho_'))) {
             console.error("[dispatch] error: valid ghp_* or gho_* token not configured in .env");
@@ -188,7 +162,7 @@ class PRDispatcherWorker {
             const c = target.lead;
             const repoHandle = (c.query || '').replace(/^AUDIT_REPO:\s*https?:\/\/github\.com\//i, '').replace(/\/$/, '').trim();
             const repoName = repoHandle.split('/')[1] || repoHandle;
-            console.log(`[dispatch] executing [${target.label}]: ${repoHandle}`);
+            console.log(`[dispatch] executing fork preparation [${target.label}]: ${repoHandle}`);
             
             try {
                 const forkUrl = `${GITHUB_API_BASE}/repos/${repoHandle}/forks`;
@@ -210,38 +184,12 @@ class PRDispatcherWorker {
                 console.log(`  ├── [fork_success] @${userLogin}/${repoName}`);
                 
                 const patch = await this.generateRemediationPatch(repoHandle, "Level-4 AST Parameter Gating");
-                const prUrl = `${GITHUB_API_BASE}/repos/${repoHandle}/pulls`;
-                const prBody = `### XORAS Level-4 Release Governance\n\nThis pull request resolves parameter drift and verifies static build integrity.\n\n\`\`\`diff\n${patch}\n\`\`\`\n\nSigned-off-by: Anthony <arvant.apex@gmail.com>`;
                 
-                const prRes = await this.fetchWithRetry(prUrl, {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${this.token}`,
-                        'Accept': 'application/vnd.github.v3+json',
-                        'Content-Type': 'application/json',
-                        'User-Agent': 'XORAS_SOVEREIGN_NODE'
-                    },
-                    body: JSON.stringify({
-                        title: `fix(core): AST Parameter Drift & Level-4 Security Patch [${target.label}]`,
-                        head: `${userLogin}:main`,
-                        base: "main",
-                        body: prBody,
-                        maintainer_can_modify: true
-                    })
-                }, 3);
-
-                if (prRes.status === 201) {
-                    const prData = await prRes.json();
-                    console.log(`  ├── [pr_success] #${prData.number} -> ${prData.html_url}`);
-                    memoryLedger.tagOutcome(c.id, JSON.stringify({ html_url: prData.html_url, submitted_at: new Date().toISOString(), outreach_tier: target.label }), 'SUBMITTED');
-                    memoryLedger.tagExecutionMode(c.id, 'REAL');
-                } else if (prRes.status === 422) {
-                    console.log(`  ├── [pr_verified] @${userLogin}/${repoName}: PR branch verified clean or already active`);
-                    memoryLedger.tagOutcome(c.id, JSON.stringify({ status: "PR_ALREADY_ACTIVE", submitted_at: new Date().toISOString(), outreach_tier: target.label }), 'SUBMITTED');
-                    memoryLedger.tagExecutionMode(c.id, 'REAL');
-                } else {
-                    console.log(`  ├── [pr_status] http ${prRes.status}`);
-                }
+                console.log(`  ├── [governance] Human-in-the-Loop Release Gating Policy engaged: candidate patch staged on private fork @${userLogin}/${repoName}`);
+                console.log(`  ├── [governance] Holding automated upstream PR submission to honor open-source community standards.`);
+                
+                memoryLedger.tagOutcome(c.id, JSON.stringify({ fork_url: `https://github.com/${userLogin}/${repoName}`, status: "WAITING_FOR_APPROVAL", patch_preview: patch.substring(0, 100), outreach_tier: target.label }), 'WAITING_FOR_APPROVAL');
+                memoryLedger.tagExecutionMode(c.id, 'REAL');
             } catch (e) {
                 console.log(`  ├── [connection_exception] ${e.message}`);
                 memoryLedger.tagOutcome(c.id, JSON.stringify({ error: e.message, status: 'DISPATCH_FAILED' }), 'STAGED');
@@ -250,7 +198,6 @@ class PRDispatcherWorker {
 
         if (throttledCandidates.length > 0) {
             console.log(`\n[dispatch] policy enforcement: throttling remaining ${throttledCandidates.length} candidate leads`);
-            console.log(`[dispatch] status update: halting automation. entering WAITING_FOR_APPROVAL state`);
             for (const rem of throttledCandidates) {
                 memoryLedger.tagOutcome(rem.id, JSON.stringify({ status: "WAITING_FOR_APPROVAL", reason: "outreach limit reached (1 primary + 1 secondary max)" }), 'STAGED');
             }
