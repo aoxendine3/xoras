@@ -1,6 +1,7 @@
 const { execSync } = require('child_process');
 const PromptGuard = require('../security/prompt_guard.cjs');
 const geoBridge = require('./geo_latency_bridge.cjs');
+const dynamicPersona = require('../persona/dynamic_persona.cjs');
 
 const STRICT_STYLE_RULE = "Rule: Never use markdown borders, ASCII tables, or promotional adjectives. Output only minimal facts and code.";
 
@@ -15,7 +16,10 @@ class TriModelBridge {
     async _callLocalModel(modelName, prompt, systemContext = '') {
         const auditRes = PromptGuard.audit(prompt);
         const safePrompt = auditRes.sanitized;
-        const enforcedContext = `${systemContext}\n${STRICT_STYLE_RULE}`.trim();
+        
+        // Dynamically modulate system context using state-machine persona rules
+        const modulatedContext = dynamicPersona.modulateContext(safePrompt, systemContext);
+        const enforcedContext = `${modulatedContext}\n${STRICT_STYLE_RULE}`.trim();
 
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 3000);
@@ -55,7 +59,6 @@ class TriModelBridge {
             return 'BLOCKED BY PROMPT GUARD';
         }
 
-        // Dynamically evaluate lowest latency regional endpoint
         const geo = await geoBridge.evaluateGlobalTopology();
         const endpoint = process.env.SEA_LION_LOCAL_VLLM || (geo.optimalNode ? `https://api.sea-lion.ai/${geo.optimalNode.region}/chat` : this.seaLionApiUrl);
 
