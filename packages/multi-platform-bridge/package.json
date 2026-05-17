@@ -1,0 +1,12 @@
+{
+  "name": "@xoras/multi-platform-bridge",
+  "version": "1.0.0",
+  "description": "Autonomous multi-platform HTTP webhook ingestion engine with zero-dependency HMAC cryptographic verification.",
+  "main": "index.js",
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": ["webhook", "bridge", "hmac", "github", "wordpress", "stripe", "security"],
+  "author": "XORAS Institutional Core",
+  "license": "MIT"
+}

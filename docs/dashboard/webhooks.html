@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XORAS Multi-Platform Webhook Ledger | Cloud Bridge</title>
+    <link rel="stylesheet" href="../store/style.css">
+    <style>
+        .ledger-container { max-width: 1400px; margin: 4rem auto; padding: 0 2rem; }
+        .ledger-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 1.5rem; margin-bottom: 2.5rem; }
+        .ledger-title { font-family: 'Outfit'; font-size: 2.5rem; font-weight: 800; display: flex; align-items: center; gap: 1rem; }
+        .live-pulse { width: 12px; height: 12px; border-radius: 99px; background: var(--green-badge); box-shadow: 0 0 15px var(--green-badge); animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
+
+        .stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; margin-bottom: 3rem; }
+        .stat-card { background: var(--surface); border: 1px solid var(--border); padding: 1.5rem; border-radius: 16px; }
+        .stat-val { font-family: 'Outfit'; font-size: 2.25rem; font-weight: 800; color: var(--text-main); margin-top: 0.5rem; }
+        .stat-lbl { color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; }
+
+        .table-wrapper { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; }
+        .webhook-table { width: 100%; border-collapse: collapse; text-align: left; }
+        .webhook-table th { background: var(--surface-hover); padding: 1.25rem 1.5rem; font-size: 0.85rem; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.08em; border-bottom: 1px solid var(--border); }
+        .webhook-table td { padding: 1.25rem 1.5rem; font-size: 0.95rem; border-bottom: 1px solid var(--border); font-family: 'JetBrains Mono', monospace; }
+        .webhook-table tr:hover td { background: var(--surface-hover); }
+        
+        .badge-gh { background: rgba(99, 102, 241, 0.15); color: #818cf8; border: 1px solid #6366f1; padding: 0.25rem 0.65rem; border-radius: 6px; font-size: 0.75rem; font-weight: 700; }
+        .badge-wp { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid #10b981; padding: 0.25rem 0.65rem; border-radius: 6px; font-size: 0.75rem; font-weight: 700; }
+        .badge-st { background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid #f59e0b; padding: 0.25rem 0.65rem; border-radius: 6px; font-size: 0.75rem; font-weight: 700; }
+        .badge-dc { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid #ef4444; padding: 0.25rem 0.65rem; border-radius: 6px; font-size: 0.75rem; font-weight: 700; }
+
+        .status-safe { color: var(--green-badge); font-weight: 700; }
+        .status-blocked { color: #ef4444; font-weight: 700; }
+
+        .btn-test { padding: 0.75rem 1.5rem; background: var(--primary); color: #fff; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+        .btn-test:hover { background: var(--accent); box-shadow: 0 0 15px var(--accent-glow); }
+    </style>
+</head>
+<body>
+    <div class="bg-grid"></div>
+
+    <header>
+        <div class="container nav-bar">
+            <a href="../index.html" class="logo">
+                XORAS <span class="logo-tag">CLOUD // BRIDGE</span>
+            </a>
+            <nav class="nav-links">
+                <a href="../index.html" class="nav-link">Overview</a>
+                <a href="./index.html" class="nav-link">CI Health</a>
+                <a href="../store/index.html" class="nav-link">Storefront</a>
+                <a href="#" class="nav-link active">Webhooks</a>
+            </nav>
+            <button class="btn-test" id="trigger-demo-webhook">⚡ Ingest Test Webhook</button>
+        </div>
+    </header>
+
+    <main class="ledger-container">
+        <div class="ledger-header">
+            <div class="ledger-title">
+                <div class="live-pulse"></div>
+                Multi-Platform Ingestion Ledger
+            </div>
+            <div style="color: var(--text-muted); font-size: 0.9rem;">
+                Ingesting on <span style="color: var(--primary); font-family: monospace;">port 3075</span> • SQLite WAL Persistence
+            </div>
+        </div>
+
+        <div class="stat-grid">
+            <div class="stat-card">
+                <div class="stat-lbl">Total Events Ingested</div>
+                <div class="stat-val" id="stat-total">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-lbl">AST Security Safe</div>
+                <div class="stat-val" id="stat-safe" style="color: var(--green-badge);">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-lbl">Injections Blocked</div>
+                <div class="stat-val" id="stat-blocked" style="color: #ef4444;">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-lbl">Active Cloud Platforms</div>
+                <div class="stat-val">4 Platforms</div>
+            </div>
+        </div>
+
+        <div class="table-wrapper">
+            <table class="webhook-table">
+                <thead>
+                    <tr>
+                        <th>Platform</th>
+                        <th>Event Type</th>
+                        <th>AST Audit</th>
+                        <th>Sanitized Summary / Payload</th>
+                        <th>Client IP</th>
+                        <th>Timestamp</th>
+                    </tr>
+                </thead>
+                <tbody id="webhook-rows">
+                    <!-- Populated by webhooks.js -->
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <script src="./webhooks.js"></script>
+</body>
+</html>

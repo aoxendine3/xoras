@@ -44,7 +44,6 @@ class StorefrontBackend {
             );
         `);
 
-        // Force re-seed to ensure all 10 products are present
         db.exec('DELETE FROM store_inventory');
         const seed = [
             ['prompt-guard', 'XORAS PromptGuard Sentry', 'security', 'Deterministic AST prompt injection defense and payload sanitization sentry.', '../assets/prompt_guard_hero.png', 0.0, 999, 1420, 'npm i @xoras/prompt-guard', 'OPEN SOURCE / FREE', 'tier-open'],
@@ -56,7 +55,8 @@ class StorefrontBackend {
             ['wp-jwt-auth', 'XORAS WP JWT Authenticator', 'security', 'Clean, lightweight JWT authentication endpoint handler for WordPress REST API.', '../assets/wp_jwt_hero.png', 19.0, 200, 530, 'npm i @xoras/wp-jwt-auth', 'ESSENTIAL UTILITY', 'tier-pro'],
             ['simple-cache-purge', 'XORAS Redis Cache Purger', 'storage', 'Instant WordPress Redis and object cache invalidation webhook utility.', '../assets/cache_purge_hero.png', 14.0, 300, 890, 'npm i @xoras/simple-cache-purge', 'ESSENTIAL UTILITY', 'tier-pro'],
             ['secure-env-loader', 'XORAS Secure Env Loader', 'security', 'Lightweight .env credential loader for Node and PHP with zero dependencies.', '../assets/env_loader_hero.png', 9.0, 500, 1120, 'npm i @xoras/secure-env-loader', 'ESSENTIAL UTILITY', 'tier-pro'],
-            ['form-honeypot', 'XORAS Form Honeypot Trap', 'security', 'Drop-in vanilla JS and PHP spam honeypot validator for web forms.', '../assets/form_honeypot_hero.png', 9.0, 500, 1640, 'npm i @xoras/form-honeypot', 'ESSENTIAL UTILITY', 'tier-pro']
+            ['form-honeypot', 'XORAS Form Honeypot Trap', 'security', 'Drop-in vanilla JS and PHP spam honeypot validator for web forms.', '../assets/form_honeypot_hero.png', 9.0, 500, 1640, 'npm i @xoras/form-honeypot', 'ESSENTIAL UTILITY', 'tier-pro'],
+            ['multi-platform-bridge', 'XORAS Multi-Platform Webhook Engine', 'orchestration', 'Autonomous HTTP webhook ingestion engine with zero-dependency HMAC cryptographic verification across GitHub, WordPress, Stripe, and Discord.', '../assets/webhook_bridge_hero.png', 49.0, 100, 310, 'npm i @xoras/multi-platform-bridge', 'ENTERPRISE PRO', 'tier-pro']
         ];
         const insert = db.prepare('INSERT INTO store_inventory VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
         db.transaction(() => seed.forEach(row => insert.run(...row)))();
@@ -218,7 +218,7 @@ class StorefrontBackend {
         });
 
         server.listen(this.port, () => {
-            console.log(`production storefront backend running on port ${this.port} (rate_limiting: active, hmac_signing: armed, catalog_count: 10)`);
+            console.log(`production storefront backend running on port ${this.port} (rate_limiting: active, hmac_signing: armed, catalog_count: 11)`);
         });
     }
 }
