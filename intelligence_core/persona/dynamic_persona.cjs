@@ -3,15 +3,22 @@
 class DynamicPersona {
     constructor() {
         this.lockedCategories = {
-            SYSTEMS_ENGINEERING: "Rule: Use only direct, factual, minimal systems engineering terms. Zero promotional adjectives.",
-            TRIAGE_STATUS: "Rule: Output flat status records. No conversational introductions or trailing summaries.",
+            SYSTEMS_ENGINEERING: "Rule: Use only direct, factual, minimal systems engineering terms.",
+            TRIAGE_STATUS: "Rule: Output flat status records.",
             CRITICAL_ALERT: "Rule: State exact failure condition, exit code, and immediate recovery action.",
             DEAL_ENGAGEMENT: "Rule: Maintain professional regional alignment matching recipient business hours.",
             DIAGNOSTIC_RECOVERY: "Rule: State exact bedrock metrics (IPC, WAL) and structural AST adaptation."
         };
 
+        this.categoryLabels = {
+            SYSTEMS_ENGINEERING: "systems engineering",
+            TRIAGE_STATUS: "triage status",
+            CRITICAL_ALERT: "critical alert",
+            DEAL_ENGAGEMENT: "deal engagement",
+            DIAGNOSTIC_RECOVERY: "diagnostic recovery"
+        };
+
         this.toneMemory = {
-            minimalistEnforcement: 1.0,
             recentToneModifiers: ['minimal', 'direct', 'factual', 'clean']
         };
     }
@@ -32,11 +39,11 @@ class DynamicPersona {
         if (!userMessage || typeof userMessage !== 'string') return;
         const msg = userMessage.toLowerCase();
 
-        const modifiers = ['short', 'minimal', 'clean', 'direct', 'factual', 'precise', 'no hype', 'no fluff'];
+        const modifiers = ['short', 'minimal', 'clean', 'direct', 'factual', 'precise', 'natural', 'relaxed'];
         modifiers.forEach(mod => {
             if (msg.includes(mod) && !this.toneMemory.recentToneModifiers.includes(mod)) {
                 this.toneMemory.recentToneModifiers.push(mod);
-                if (this.toneMemory.recentToneModifiers.length > 5) {
+                if (this.toneMemory.recentToneModifiers.length > 4) {
                     this.toneMemory.recentToneModifiers.shift();
                 }
             }
@@ -48,17 +55,18 @@ class DynamicPersona {
         this.detectToneModifiers(prompt);
 
         const categoryRule = this.lockedCategories[category] || this.lockedCategories.SYSTEMS_ENGINEERING;
-        const dynamicToneRule = `Tone constraints: ${this.toneMemory.recentToneModifiers.join(', ')}.`;
+        const toneRule = `Tone: ${this.toneMemory.recentToneModifiers.join(', ')}.`;
 
-        return `${baseSystemContext}\n${categoryRule}\n${dynamicToneRule}`.trim();
+        return `${baseSystemContext}\n${categoryRule}\n${toneRule}`.trim();
     }
 
     evaluatePersonaState(samplePrompt) {
-        console.log(`evaluating dynamic persona modulation state`);
-        const modulated = this.modulateContext(samplePrompt, "Base Role: XORAS Core Engine.");
-        console.log(`category detected: ${this.detectCategory(samplePrompt)}`);
-        console.log(`enforced modulation context:\n${modulated}`);
-        return modulated;
+        const category = this.detectCategory(samplePrompt);
+        const label = this.categoryLabels[category] || "systems engineering";
+        const tones = this.toneMemory.recentToneModifiers.join(', ');
+        
+        console.log(`persona modulation armed for ${label} conditions using ${tones} terms.`);
+        return this.modulateContext(samplePrompt, "Base Role: XORAS Core Engine.");
     }
 }
 
