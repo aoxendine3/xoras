@@ -1,0 +1,12 @@
+{
+  "name": "@xoras/tri-model-bridge",
+  "version": "1.0.0",
+  "description": "High-speed local Ollama MoE and regional SEA-LION vLLM routing bus.",
+  "main": "index.js",
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": ["inference", "moe", "vllm", "routing", "bus"],
+  "author": "XORAS Institutional Core",
+  "license": "MIT"
+}

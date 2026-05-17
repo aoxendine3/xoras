@@ -1,0 +1,12 @@
+{
+  "name": "@xoras/prompt-guard",
+  "version": "1.0.0",
+  "description": "Deterministic AST prompt injection defense and payload sanitization sentry.",
+  "main": "index.js",
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": ["security", "llm", "injection", "sanitization", "ast"],
+  "author": "XORAS Institutional Core",
+  "license": "MIT"
+}

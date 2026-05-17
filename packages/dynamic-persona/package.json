@@ -1,0 +1,12 @@
+{
+  "name": "@xoras/dynamic-persona",
+  "version": "1.0.0",
+  "description": "State-machine communication governance module locking 5 operational categories.",
+  "main": "index.js",
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": ["persona", "governance", "communication", "state-machine"],
+  "author": "XORAS Institutional Core",
+  "license": "MIT"
+}

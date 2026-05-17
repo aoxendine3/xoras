@@ -1,0 +1,12 @@
+{
+  "name": "@xoras/solver-node",
+  "version": "1.0.0",
+  "description": "Autonomous system trauma and foundational bedrock verification engine.",
+  "main": "index.js",
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": ["diagnostics", "bedrock", "healing", "ipc", "wal"],
+  "author": "XORAS Institutional Core",
+  "license": "MIT"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "@xoras/cortex-sandbox",
+  "version": "1.0.0",
+  "description": "Tri-modal cognitive memory database engine generating verifiable 3072-dimensional vector embeddings.",
+  "main": "index.js",
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": ["vector", "memory", "simd", "sqlite", "cortex"],
+  "author": "XORAS Institutional Core",
+  "license": "MIT"
+}

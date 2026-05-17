@@ -1,0 +1,12 @@
+{
+  "name": "@xoras/tz-scheduler",
+  "version": "1.0.0",
+  "description": "Autonomous 24/7 global PR triage and staggered dispatch engine.",
+  "main": "index.js",
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": ["orchestration", "timezone", "stagger", "dispatch", "triage"],
+  "author": "XORAS Institutional Core",
+  "license": "MIT"
+}
