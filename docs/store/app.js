@@ -48,6 +48,14 @@ async function fetchCatalog() {
     } catch (error) {
         showToast('Operating offline fallback cache.');
         catalogData = [
+            // --- NEW MT4 EXPERT ADVISORS (EAs) ---
+            { id: 'macd', title: 'XORAS MACD Sample v1.4 EA', category: 'expert_advisor', desc: 'Institutional MACD zero-cross scalper compiled for MT4 build 1470 with dynamic take profit.', img: '../assets/macd_ea_hero.png', price: 199, stock_qty: 50, cli: 'npm i @xoras/macd-sample-v1.4', tier: 'EXPERT ADVISOR', tierClass: 'tier-pro', features: ['MQL4 Build 1470 Native', 'Zero Repaint Math', 'Live Tick Divergence Sentry', 'Automated Trailing Stop'] },
+            { id: 'ma', title: 'XORAS Moving Average Pro EA', category: 'expert_advisor', desc: 'Dual MA crossover automated execution engine with trailing stops and risk-reward ratio gating.', img: '../assets/ma_ea_hero.png', price: 149, stock_qty: 100, cli: 'npm i @xoras/moving-average-pro', tier: 'EXPERT ADVISOR', tierClass: 'tier-pro', features: ['Dual SMA/EMA Math', 'Auto Lot Sizing', 'Take Profit Matrix', 'Backtest Verified'] },
+            { id: 'rsi', title: 'XORAS RSI Reversal Scalper EA', category: 'expert_advisor', desc: 'High-frequency RSI overbought/oversold mean reversion sniper. Triggers on 30/70 boundary crosses.', img: '../assets/rsi_ea_hero.png', price: 249, stock_qty: 25, cli: 'npm i @xoras/rsi-reversal-scalper', tier: 'EXPERT ADVISOR', tierClass: 'tier-pro', features: ['14-Period RSI Engine', 'Overbought Reversion', 'High-Frequency Tick Sentry', 'Zero Latency Order Dispatch'] },
+            { id: 'grid', title: 'XORAS Grid Master Pro EA', category: 'expert_advisor', desc: 'Advanced grid trading matrix with automated risk gating and dynamic drawdown protection.', img: '../assets/grid_ea_hero.png', price: 299, stock_qty: 10, cli: 'npm i @xoras/grid-master-pro', tier: 'EXPERT ADVISOR', tierClass: 'tier-pro', features: ['Dynamic Drawdown Gating', 'Multi-Level Order Matrix', 'Stochastic Filter', 'Institutional Hedging'] },
+            { id: 'bundle', title: 'XORAS Enterprise EA Suite Bundle', category: 'expert_advisor', desc: 'Complete suite of all 4 sovereign Expert Advisors compiled for MT4 build 1470 (Anchor Discounted).', img: '../assets/bundle_ea_hero.png', price: 49, stock_qty: 500, cli: 'npm i @xoras/enterprise-ea-bundle', tier: 'ANCHOR DISCOUNT', tierClass: 'tier-open', features: ['All 4 Premium EAs', 'Lifetime Updates', 'VIP Telegram Signal Feed', 'Priority Ingress Support'] },
+            
+            // --- EXISTING SYSTEMS ENGINEERING MODULES ---
             { id: 'prompt-guard', title: 'XORAS PromptGuard Sentry', category: 'security', desc: 'Deterministic AST prompt injection defense.', img: '../assets/prompt_guard_hero.png', price: 0, stock_qty: 999, cli: 'npm i @xoras/prompt-guard', tier: 'OPEN SOURCE', tierClass: 'tier-open', features: ['AST Sanitization'] },
             { id: 'tz-scheduler', title: 'XORAS TimeZone Stagger Engine', category: 'orchestration', desc: 'Autonomous 24/7 global PR triage engine.', img: '../assets/tz_scheduler_hero.png', price: 0, stock_qty: 999, cli: 'npm i @xoras/tz-scheduler', tier: 'OPEN SOURCE', tierClass: 'tier-open', features: ['Global Triage'] },
             { id: 'solver-node', title: 'XORAS Antifragile Solver Node', category: 'diagnostics', desc: 'Bedrock primitive verification.', img: '../assets/solver_node_hero.png', price: 39, stock_qty: 50, cli: 'npm i @xoras/solver-node', tier: 'ENTERPRISE PRO', tierClass: 'tier-pro', features: ['IPC/WAL Verification'] },
@@ -82,31 +90,39 @@ function renderGrid(items) {
     grid.innerHTML = '';
 
     if (items.length === 0) {
-        grid.innerHTML = `<div style="grid-column: 1/-1; padding: 4rem 0; text-align: center; color: var(--text-muted);">No matching systems engineering modules found.</div>`;
+        grid.innerHTML = `<div style="grid-column: 1/-1; padding: 4rem 0; text-align: center; color: var(--text-dim); font-family: 'JetBrains Mono', monospace;">No matching systems engineering or EA modules found.</div>`;
         return;
     }
 
     items.forEach(item => {
+        const isEa = item.category === 'expert_advisor';
         const card = document.createElement('div');
-        card.className = 'product-card';
+        card.className = 'product-card font-mono';
         card.innerHTML = `
-            <div class="tier-badge ${item.tierClass}">${item.tier}</div>
-            <div class="product-img-wrapper">
-                <img src="${item.img}" alt="${item.title}" class="product-img">
+            <div class="tier-badge ${item.tierClass} font-mono">${item.tier}</div>
+            <div class="product-img-wrapper" style="background:#141518; padding:1.5rem; text-align:center;">
+                <span style="font-size:3.5rem; filter:drop-shadow(0 0 15px ${isEa ? '#d4af37' : '#22c55e'});">${isEa ? '🤖' : '📦'}</span>
             </div>
-            <div class="product-info">
-                <div class="product-category">${item.category} • ${item.stock_qty} IN STOCK</div>
-                <h3 class="product-title">${item.title}</h3>
-                <p class="product-desc">${item.desc}</p>
-                <div class="cli-snippet">
+            <div class="product-info font-mono">
+                <div class="product-category font-mono" style="color:${isEa ? '#d4af37' : 'var(--text-dim)'}; font-weight:700;">${item.category.toUpperCase()} • ${item.stock_qty} IN STOCK</div>
+                <h3 class="product-title font-mono font-bold" style="font-size:1.3rem; margin:0.5rem 0; color:#fff;">${item.title}</h3>
+                <p class="product-desc font-mono" style="color:var(--text-dim); font-size:0.9rem; line-height:1.5; margin-bottom:1rem;">${item.desc}</p>
+                
+                ${isEa ? `
+                    <div style="margin-bottom:1rem; padding:0.5rem; background:#1e2027; border:1px solid #d4af37; border-radius:6px; text-align:center;">
+                        <a href="../alpha/index.html?ea=${item.id}" class="btn-demo font-mono text-gold font-bold" style="text-decoration:none; display:block; font-size:0.95rem;">⚡ Launch MT4 Live Demo</a>
+                    </div>
+                ` : ''}
+
+                <div class="cli-snippet font-mono font-bold" style="margin-bottom:1rem;">
                     <code>${item.cli}</code>
-                    <button class="cli-copy-btn" onclick="copyCli('${item.cli}')">📋</button>
+                    <button class="cli-copy-btn font-mono" onclick="copyCli('${item.cli}')">📋</button>
                 </div>
-                <div class="product-actions">
-                    <div class="price-tag">${item.price === 0 ? '$0' : '$' + item.price}</div>
-                    <div class="action-buttons">
-                        <button class="btn-action" onclick="viewProduct('${item.id}')">Docs</button>
-                        <button class="btn-action btn-primary-action" onclick="addToCart('${item.id}')">${item.price === 0 ? 'Deploy' : 'Buy'}</button>
+                <div class="product-actions font-mono">
+                    <div class="price-tag font-mono font-bold text-gold" style="font-size:1.4rem;">${item.price === 0 ? '$0' : '$' + item.price}</div>
+                    <div class="action-buttons font-mono">
+                        <button class="btn-action font-mono font-bold" onclick="viewProduct('${item.id}')">Specs</button>
+                        <button class="btn-action btn-primary-action font-mono font-bold" onclick="addToCart('${item.id}')">${item.price === 0 ? 'Deploy' : 'Buy'}</button>
                     </div>
                 </div>
             </div>
@@ -119,19 +135,30 @@ function viewProduct(id) {
     const item = catalogData.find(p => p.id === id);
     if (!item) return;
 
-    document.getElementById('modal-img').src = item.img;
+    const isEa = item.category === 'expert_advisor';
+
     document.getElementById('modal-title').innerText = item.title;
-    document.getElementById('modal-tier').className = `tier-badge ${item.tierClass}`;
+    document.getElementById('modal-tier').className = `tier-badge ${item.tierClass} font-mono`;
     document.getElementById('modal-tier').innerText = item.tier;
     document.getElementById('modal-price').innerText = item.price === 0 ? 'Open Source / Free' : `$${item.price}.00 Enterprise License`;
     document.getElementById('modal-desc').innerText = item.desc;
     document.getElementById('modal-cli').innerText = item.cli;
-    document.getElementById('modal-code').innerText = `// Verified Integration Stub\nconst module = require('${item.cli.split('npm i ')[1]}');`;
+
+    const demoSec = document.getElementById('modal-demo-section');
+    const demoBtn = document.getElementById('modal-launch-demo-btn');
+    if (demoSec && demoBtn) {
+        if (isEa) {
+            demoSec.style.display = 'block';
+            demoBtn.href = `../alpha/index.html?ea=${item.id}`;
+        } else {
+            demoSec.style.display = 'none';
+        }
+    }
 
     const checklist = document.getElementById('modal-features');
     checklist.innerHTML = '';
     item.features.forEach(f => {
-        checklist.innerHTML += `<div class="check-item"><span class="check-icon">✓</span> ${f}</div>`;
+        checklist.innerHTML += `<div class="check-item font-mono font-bold" style="color:#e2e8f0; margin-bottom:0.5rem; display:flex; align-items:center; gap:0.5rem;"><span class="check-icon text-green" style="font-size:1.2rem;">✓</span> ${f}</div>`;
     });
 
     document.getElementById('modal-deploy-btn').onclick = () => { addToCart(item.id); };
@@ -168,19 +195,19 @@ function openCartDrawer() {
     itemsContainer.innerHTML = '';
 
     if (cart.length === 0) {
-        itemsContainer.innerHTML = `<div style="text-align: center; color: var(--text-muted); padding: 4rem 0;">Deployment cart is empty.</div>`;
+        itemsContainer.innerHTML = `<div style="text-align: center; color: var(--text-dim); padding: 4rem 0;">Deployment cart is empty.</div>`;
         document.getElementById('cart-total-price').innerText = '$0.00';
     } else {
         let total = 0;
         cart.forEach(item => {
             total += item.price;
             itemsContainer.innerHTML += `
-                <div class="cart-item">
+                <div class="cart-item font-mono" style="display:flex; justify-content:space-between; align-items:center; padding:1rem; background:#1c1d24; border:1px solid #262830; border-radius:8px; margin-bottom:0.75rem;">
                     <div>
-                        <div class="cart-item-title">${item.title}</div>
-                        <div class="cart-item-price">${item.price === 0 ? '$0.00' : '$' + item.price + '.00'}</div>
+                        <div class="cart-item-title font-bold" style="color:#fff; font-size:1.1rem;">${item.title}</div>
+                        <div class="cart-item-price text-gold font-bold" style="font-size:1.05rem;">${item.price === 0 ? '$0.00' : '$' + item.price + '.00'}</div>
                     </div>
-                    <button class="cart-item-del" onclick="removeFromCart('${item.id}')">✕</button>
+                    <button class="cart-item-del text-red font-bold font-mono" style="background:#7f1d1d; border:1px solid #991b1b; padding:0.4rem 0.8rem; border-radius:6px; cursor:pointer;" onclick="removeFromCart('${item.id}')">✕ Remove</button>
                 </div>
             `;
         });
@@ -200,7 +227,7 @@ async function initiateCheckout() {
     const receiptList = document.getElementById('checkout-receipt');
     receiptList.innerHTML = '';
     cart.forEach(item => {
-        receiptList.innerHTML += `<div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem; font-family: monospace;"><span>${item.title}</span><span>${item.price === 0 ? '$0.00' : '$' + item.price + '.00'}</span></div>`;
+        receiptList.innerHTML += `<div style="display: flex; justify-content: space-between; margin-bottom: 0.75rem; font-family: monospace;"><span>${item.title}</span><span class="text-gold font-bold">${item.price === 0 ? '$0.00' : '$' + item.price + '.00'}</span></div>`;
     });
 
     document.getElementById('checkout-status').innerText = 'CONTACTING BACKEND SECURE LEDGER...';
@@ -216,7 +243,7 @@ async function initiateCheckout() {
         const data = await res.json();
         if (data.status !== 'SUCCESS') throw new Error(data.error || 'Checkout failure');
 
-        document.getElementById('checkout-status').innerText = 'TRANSACTION LOGGED IN SQLITE WAL: INVENTORY DECREMENTED';
+        document.getElementById('checkout-status').innerText = 'SQLITE WAL RECORDED & INSTANT ANCHOR STAGED';
         document.getElementById('checkout-status').style.color = '#10b981';
 
         // Bulletproof invisible anchor click download mechanism
@@ -238,8 +265,8 @@ async function initiateCheckout() {
         fetchCatalog();
         showToast('Deployment executed successfully.');
     } catch (error) {
-        document.getElementById('checkout-status').innerText = 'OFFLINE CHECKOUT SIMULATION COMPLETED';
-        document.getElementById('checkout-status').style.color = '#10b981';
+        document.getElementById('checkout-status').innerText = 'OFFLINE ENTERPRISE SIMULATION COMPLETED';
+        document.getElementById('checkout-status').style.color = '#34d399';
         cart = [];
         localStorage.setItem('xoras_cart', JSON.stringify(cart));
         updateCartCount();
@@ -255,13 +282,14 @@ function copyCli(str) {
 function showToast(msg) {
     const container = document.getElementById('toast-box');
     const toast = document.createElement('div');
-    toast.className = 'toast';
-    toast.innerHTML = `<span style="color: var(--primary);">⚡</span> ${msg}`;
+    toast.className = 'toast font-mono font-bold';
+    toast.style.cssText = 'background:#1a1b20; border:1px solid #d4af37; color:#fff; padding:1rem 1.5rem; border-radius:8px; margin-top:0.75rem; box-shadow:0 0 20px rgba(212,175,55,0.3); transition:all 0.3s;';
+    toast.innerHTML = `<span style="color: var(--gold); font-size:1.2rem;">⚡</span> ${msg}`;
     container.appendChild(toast);
 
     setTimeout(() => {
         toast.style.opacity = '0';
         toast.style.transform = 'translateX(100%)';
         setTimeout(() => toast.remove(), 300);
-    }, 3000);
+    }, 2800);
 }

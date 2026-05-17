@@ -10,26 +10,31 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="mt4-app">
+    <div class="mt4-app font-mono">
         <!-- Top Toolbar Bar -->
         <header class="mt4-toolbar">
             <div class="toolbar-left">
                 <div class="mt4-brand">
                     <span class="mt4-logo-icon">📊</span>
-                    <span class="mt4-title font-mono font-bold text-gold">MetaTrader 4 <span class="build-tag font-mono">Build 1470 (Wine x64 Enterprise)</span></span>
+                    <span class="mt4-title font-mono font-bold text-gold">MetaTrader 4 <span class="build-tag font-mono text-white font-bold">Build 1470 (Wine x64 Enterprise)</span></span>
                 </div>
                 <div class="menu-strip font-mono">
                     <span>File</span><span>View</span><span>Insert</span><span>Charts</span><span>Tools</span><span>Window</span><span>Help</span>
-                    <a href="../store/index.html" class="menu-store-btn font-bold text-green">🛍️ Asset Storefront</a>
-                    <a href="../index.html" class="menu-home-btn text-blue font-bold">🏠 XORAS Portal</a>
+                    <a href="../store/index.html" class="menu-store-btn font-bold text-green font-mono" style="display:flex; align-items:center; gap:0.4rem;">🛍️ Asset Storefront</a>
+                    <a href="../index.html" class="menu-home-btn text-blue font-bold font-mono" style="display:flex; align-items:center; gap:0.4rem;">🏠 XORAS Portal</a>
                 </div>
             </div>
-            <div class="toolbar-right">
+            <div class="toolbar-right font-mono">
+                <!-- Live WebSocket Connection Indicator -->
+                <div id="ws-status-badge" class="ws-badge font-mono font-bold text-green" style="background:#14532d; border:1px solid #166534; padding:0.25rem 0.75rem; border-radius:100px; display:flex; align-items:center; gap:0.4rem;">
+                    <span class="ws-dot" style="width:8px; height:8px; border-radius:50%; background:#22c55e; box-shadow:0 0 10px #22c55e; animation:pulse 1.5s infinite;"></span>
+                    <span id="ws-status-text">🟢 Live Feed (Connected: Binance/CoinCap)</span>
+                </div>
                 <div class="account-pill font-mono">
                     <span class="status-dot"></span>
                     <span>Demo Account: <strong class="text-green">8842911 (XORAS-Alpha-Demo)</strong></span>
                 </div>
-                <div class="server-ping font-mono">Server Ping: <strong class="text-gold">8.4 ms</strong> (London Equinix LD4)</div>
+                <div class="server-ping font-mono">Ping: <strong class="text-gold">8.4 ms</strong> (London Equinix LD4)</div>
             </div>
         </header>
 
@@ -65,11 +70,12 @@
                 </button>
                 <select id="select-ea-script" class="ea-dropdown font-mono">
                     <option value="macd">MACD Sample v1.4.ex4 ($199 Value)</option>
-                    <option value="ma">Moving Average v1.2.ex4 ($149 Value)</option>
-                    <option value="rsi">RSI Reversal Scalper.ex4 (Premium Store Asset)</option>
-                    <option value="grid">Grid Master Pro.ex4 (Premium Store Asset)</option>
+                    <option value="ma">Moving Average Pro.ex4 ($149 Value)</option>
+                    <option value="rsi">RSI Reversal Scalper.ex4 ($249 Value)</option>
+                    <option value="grid">Grid Master Pro.ex4 ($299 Value)</option>
+                    <option value="bundle">Enterprise EA Suite Bundle.ex4 ($49 Anchor)</option>
                 </select>
-                <a href="../store/index.html" class="btn-buy-ea font-mono">⚡ Get Pro EAs</a>
+                <a href="../store/index.html" class="btn-buy-ea font-mono">⚡ Browse EA Store</a>
             </div>
         </div>
 
@@ -80,9 +86,9 @@
                 <div class="panel-box">
                     <div class="panel-header font-mono font-bold">
                         <span>Market Watch Quotes</span>
-                        <span class="time-gmt font-mono" id="gmt-clock">05:15:00</span>
+                        <span class="time-gmt font-mono font-bold text-gold" id="gmt-clock">05:15:00</span>
                     </div>
-                    <div class="symbol-table-container">
+                    <div class="symbol-table-container font-mono">
                         <table class="symbol-table font-mono">
                             <thead><tr><th>Symbol</th><th>Bid</th><th>Ask</th><th>Spread</th></tr></thead>
                             <tbody id="market-quotes">
@@ -90,22 +96,22 @@
                                 <tr data-pair="GBPUSD" data-spread="13"><td>GBPUSD</td><td class="bid-val text-red">1.26312</td><td class="ask-val text-red">1.26325</td><td class="spread-val">13</td></tr>
                                 <tr data-pair="USDJPY" data-spread="16"><td>USDJPY</td><td class="bid-val text-green">155.742</td><td class="ask-val text-green">155.758</td><td class="spread-val">16</td></tr>
                                 <tr data-pair="XAUUSD" data-spread="30"><td>XAUUSD</td><td class="bid-val text-green font-bold">2342.15</td><td class="ask-val text-green font-bold">2342.45</td><td class="spread-val">30</td></tr>
-                                <tr data-pair="BTCUSD" data-spread="145"><td>BTCUSD</td><td class="bid-val text-red font-bold">64210.5</td><td class="ask-val text-red font-bold">64225.0</td><td class="spread-val">145</td></tr>
+                                <tr data-pair="BTCUSD" data-spread="145"><td>BTCUSD</td><td class="bid-val text-red font-bold">64210.5</td><td class="ask-val text-red font-bold">64225.0</td><td class="spread-val font-bold text-gold">145</td></tr>
                                 <tr data-pair="ETHUSD" data-spread="45"><td>ETHUSD</td><td class="bid-val text-green">3482.10</td><td class="ask-val text-green">3482.55</td><td class="spread-val">45</td></tr>
-                                <tr data-pair="SOLUSD" data-spread="20"><td>SOLUSD</td><td class="bid-val text-green">148.50</td><td class="ask-val text-green">148.70</td><td class="spread-val">20</td></tr>
+                                <tr data-pair="SOLUSD" data-spread="20"><td>SOLUSD</td><td class="bid-val text-green font-bold">148.50</td><td class="ask-val text-green font-bold">148.70</td><td class="spread-val font-bold text-gold">20</td></tr>
                             </tbody>
                         </table>
                     </div>
                 </div>
 
-                <div class="panel-box navigator-box">
-                    <div class="panel-header font-mono font-bold">Navigator / EA Catalog</div>
+                <div class="panel-box navigator-box font-mono">
+                    <div class="panel-header font-mono font-bold">Navigator / Sovereign Catalog</div>
                     <ul class="nav-tree font-mono">
-                        <li class="tree-item open">
+                        <li class="tree-item open font-mono">
                             <span>📂 Accounts</span>
                             <ul><li class="leaf-item text-green font-bold">👤 8842911 - Demo Account ($10,000.00 USD)</li></ul>
                         </li>
-                        <li class="tree-item open">
+                        <li class="tree-item open font-mono">
                             <span>📊 Active Indicators</span>
                             <ul>
                                 <li class="leaf-item font-mono text-cyan">📈 SMA 14 (Simple Moving Average)</li>
@@ -115,12 +121,14 @@
                                 <li class="leaf-item font-mono text-blue">📉 RSI Oscillator (14 period)</li>
                             </ul>
                         </li>
-                        <li class="tree-item open">
+                        <li class="tree-item open font-mono">
                             <span>🤖 Expert Advisors (EAs)</span>
                             <ul>
-                                <li class="leaf-item active-ea-item text-gold font-bold">⚡ MACD Sample.ex4 [Armed]</li>
-                                <li class="leaf-item text-dim">⚡ Moving Average.ex4</li>
-                                <li class="leaf-item text-green font-bold"><a href="../store/index.html" style="color:#34d399; text-decoration:none;">🛍️ Browse EA Store Bundle ($49)</a></li>
+                                <li class="leaf-item active-ea-item text-gold font-bold" id="tree-active-ea">⚡ MACD Sample v1.4 [Armed]</li>
+                                <li class="leaf-item text-dim">⚡ Moving Average Pro.ex4</li>
+                                <li class="leaf-item text-dim">⚡ RSI Reversal Scalper.ex4</li>
+                                <li class="leaf-item text-dim">⚡ Grid Master Pro.ex4</li>
+                                <li class="leaf-item text-green font-bold" style="margin-top:0.5rem;"><a href="../store/index.html" style="color:#34d399; text-decoration:none; display:block; padding:0.3rem 0; background:#14532d; text-align:center; border-radius:4px; border:1px solid #166534;">🛍️ Buy EA Bundle ($49)</a></li>
                             </ul>
                         </li>
                     </ul>
@@ -128,11 +136,11 @@
             </aside>
 
             <!-- Center Charting Panel -->
-            <main class="mt4-chart-area">
-                <div class="chart-window">
+            <main class="mt4-chart-area font-mono">
+                <div class="chart-window font-mono">
                     <div class="chart-header-bar font-mono">
-                        <div class="chart-title"><span id="active-chart-pair" class="font-bold text-gold">EURUSD</span>, <span id="active-chart-tf" class="font-bold text-green">M15</span> <span class="chart-sub text-dim">SMA(14), EMA(50), Bollinger Bands(20,2), MACD(12,26,9), RSI(14)</span></div>
-                        <div class="chart-tick-vals text-dim"><span id="chart-ohcl">O: 1.08420  H: 1.08485  L: 1.08415  C: 1.08452</span></div>
+                        <div class="chart-title"><span id="active-chart-pair" class="font-bold text-gold font-mono" style="font-size:1.1rem;">EURUSD</span>, <span id="active-chart-tf" class="font-bold text-green font-mono" style="font-size:1.1rem;">M15</span> <span class="chart-sub text-dim">SMA(14), EMA(50), Bollinger Bands(20,2), MACD(12,26,9), RSI(14)</span></div>
+                        <div class="chart-tick-vals text-dim font-mono"><span id="chart-ohcl">O: 1.08420  H: 1.08485  L: 1.08415  C: 1.08452</span></div>
                     </div>
 
                     <div class="canvas-wrapper font-mono">
@@ -141,14 +149,14 @@
                         <!-- EA Active HUD Telemetry Overlay -->
                         <div class="ea-active-hud font-mono" id="ea-hud-panel" style="display:none;">
                             <div class="hud-top">
-                                <span class="hud-ea-name font-bold text-gold" id="ea-hud-title">MACD Sample v1.4</span>
+                                <span class="hud-ea-name font-bold text-gold font-mono" id="ea-hud-title">MACD Sample v1.4</span>
                                 <span class="smile-icon" id="ea-hud-smile">🙂</span>
                             </div>
                             <div class="hud-stats font-mono">
-                                <div class="hud-stat-row"><span>Tick Latency:</span><strong class="text-green">4.2ms</strong></div>
-                                <div class="hud-stat-row"><span>RSI (14) Signal:</span><strong id="hud-rsi-val">54.2 (Neutral)</strong></div>
-                                <div class="hud-stat-row"><span>MACD Signal:</span><strong id="hud-macd-val" class="text-green">0.0012 (Bullish)</strong></div>
-                                <div class="hud-stat-row"><span>Automated Exec:</span><strong class="text-blue">ARMED &amp; GATED</strong></div>
+                                <div class="hud-stat-row font-mono"><span>Tick Latency:</span><strong class="text-green font-mono">4.2ms</strong></div>
+                                <div class="hud-stat-row font-mono"><span>RSI (14) Signal:</span><strong id="hud-rsi-val" class="font-mono">54.2 (Neutral)</strong></div>
+                                <div class="hud-stat-row font-mono"><span>MACD Signal:</span><strong id="hud-macd-val" class="text-green font-mono">0.0012 (Bullish)</strong></div>
+                                <div class="hud-stat-row font-mono"><span>Automated Exec:</span><strong class="text-blue font-mono font-bold">ARMED &amp; GATED</strong></div>
                             </div>
                         </div>
 
@@ -159,18 +167,18 @@
 
                 <!-- Manual Order Entry Strip for action video -->
                 <div class="manual-order-strip font-mono">
-                    <div class="order-inputs">
-                        <span class="label font-bold text-gold">One-Click Trading:</span>
-                        <span class="label">Volume (Lots):</span>
-                        <input type="number" id="trade-lot" step="0.01" value="0.10" min="0.01" max="10.00">
-                        <span class="label">S/L Price:</span>
-                        <input type="text" id="trade-sl" value="1.08200">
-                        <span class="label">T/P Price:</span>
-                        <input type="text" id="trade-tp" value="1.08800">
+                    <div class="order-inputs font-mono">
+                        <span class="label font-bold text-gold font-mono" style="font-size:1rem;">⚡ One-Click Trading:</span>
+                        <span class="label font-mono">Volume (Lots):</span>
+                        <input type="number" id="trade-lot" class="font-mono font-bold" step="0.01" value="0.10" min="0.01" max="10.00">
+                        <span class="label font-mono">S/L Price:</span>
+                        <input type="text" id="trade-sl" class="font-mono font-bold" value="1.08200">
+                        <span class="label font-mono">T/P Price:</span>
+                        <input type="text" id="trade-tp" class="font-mono font-bold" value="1.08800">
                     </div>
                     <div class="order-buttons font-mono">
-                        <button id="btn-sell-mkt" class="btn-trade sell font-mono">SELL MKT @ <span id="btn-sell-quote">1.08452</span></button>
-                        <button id="btn-buy-mkt" class="btn-trade buy font-mono">BUY MKT @ <span id="btn-buy-quote">1.08461</span></button>
+                        <button id="btn-sell-mkt" class="btn-trade sell font-mono font-bold" style="font-size:0.95rem;">SELL MKT @ <span id="btn-sell-quote">1.08452</span></button>
+                        <button id="btn-buy-mkt" class="btn-trade buy font-mono font-bold" style="font-size:0.95rem;">BUY MKT @ <span id="btn-buy-quote">1.08461</span></button>
                     </div>
                 </div>
             </main>
@@ -179,36 +187,36 @@
         <!-- Terminal Ledger Bottom Window -->
         <footer class="mt4-bottom-terminal font-mono">
             <div class="terminal-tabs font-mono">
-                <button class="tab-btn active">Active Trades (<span id="open-orders-count">0</span>)</button>
-                <button class="tab-btn">Exposure HUD</button>
-                <button class="tab-btn">Account History</button>
-                <button class="tab-btn">Journal Log</button>
-                <button class="tab-btn font-bold text-green">PromptGuard Sentry (Policy: 1GB/Outbound Locked)</button>
-                <button id="btn-close-all-profit" class="btn-close-all text-red font-mono font-bold" style="margin-left:auto; margin-right:1rem; padding:0.25rem 0.75rem;">Close All Profitable Orders ($)</button>
+                <button class="tab-btn active font-mono">Active Trades (<span id="open-orders-count">0</span>)</button>
+                <button class="tab-btn font-mono">Exposure HUD</button>
+                <button class="tab-btn font-mono">Account History</button>
+                <button class="tab-btn font-mono">Journal Log</button>
+                <button class="tab-btn font-bold text-green font-mono">PromptGuard Sentry (Policy: 1GB/Outbound Locked)</button>
+                <button id="btn-close-all-profit" class="btn-close-all text-red font-mono font-bold" style="margin-left:auto; margin-right:1.25rem; padding:0.35rem 0.85rem; font-size:0.85rem; background:#7f1d1d; border:1px solid #991b1b; color:#fca5a5; border-radius:6px; cursor:pointer;">Close All Profitable Orders ($)</button>
             </div>
-            <div class="terminal-table-container">
+            <div class="terminal-table-container font-mono">
                 <table class="terminal-ledger font-mono">
                     <thead>
-                        <tr>
+                        <tr class="font-mono">
                             <th>Ticket #</th><th>Time</th><th>Type</th><th>Size</th><th>Symbol</th><th>Entry Price</th><th>S/L</th><th>T/P</th><th>Current Price</th><th>Commission</th><th>Swap</th><th>Floating P/L ($)</th><th>Action</th>
                         </tr>
                     </thead>
-                    <tbody id="open-orders-list">
+                    <tbody id="open-orders-list" class="font-mono">
                         <!-- Dynamic Orders injected via JS -->
                     </tbody>
                 </table>
             </div>
             <div class="terminal-balance-strip font-mono">
-                <span>Balance: <strong id="acc-balance" class="text-white">10000.00</strong> USD</span>
-                <span>Equity: <strong id="acc-equity" class="text-gold">10000.00</strong></span>
-                <span>Free Margin: <strong id="acc-freemargin" class="text-green">10000.00</strong></span>
-                <span>Margin Level: <strong class="text-cyan">1000.00%</strong></span>
-                <span style="margin-left:auto; font-size:0.95rem;">Floating P/L: <span id="total-pl" class="font-bold text-green">+$0.00</span></span>
+                <span>Balance: <strong id="acc-balance" class="text-white font-mono font-bold" style="font-size:1.1rem;">10000.00</strong> USD</span>
+                <span>Equity: <strong id="acc-equity" class="text-gold font-mono font-bold" style="font-size:1.1rem;">10000.00</strong></span>
+                <span>Free Margin: <strong id="acc-freemargin" class="text-green font-mono font-bold" style="font-size:1.1rem;">10000.00</strong></span>
+                <span>Margin Level: <strong class="text-cyan font-mono font-bold" style="font-size:1.1rem;">1000.00%</strong></span>
+                <span style="margin-left:auto; font-size:1.05rem;" class="font-mono font-bold">Floating P/L: <span id="total-pl" class="font-bold text-green font-mono" style="font-size:1.2rem;">+$0.00</span></span>
             </div>
         </footer>
     </div>
 
-    <!-- Hyper-Realistic MQL4 Simulation Engine -->
+    <!-- Hyper-Realistic MQL4 Simulation Engine with Live WebSocket Feed -->
     <script src="trader.js"></script>
 </body>
 </html>

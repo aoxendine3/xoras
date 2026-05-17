@@ -26,6 +26,8 @@ document.addEventListener('DOMContentLoaded', () => {
     let eaName = 'MACD Sample v1.4';
     let balance = 10000.00;
     let orders = [];
+    let liveWsSocket = null;
+    let isLiveWsConnected = false;
 
     // Indicator Visibility States
     const activeInds = { bb: true, ma: true, macd: true, rsi: true };
@@ -46,13 +48,13 @@ document.addEventListener('DOMContentLoaded', () => {
     let candles = [];
 
     const basePrices = {
-        EURUSD: { p: 1.08350, step: 0.00020, digits: 5 },
-        GBPUSD: { p: 1.26250, step: 0.00025, digits: 5 },
-        USDJPY: { p: 155.650, step: 0.03000, digits: 3 },
-        XAUUSD: { p: 2341.50, step: 0.40000, digits: 2 },
-        BTCUSD: { p: 64150.0, step: 15.0000, digits: 1 },
-        ETHUSD: { p: 3480.00, step: 2.00000, digits: 2 },
-        SOLUSD: { p: 148.20,  step: 0.20000, digits: 2 }
+        EURUSD: { p: 1.08350, step: 0.00020, digits: 5, wsSym: '' },
+        GBPUSD: { p: 1.26250, step: 0.00025, digits: 5, wsSym: '' },
+        USDJPY: { p: 155.650, step: 0.03000, digits: 3, wsSym: '' },
+        XAUUSD: { p: 2341.50, step: 0.40000, digits: 2, wsSym: '' },
+        BTCUSD: { p: 64150.0, step: 15.0000, digits: 1, wsSym: 'btcusdt@trade' },
+        ETHUSD: { p: 3480.00, step: 2.00000, digits: 2, wsSym: 'ethusdt@trade' },
+        SOLUSD: { p: 148.20,  step: 0.20000, digits: 2, wsSym: 'solusdt@trade' }
     };
 
     function initCandles() {
@@ -71,8 +73,73 @@ document.addEventListener('DOMContentLoaded', () => {
         currentBid = baseP;
         currentAsk = currentBid + (currentSpread * Math.pow(10, -cfg.digits));
         updateDisplayQuotes();
+        connectLiveWebSocket();
     }
-    initCandles();
+
+    // --- Live WebSocket Stream Manager ---
+    function connectLiveWebSocket() {
+        if (liveWsSocket) {
+            try { liveWsSocket.close(); } catch(e) {}
+            liveWsSocket = null;
+        }
+
+        const cfg = basePrices[activePair];
+        const badgeEl = document.getElementById('ws-status-badge');
+        const badgeTextEl = document.getElementById('ws-status-text');
+
+        if (!cfg || !cfg.wsSym) {
+            isLiveWsConnected = false;
+            if (badgeEl) {
+                badgeEl.style.background = '#451a03';
+                badgeEl.style.borderColor = '#78350f';
+                badgeEl.querySelector('.ws-dot').style.background = '#f59e0b';
+                badgeEl.querySelector('.ws-dot').style.boxShadow = '0 0 10px #f59e0b';
+            }
+            if (badgeTextEl) badgeTextEl.textContent = '🟠 Simulated Tick Engine (300ms)';
+            return;
+        }
+
+        try {
+            const streamUrl = `wss://stream.binance.com:9443/ws/${cfg.wsSym}`;
+            liveWsSocket = new WebSocket(streamUrl);
+
+            liveWsSocket.onopen = () => {
+                isLiveWsConnected = true;
+                if (badgeEl) {
+                    badgeEl.style.background = '#14532d';
+                    badgeEl.style.borderColor = '#166534';
+                    badgeEl.querySelector('.ws-dot').style.background = '#22c55e';
+                    badgeEl.querySelector('.ws-dot').style.boxShadow = '0 0 10px #22c55e';
+                }
+                if (badgeTextEl) badgeTextEl.textContent = `🟢 Live Stream (Binance WebSocket: ${activePair})`;
+                showFloatingNotif(`⚡ Live Market Stream Connected: ${streamUrl}`);
+            };
+
+            liveWsSocket.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+                if (data && data.p) {
+                    const price = parseFloat(data.p);
+                    if (!isNaN(price)) {
+                        currentBid = price;
+                        currentAsk = currentBid + (currentSpread * Math.pow(10, -cfg.digits));
+                        const lastC = candles[candles.length - 1];
+                        if (lastC) {
+                            lastC.c = currentBid;
+                            lastC.h = Math.max(lastC.h, currentBid);
+                            lastC.l = Math.min(lastC.l, currentBid);
+                        }
+                        updateDisplayQuotes();
+                        evalProfitAndEa();
+                    }
+                }
+            };
+
+            liveWsSocket.onerror = () => { isLiveWsConnected = false; };
+            liveWsSocket.onclose = () => { isLiveWsConnected = false; };
+        } catch(e) {
+            isLiveWsConnected = false;
+        }
+    }
 
     function resizeCanvas() {
         if (!canvas) return;
@@ -124,7 +191,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const cfg = basePrices[activePair] || { digits: 4 };
         const prices = candles.flatMap(c => [c.h, c.l]);
-        const pad = (Math.max(...prices) - Math.min(...prices)) * 0.1 || 0.001;
+        const pad = (Math.max(...prices) - Math.min(...prices)) * 0.08 || 0.001;
         const maxP = Math.max(...prices) + pad;
         const minP = Math.min(...prices) - pad;
         const priceDiff = maxP - minP;
@@ -246,20 +313,38 @@ document.addEventListener('DOMContentLoaded', () => {
         const hudMacdEl = document.getElementById('hud-macd-val');
         if (hudRsiEl) {
             hudRsiEl.textContent = `${curRsi.toFixed(1)} (${curRsi > 70 ? 'Overbought' : (curRsi < 30 ? 'Oversold' : 'Neutral')})`;
-            hudRsiEl.className = curRsi > 70 ? 'text-red font-bold' : (curRsi < 30 ? 'text-green font-bold' : 'text-dim');
+            hudRsiEl.className = curRsi > 70 ? 'text-red font-bold font-mono' : (curRsi < 30 ? 'text-green font-bold font-mono' : 'text-dim font-mono');
         }
         if (hudMacdEl) {
             const mVal = (currentBid - lastC.o);
             hudMacdEl.textContent = `${mVal >= 0 ? '+' : ''}${(mVal*500).toFixed(4)} (${mVal >= 0 ? 'Bullish' : 'Bearish'})`;
-            hudMacdEl.className = mVal >= 0 ? 'text-green font-bold' : 'text-red font-bold';
+            hudMacdEl.className = mVal >= 0 ? 'text-green font-bold font-mono' : 'text-red font-bold font-mono';
         }
 
         drawChart();
         updateLedgerBalances();
     }
 
-    // --- Market Tick Simulation Loop (300ms for hyper-fluidity) ---
+    function evalProfitAndEa() {
+        // Check Open Orders Profit Accrual
+        orders.forEach(o => {
+            const mult = activePair.includes('JPY') ? 1000 : (activePair.includes('BTC') ? 1 : (activePair.includes('XAU') ? 100 : 100000));
+            const diff = o.type === 'BUY' ? (currentBid - o.openPrice) : (o.openPrice - currentAsk);
+            o.profit = diff * o.lot * mult;
+        });
+        renderOrdersTable();
+
+        // Automated EA Decision Logic
+        if (eaArmed && orders.length < 6 && Math.random() < 0.10) {
+            const curRsi = calcRSI(candles, 14);
+            if (curRsi < 38) executeTradeOrder('BUY', 0.10, eaName);
+            else if (curRsi > 62) executeTradeOrder('SELL', 0.10, eaName);
+        }
+    }
+
+    // --- Simulated Tick Engine (Active when WebSocket is silent) ---
     setInterval(() => {
+        if (isLiveWsConnected) return; // Skip if WebSocket is pushing live trades
         const cfg = basePrices[activePair] || { step: 0.0005, digits: 4 };
         const delta = (Math.random() - 0.49) * cfg.step * 0.4;
         currentBid += delta;
@@ -273,23 +358,35 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         updateDisplayQuotes();
-
-        // Check Open Orders Profit Accrual
-        orders.forEach(o => {
-            const mult = activePair.includes('JPY') ? 1000 : (activePair.includes('BTC') ? 1 : (activePair.includes('XAU') ? 100 : 100000));
-            const diff = o.type === 'BUY' ? (currentBid - o.openPrice) : (o.openPrice - currentAsk);
-            o.profit = diff * o.lot * mult;
-        });
-        renderOrdersTable();
-
-        // Automated EA Decision Logic (Hyper-Interactive)
-        if (eaArmed && orders.length < 6 && Math.random() < 0.10) {
-            const curRsi = calcRSI(candles, 14);
-            if (curRsi < 38) executeTradeOrder('BUY', 0.10, eaName);
-            else if (curRsi > 62) executeTradeOrder('SELL', 0.10, eaName);
-            else if (Math.random() < 0.05) executeTradeOrder(Math.random() > 0.5 ? 'BUY' : 'SELL', 0.10, eaName);
-        }
+        evalProfitAndEa();
     }, 300);
+
+    // --- Query Parameter EA Arming from Storefront ---
+    function checkUrlEaArming() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const eaParam = urlParams.get('ea');
+        const eaSelect = document.getElementById('select-ea-script');
+        const toggleBtn = document.getElementById('btn-toggle-ea');
+        
+        if (eaParam && eaSelect && toggleBtn) {
+            const optionsMap = { macd: 'macd', ma: 'ma', rsi: 'rsi', grid: 'grid', bundle: 'bundle' };
+            if (optionsMap[eaParam]) {
+                eaSelect.value = optionsMap[eaParam];
+                eaName = eaSelect.options[eaSelect.selectedIndex].text;
+                document.getElementById('ea-hud-title').textContent = eaName.split('(')[0].trim();
+                document.getElementById('tree-active-ea').textContent = `⚡ ${eaName.split('(')[0].trim()} [Armed]`;
+                
+                // Arm EA
+                eaArmed = true;
+                toggleBtn.className = 'btn-ea active font-mono';
+                document.getElementById('ea-status-text').textContent = 'AutoTrading: ON';
+                document.getElementById('ea-hud-panel').style.display = 'block';
+                showFloatingNotif(`⚡ Sovereign Storefront Ingress: Armed ${eaName}`);
+            }
+        }
+    }
+    initCandles();
+    checkUrlEaArming();
 
     // --- Order Execution & Table Ledger ---
     function executeTradeOrder(type, lot, origin = 'Manual') {
@@ -340,7 +437,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <td>${o.lot.toFixed(2)}</td><td class="font-bold text-gold">${o.symbol}</td>
                 <td>${o.openPrice.toFixed(o.digits)}</td><td>${o.sl}</td><td>${o.tp}</td>
                 <td>${curP.toFixed(o.digits)}</td><td>$0.00</td><td>$0.00</td>
-                <td class="${o.profit >= 0 ? 'text-green' : 'text-red'} font-bold">${o.profit >= 0 ? '+' : ''}$${o.profit.toFixed(2)}</td>
+                <td class="${o.profit >= 0 ? 'text-green' : 'text-red'} font-bold font-mono">${o.profit >= 0 ? '+' : ''}$${o.profit.toFixed(2)}</td>
                 <td><button class="btn-close-order" data-id="${o.id}">Close X</button></td>
             `;
             tbody.appendChild(tr);
@@ -349,7 +446,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const totalPlEl = document.getElementById('total-pl');
         if (totalPlEl) {
             totalPlEl.textContent = `${curTotalPl >= 0 ? '+' : ''}$${curTotalPl.toFixed(2)}`;
-            totalPlEl.className = curTotalPl >= 0 ? 'text-green font-bold' : 'text-red font-bold';
+            totalPlEl.className = curTotalPl >= 0 ? 'text-green font-bold font-mono' : 'text-red font-bold font-mono';
         }
 
         document.querySelectorAll('.btn-close-order').forEach(btn => {
@@ -410,6 +507,7 @@ document.addEventListener('DOMContentLoaded', () => {
             eaName = e.target.options[e.target.selectedIndex].text;
             const hudTitleEl = document.getElementById('ea-hud-title');
             if (hudTitleEl) hudTitleEl.textContent = eaName.split('(')[0].trim();
+            document.getElementById('tree-active-ea').textContent = `⚡ ${eaName.split('(')[0].trim()} [Armed]`;
             playSfx(600, 0.05, 'sine');
             showFloatingNotif(`⚡ Armed EA Script: ${eaName}`);
         });
