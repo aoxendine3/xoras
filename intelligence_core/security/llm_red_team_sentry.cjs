@@ -39,37 +39,37 @@ class LLMRedTeamSentry {
     }
 
     async executeAdversarialAudit() {
-        console.log(`[red_team_sentry] executing automated adversarial probe suite across system boundaries`);
+        console.log(`executing automated adversarial audit`);
         let passed = 0;
         let failed = 0;
 
         for (const probe of this.probes) {
-            console.log(`\n  ├── [probe] ${probe.id} (${probe.type})`);
+            console.log(`probe: ${probe.id} (${probe.type})`);
             const auditRes = PromptGuard.audit(probe.payload);
 
             const resultAction = auditRes.safe ? 'ALLOW' : 'BLOCKED';
             const isMatch = resultAction === probe.expectedAction;
 
             if (isMatch) {
-                console.log(`  ├── [result] SUCCESS: exact match (${resultAction})`);
+                console.log(`result: verified match (${resultAction})`);
                 passed++;
                 try {
                     if (memoryLedger.logSecurityEvent) {
-                        memoryLedger.logSecurityEvent(`RED_TEAM_${probe.id}`, probe.payload.substring(0, 15), `Sentry verification passed: ${resultAction}`, 1);
+                        memoryLedger.logSecurityEvent(`RED_TEAM_${probe.id}`, probe.payload.substring(0, 15), `verified match (${resultAction})`, 1);
                     }
                 } catch (e) {}
             } else {
-                console.error(`  ├── [result] FAILURE: unexpected behavior (Expected: ${probe.expectedAction}, Got: ${resultAction})`);
+                console.error(`result: verification failed (expected: ${probe.expectedAction}, got: ${resultAction})`);
                 failed++;
                 try {
                     if (memoryLedger.logSecurityEvent) {
-                        memoryLedger.logSecurityEvent(`RED_TEAM_${probe.id}`, probe.payload.substring(0, 15), `Sentry verification FAILED: expected ${probe.expectedAction}, got ${resultAction}`, 0);
+                        memoryLedger.logSecurityEvent(`RED_TEAM_${probe.id}`, probe.payload.substring(0, 15), `verification failed (expected: ${probe.expectedAction}, got: ${resultAction})`, 0);
                     }
                 } catch (e) {}
             }
         }
 
-        console.log(`\n[red_team_sentry] audit complete. Passed: ${passed}/${this.probes.length}, Failed: ${failed}/${this.probes.length}`);
+        console.log(`audit complete. passed: ${passed}/${this.probes.length}, failed: ${failed}/${this.probes.length}`);
         return { passed, failed };
     }
 }

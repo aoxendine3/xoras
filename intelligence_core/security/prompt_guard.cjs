@@ -30,10 +30,10 @@ class PromptGuard {
     if (typeof input !== 'string') return input;
     let cleaned = input;
     DANGEROUS_PATTERNS.forEach(pattern => {
-      cleaned = cleaned.replace(pattern, '[BLOCKED]');
+      cleaned = cleaned.replace(pattern, 'BLOCKED');
     });
     if (cleaned.length > 8000) {
-      cleaned = cleaned.substring(0, 8000) + '\n[TRUNCATED - INPUT TOO LONG]';
+      cleaned = cleaned.substring(0, 8000) + '\nTRUNCATED - INPUT TOO LONG';
     }
     return cleaned;
   }
@@ -48,19 +48,17 @@ class PromptGuard {
     const timestamp = new Date().toISOString();
     const safe = this.isSafe(input);
 
-    console.log(`[PROMPT_GUARD] ${timestamp} | Hash: ${hash} | Safe: ${safe}`);
+    console.log(`timestamp: ${timestamp} | hash: ${hash} | safe: ${safe}`);
 
     if (!safe) {
-      console.log(`[PROMPT_GUARD] warning: potential injection attempt blocked`);
+      console.log(`audit: blocked injection attempt`);
       const sanitized = this.sanitize(input);
       try {
         const memoryLedger = require('../memory_ledger.cjs');
         if (memoryLedger.logSecurityEvent) {
           memoryLedger.logSecurityEvent('PROMPT_INJECTION_BLOCKED', hash, sanitized, 0);
         }
-      } catch (e) {
-        // Fallback if ledger not fully initialized
-      }
+      } catch (e) {}
       return { safe: false, sanitized };
     }
     return { safe: true, sanitized: input };
@@ -70,7 +68,7 @@ class PromptGuard {
     if (typeof output !== 'string') return output;
     let cleaned = output;
     DANGEROUS_PATTERNS.forEach(pattern => {
-      cleaned = cleaned.replace(pattern, '[FILTERED_OUTPUT]');
+      cleaned = cleaned.replace(pattern, 'FILTERED_OUTPUT');
     });
     return cleaned;
   }
