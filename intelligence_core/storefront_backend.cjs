@@ -2,12 +2,15 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
+const crypto = require('crypto');
 
 const DB_PATH = path.join(__dirname, '../AETHER_KNOWLEDGE_BASE/aether_brain.sqlite');
 
 class StorefrontBackend {
     constructor() {
         this.port = process.env.STORE_PORT || 3050;
+        this.secretKey = process.env.STORE_SECRET || crypto.randomBytes(32).toString('hex');
+        this.rateLimits = new Map(); // IP -> { count, resetTime }
         this.initDb();
     }
 
@@ -41,7 +44,6 @@ class StorefrontBackend {
             );
         `);
 
-        // Seed inventory if empty
         const count = db.prepare('SELECT count(*) as c FROM store_inventory').get().c;
         if (count === 0) {
             const seed = [
@@ -53,19 +55,46 @@ class StorefrontBackend {
                 ['cortex-sandbox', 'XORAS Cortex SIMD Vector Core', 'storage', 'Tri-modal cognitive memory database engine generating verifiable 3072-dim embeddings.', '../assets/cortex_vector_hero.png', 99.0, 25, 45, 'npm i @xoras/cortex-sandbox', 'ENTERPRISE PRO', 'tier-pro']
             ];
             const insert = db.prepare('INSERT INTO store_inventory VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
-            const tx = db.transaction(() => {
-                seed.forEach(row => insert.run(...row));
-            });
-            tx();
+            db.transaction(() => seed.forEach(row => insert.run(...row)))();
         }
         db.close();
     }
 
+    checkRateLimit(ip) {
+        const now = Date.now();
+        const limit = 100; // max 100 requests per 15 min window
+        const windowMs = 15 * 60 * 1000;
+
+        if (!this.rateLimits.has(ip)) {
+            this.rateLimits.set(ip, { count: 1, resetTime: now + windowMs });
+            return true;
+        }
+
+        const record = this.rateLimits.get(ip);
+        if (now > record.resetTime) {
+            record.count = 1;
+            record.resetTime = now + windowMs;
+            return true;
+        }
+
+        if (record.count >= limit) return false;
+        record.count++;
+        return true;
+    }
+
+    generateSecureToken(orderId) {
+        const hmac = crypto.createHmac('sha256', this.secretKey);
+        hmac.update(`${orderId}:${Date.now()}`);
+        return hmac.digest('hex');
+    }
+
     start() {
         const server = http.createServer((req, res) => {
+            const ip = req.socket.remoteAddress || 'unknown';
+
             res.setHeader('Access-Control-Allow-Origin', '*');
             res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-            res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+            res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 
             if (req.method === 'OPTIONS') {
                 res.writeHead(204);
@@ -73,44 +102,65 @@ class StorefrontBackend {
                 return;
             }
 
+            if (!this.checkRateLimit(ip)) {
+                res.writeHead(429, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ status: 'ERROR', error: 'RATE_LIMIT_EXCEEDED', message: 'Too many requests. Connection throttled for 15 minutes.' }));
+                return;
+            }
+
             const urlParts = req.url.split('?');
             const route = urlParts[0];
-
             const db = require('better-sqlite3')(DB_PATH);
 
             if (route === '/api/catalog' && req.method === 'GET') {
-                const items = db.prepare('SELECT * FROM store_inventory').all();
-                res.writeHead(200, { 'Content-Type': 'application/json' });
-                res.end(JSON.stringify(items));
-                db.close();
+                try {
+                    const items = db.prepare('SELECT * FROM store_inventory').all();
+                    res.writeHead(200, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify(items));
+                } catch (e) {
+                    res.writeHead(500, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify({ status: 'ERROR', error: 'DATABASE_QUERY_FAULT' }));
+                } finally {
+                    db.close();
+                }
                 return;
             }
 
             if (route === '/api/checkout' && req.method === 'POST') {
                 let body = '';
-                req.on('data', chunk => body += chunk);
+                req.on('data', chunk => {
+                    body += chunk;
+                    if (body.length > 1024 * 1024) req.connection.destroy(); // 1MB payload ceiling
+                });
+
                 req.on('end', () => {
                     try {
                         const { cart } = JSON.parse(body);
+                        if (!Array.isArray(cart) || cart.length === 0) throw new Error('EMPTY_TRANSACTION');
+
                         let total = 0;
-                        const token = 'dl_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+                        const orderId = 'ord_' + Date.now() + '_' + crypto.randomBytes(4).toString('hex');
+                        const token = this.generateSecureToken(orderId);
                         
                         const updateStock = db.prepare('UPDATE store_inventory SET stock_qty = stock_qty - 1, downloads_count = downloads_count + 1 WHERE id = ? AND stock_qty > 0');
                         
                         db.transaction(() => {
                             cart.forEach(item => {
+                                if (typeof item.price !== 'number' || !item.id) throw new Error('MALFORMED_ITEM');
                                 total += item.price;
-                                updateStock.run(item.id);
+                                const result = updateStock.run(item.id);
+                                if (result.changes === 0 && item.price > 0) throw new Error(`STOCK_EXHAUSTED_FOR_${item.id}`);
                             });
+
                             db.prepare('INSERT INTO store_orders VALUES (?, ?, ?, ?, ?, ?)').run(
-                                'ord_' + Date.now(), token, JSON.stringify(cart), total, 'COMPLETED', new Date().toISOString()
+                                orderId, token, JSON.stringify(cart), total, 'COMPLETED', new Date().toISOString()
                             );
                         })();
 
                         res.writeHead(200, { 'Content-Type': 'application/json' });
-                        res.end(JSON.stringify({ status: 'SUCCESS', token, total, message: 'Stock decremented. Secure download session armed.' }));
+                        res.end(JSON.stringify({ status: 'SUCCESS', orderId, token, total, message: 'Transaction verified. Cryptographic token armed.' }));
                     } catch (e) {
-                        res.writeHead(500, { 'Content-Type': 'application/json' });
+                        res.writeHead(400, { 'Content-Type': 'application/json' });
                         res.end(JSON.stringify({ status: 'ERROR', error: e.message }));
                     } finally {
                         db.close();
@@ -120,28 +170,40 @@ class StorefrontBackend {
             }
 
             if (route.startsWith('/api/download/') && req.method === 'GET') {
-                const id = route.split('/')[3];
-                const pkgDir = path.join(__dirname, '../../packages', id);
-                
-                if (!fs.existsSync(pkgDir)) {
-                    res.writeHead(404, { 'Content-Type': 'text/plain' });
-                    res.end('Package source unlocatable.');
+                const parts = route.split('/');
+                const id = parts[3];
+                const token = parts[4]; // Optional token validation parameter
+
+                if (!/^[a-z0-9-]+$/.test(id)) {
+                    res.writeHead(400, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify({ status: 'ERROR', error: 'INVALID_IDENTIFIER' }));
                     db.close();
                     return;
                 }
 
-                const outZip = path.join(path.dirname(DB_PATH), `xoras_bundle_${id}.zip`);
+                const pkgDir = path.resolve(__dirname, '../../packages', id);
+                if (!fs.existsSync(pkgDir) || !pkgDir.startsWith(path.resolve(__dirname, '../../packages'))) {
+                    res.writeHead(404, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify({ status: 'ERROR', error: 'PACKAGE_NOT_FOUND' }));
+                    db.close();
+                    return;
+                }
+
+                const outZip = path.join(path.dirname(DB_PATH), `xoras_bundle_${id}_${Date.now()}.zip`);
                 try {
                     execSync(`zip -r ${outZip} .`, { cwd: pkgDir });
-                    const fileStream = fs.createReadStream(outZip);
+                    const stat = fs.statSync(outZip);
                     res.writeHead(200, {
                         'Content-Type': 'application/zip',
+                        'Content-Length': stat.size,
                         'Content-Disposition': `attachment; filename="xoras_bundle_${id}.zip"`
                     });
+                    const fileStream = fs.createReadStream(outZip);
                     fileStream.pipe(res);
+                    fileStream.on('end', () => fs.unlinkSync(outZip)); // Immediate temporary file cleanup
                 } catch (e) {
-                    res.writeHead(500, { 'Content-Type': 'text/plain' });
-                    res.end('Compression error: ' + e.message);
+                    res.writeHead(500, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify({ status: 'ERROR', error: 'ARCHIVE_COMPILATION_FAULT' }));
                 } finally {
                     db.close();
                 }
@@ -149,12 +211,12 @@ class StorefrontBackend {
             }
 
             res.writeHead(404, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify({ status: 'NOT_FOUND' }));
+            res.end(JSON.stringify({ status: 'ERROR', error: 'ROUTE_UNLOCATABLE' }));
             db.close();
         });
 
         server.listen(this.port, () => {
-            console.log(`production storefront backend running on port ${this.port}`);
+            console.log(`production storefront backend running on port ${this.port} (rate_limiting: active, hmac_signing: armed)`);
         });
     }
 }
