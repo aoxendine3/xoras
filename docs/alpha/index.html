@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MetaTrader 4 (MT4) WebTrader Simulation - Demo Action Matrix</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="mt4-app">
+        <!-- Top Toolbar Bar -->
+        <header class="mt4-toolbar">
+            <div class="toolbar-left">
+                <div class="mt4-brand">
+                    <span class="mt4-logo-icon">📊</span>
+                    <span class="mt4-title">MetaTrader 4 <span class="build-tag">Build 1470 (Wine x64)</span></span>
+                </div>
+                <div class="menu-strip">
+                    <span>File</span><span>View</span><span>Insert</span><span>Charts</span><span>Tools</span><span>Window</span><span>Help</span>
+                </div>
+            </div>
+            <div class="toolbar-right">
+                <div class="account-pill">
+                    <span class="status-dot"></span>
+                    <span>Demo Account: <strong>8842911 (XORAS-Alpha-Demo)</strong></span>
+                </div>
+                <div class="server-ping">Ping: 14.2 ms</div>
+            </div>
+        </header>
+
+        <!-- Second Action Toolbar -->
+        <div class="action-toolbar">
+            <div class="tool-group">
+                <button class="tool-btn active" title="Cursor">M</button>
+                <button class="tool-btn" title="Crosshair">┼</button>
+                <button class="tool-btn" title="Vertical Line">│</button>
+                <button class="tool-btn" title="Horizontal Line">─</button>
+                <button class="tool-btn" title="Trendline">╱</button>
+                <button class="tool-btn" title="Fibonacci Retracement">≡</button>
+            </div>
+            <div class="separator"></div>
+            <div class="tool-group font-mono">
+                <button class="timeframe-btn" data-tf="M1">M1</button>
+                <button class="timeframe-btn" data-tf="M5">M5</button>
+                <button class="timeframe-btn active" data-tf="M15">M15</button>
+                <button class="timeframe-btn" data-tf="H1">H1</button>
+                <button class="timeframe-btn" data-tf="H4">H4</button>
+                <button class="timeframe-btn" data-tf="D1">D1</button>
+            </div>
+            <div class="separator"></div>
+            <div class="tool-group ea-group">
+                <button id="btn-toggle-ea" class="btn-ea inactive font-mono">
+                    <span class="ea-dot"></span>
+                    <span id="ea-status-text">AutoTrading: OFF</span>
+                </button>
+                <select id="select-ea-script" class="ea-dropdown font-mono">
+                    <option value="macd">MACD Sample v1.4.ex4</option>
+                    <option value="ma">Moving Average v1.2.ex4</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Main Workspace Grid -->
+        <div class="mt4-workspace">
+            <!-- Sidebar Panel (Market Watch & Navigator) -->
+            <aside class="mt4-sidebar">
+                <div class="panel-box">
+                    <div class="panel-header font-mono">Market Watch <span class="time-gmt" id="gmt-clock">05:15:00</span></div>
+                    <div class="symbol-table-container">
+                        <table class="symbol-table font-mono">
+                            <thead><tr><th>Symbol</th><th>Bid</th><th>Ask</th></tr></thead>
+                            <tbody id="market-quotes">
+                                <tr class="active-sym" data-pair="EURUSD"><td>EURUSD</td><td class="bid-val text-green font-bold">1.08452</td><td class="ask-val text-green font-bold">1.08461</td></tr>
+                                <tr data-pair="GBPUSD"><td>GBPUSD</td><td class="bid-val text-red">1.26312</td><td class="ask-val text-red">1.26325</td></tr>
+                                <tr data-pair="USDJPY"><td>USDJPY</td><td class="bid-val text-green">155.742</td><td class="ask-val text-green">155.758</td></tr>
+                                <tr data-pair="XAUUSD"><td>XAUUSD</td><td class="bid-val text-green">2342.15</td><td class="ask-val text-green">2342.45</td></tr>
+                                <tr data-pair="BTCUSD"><td>BTCUSD</td><td class="bid-val text-red font-bold">64210.5</td><td class="ask-val text-red font-bold">64225.0</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="panel-box navigator-box">
+                    <div class="panel-header font-mono">Navigator</div>
+                    <ul class="nav-tree font-mono">
+                        <li class="tree-item open">
+                            <span>📂 Accounts</span>
+                            <ul><li class="leaf-item text-green">👤 8842911 - Demo Account</li></ul>
+                        </li>
+                        <li class="tree-item open">
+                            <span>📊 Indicators</span>
+                            <ul>
+                                <li class="leaf-item">📈 MACD (12, 26, 9)</li>
+                                <li class="leaf-item">📈 Moving Average (SMA 14)</li>
+                                <li class="leaf-item">📈 Relative Strength Index (RSI 14)</li>
+                            </ul>
+                        </li>
+                        <li class="tree-item open">
+                            <span>🤖 Expert Advisors</span>
+                            <ul>
+                                <li class="leaf-item active-ea-item">⚡ MACD Sample.ex4</li>
+                                <li class="leaf-item">⚡ Moving Average.ex4</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </aside>
+
+            <!-- Center Charting Panel -->
+            <main class="mt4-chart-area">
+                <div class="chart-window">
+                    <div class="chart-header-bar font-mono">
+                        <div class="chart-title"><span id="active-chart-pair">EURUSD</span>, <span id="active-chart-tf">M15</span> <span class="chart-sub text-dim">Moving Average(14), MACD(12,26,9)</span></div>
+                        <div class="chart-tick-vals text-dim"><span id="chart-ohcl">O: 1.08420  H: 1.08485  L: 1.08415  C: 1.08452</span></div>
+                    </div>
+                    <div class="canvas-wrapper">
+                        <canvas id="candlestick-canvas"></canvas>
+                        <!-- EA Smile Status Overlay in top right corner -->
+                        <div class="ea-smile-overlay font-mono" id="ea-overlay-badge">
+                            <span id="ea-name-disp">MACD Sample</span> <span id="ea-smile-icon">😐</span>
+                        </div>
+                        <!-- Order Execution Floating Notification -->
+                        <div id="trade-notif-box" class="floating-trade-notif font-mono" style="display:none;"></div>
+                    </div>
+                </div>
+
+                <!-- Manual Order Entry Strip for action video -->
+                <div class="manual-order-strip font-mono">
+                    <div class="order-inputs">
+                        <span class="label">Volume:</span>
+                        <input type="number" id="trade-lot" step="0.01" value="0.10" min="0.01" max="10.00">
+                        <span class="label">S/L:</span>
+                        <input type="text" id="trade-sl" value="1.08200">
+                        <span class="label">T/P:</span>
+                        <input type="text" id="trade-tp" value="1.08800">
+                    </div>
+                    <div class="order-buttons">
+                        <button id="btn-sell-mkt" class="btn-trade sell">SELL MKT @ <span id="btn-sell-quote">1.08452</span></button>
+                        <button id="btn-buy-mkt" class="btn-trade buy">BUY MKT @ <span id="btn-buy-quote">1.08461</span></button>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <!-- Terminal Ledger Bottom Window -->
+        <footer class="mt4-bottom-terminal font-mono">
+            <div class="terminal-tabs">
+                <button class="tab-btn active">Trade (<span id="open-orders-count">0</span>)</button>
+                <button class="tab-btn">Exposure</button>
+                <button class="tab-btn">Account History</button>
+                <button class="tab-btn">Journal</button>
+                <button class="tab-btn">PromptGuard Sentry (Policy: 1GB/Outbound Locked)</button>
+            </div>
+            <div class="terminal-table-container">
+                <table class="terminal-ledger">
+                    <thead>
+                        <tr>
+                            <th>Order ID</th><th>Time</th><th>Type</th><th>Size</th><th>Symbol</th><th>Price</th><th>S/L</th><th>T/P</th><th>Current Price</th><th>Profit</th><th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="open-orders-list">
+                        <!-- Dynamic Orders injected via JS -->
+                    </tbody>
+                </table>
+            </div>
+            <div class="terminal-balance-strip font-mono">
+                <span>Balance: <strong id="acc-balance">10000.00</strong> USD</span>
+                <span>Equity: <strong id="acc-equity">10000.00</strong></span>
+                <span>Free Margin: <strong id="acc-freemargin">10000.00</strong></span>
+                <span>Margin Level: <strong>1000.00%</strong></span>
+                <span style="margin-left:auto; color:#34d399; font-weight:bold;">Total P/L: <span id="total-pl">+$0.00</span></span>
+            </div>
+        </footer>
+    </div>
+
+    <!-- MQL4 Simulation Engine -->
+    <script src="trader.js"></script>
+</body>
+</html>
