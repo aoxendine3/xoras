@@ -100,8 +100,8 @@ function renderGrid(items) {
         card.className = 'product-card font-mono';
         card.innerHTML = `
             <div class="tier-badge ${item.tierClass} font-mono">${item.tier}</div>
-            <div class="product-img-wrapper" style="background:#141518; padding:1.5rem; text-align:center;">
-                <span style="font-size:3.5rem; filter:drop-shadow(0 0 15px ${isEa ? '#d4af37' : '#22c55e'});">${isEa ? '🤖' : '📦'}</span>
+            <div class="product-img-wrapper" style="background:#141518; height:220px; overflow:hidden; position:relative; border-bottom:1px solid #262830;">
+                <img src="${item.img}" alt="${item.title}" style="width:100%; height:100%; object-fit:cover; transition:transform 0.5s ease;" onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'" onerror="this.onerror=null; this.src='../assets/walkthrough.webp';">
             </div>
             <div class="product-info font-mono">
                 <div class="product-category font-mono" style="color:${isEa ? '#d4af37' : 'var(--text-dim)'}; font-weight:700;">${item.category.toUpperCase()} • ${item.stock_qty} IN STOCK</div>
@@ -136,6 +136,12 @@ function viewProduct(id) {
     if (!item) return;
 
     const isEa = item.category === 'expert_advisor';
+
+    const modalImg = document.getElementById('modal-img');
+    if (modalImg) {
+        modalImg.src = item.img;
+        modalImg.onerror = () => { modalImg.src = '../assets/walkthrough.webp'; };
+    }
 
     document.getElementById('modal-title').innerText = item.title;
     document.getElementById('modal-tier').className = `tier-badge ${item.tierClass} font-mono`;
