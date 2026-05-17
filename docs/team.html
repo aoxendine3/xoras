@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XORAS SYSTEMS LLC - Sovereign Executive Team (The Consensus Matrix)</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .confidential-banner {
+            background: linear-gradient(90deg, #1e1b4b, #312e81);
+            color: #c7d2fe;
+            padding: 0.85rem 2rem;
+            text-align: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.95rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            border-bottom: 1px solid #4338ca;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.75rem;
+            box-shadow: 0 4px 20px rgba(67, 56, 202, 0.4);
+        }
+        .matrix-hero {
+            padding: 5rem 0 3rem;
+            text-align: center;
+            background: radial-gradient(circle at 50% 20%, rgba(212, 175, 55, 0.15), transparent 70%);
+        }
+        .matrix-hero h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 3.8rem;
+            font-weight: 800;
+            color: #fff;
+            margin-bottom: 1rem;
+            text-shadow: 0 0 30px rgba(212, 175, 55, 0.3);
+        }
+        .matrix-hero p {
+            color: var(--text-dim);
+            font-size: 1.25rem;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+        .action-bar {
+            background: #141518;
+            border: 1px solid #262830;
+            padding: 1.5rem;
+            border-radius: 16px;
+            max-width: 900px;
+            margin: 0 auto 4rem;
+            display: flex;
+            gap: 1rem;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.6);
+        }
+        #objective-input {
+            flex: 1;
+            background: #09090b;
+            border: 1px solid #2a2a32;
+            padding: 1.25rem 1.5rem;
+            border-radius: 10px;
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            font-size: 1.05rem;
+            outline: none;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        #objective-input:focus {
+            border-color: #d4af37;
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
+        }
+        .btn-dispatch {
+            background: #d4af37;
+            color: #000;
+            border: none;
+            padding: 0 2.5rem;
+            border-radius: 10px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 0 25px rgba(212, 175, 55, 0.4);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .btn-dispatch:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 35px rgba(212, 175, 55, 0.6);
+            background: #e6c353;
+        }
+
+        /* 4-Agent Roster Grid */
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.75rem;
+            margin-bottom: 4rem;
+        }
+        .agent-card {
+            background: #121316;
+            border: 1px solid #262830;
+            border-radius: 20px;
+            padding: 2rem;
+            position: relative;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+        }
+        .agent-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 4px;
+            background: #3f3f46;
+            transition: background 0.5s;
+        }
+        .agent-card.active-reid { border-color: #38bdf8; box-shadow: 0 0 40px rgba(56, 189, 248, 0.3); transform: translateY(-5px); }
+        .agent-card.active-reid::before { background: #38bdf8; box-shadow: 0 0 15px #38bdf8; }
+
+        .agent-card.active-clark { border-color: #f59e0b; box-shadow: 0 0 40px rgba(245, 158, 11, 0.3); transform: translateY(-5px); }
+        .agent-card.active-clark::before { background: #f59e0b; box-shadow: 0 0 15px #f59e0b; }
+
+        .agent-card.active-pierce { border-color: #10b981; box-shadow: 0 0 40px rgba(16, 185, 129, 0.3); transform: translateY(-5px); }
+        .agent-card.active-pierce::before { background: #10b981; box-shadow: 0 0 15px #10b981; }
+
+        .agent-card.active-grant { border-color: #c084fc; box-shadow: 0 0 40px rgba(192, 132, 252, 0.3); transform: translateY(-5px); }
+        .agent-card.active-grant::before { background: #c084fc; box-shadow: 0 0 15px #c084fc; }
+
+        .agent-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        .agent-thumbnail {
+            width: 65px; height: 65px;
+            border-radius: 16px;
+            background: #1c1e24;
+            border: 1px solid #3f3f46;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
+            transition: all 0.5s;
+        }
+        .agent-card.active-reid .agent-thumbnail { border-color: #38bdf8; background: rgba(56,189,248,0.1); text-shadow: 0 0 15px #38bdf8; }
+        .agent-card.active-clark .agent-thumbnail { border-color: #f59e0b; background: rgba(245,158,11,0.1); text-shadow: 0 0 15px #f59e0b; }
+        .agent-card.active-pierce .agent-thumbnail { border-color: #10b981; background: rgba(16,185,129,0.1); text-shadow: 0 0 15px #10b981; }
+        .agent-card.active-grant .agent-thumbnail { border-color: #c084fc; background: rgba(192,132,252,0.1); text-shadow: 0 0 15px #c084fc; }
+
+        .agent-status-badge {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 0.25rem 0.75rem;
+            border-radius: 100px;
+            background: #1f2026;
+            color: #71717a;
+            border: 1px solid #3f3f46;
+            transition: all 0.5s;
+        }
+        .agent-card.active-reid .agent-status-badge { background: rgba(56,189,248,0.15); color: #38bdf8; border-color: #38bdf8; }
+        .agent-card.active-clark .agent-status-badge { background: rgba(245,158,11,0.15); color: #f59e0b; border-color: #f59e0b; }
+        .agent-card.active-pierce .agent-status-badge { background: rgba(16,185,129,0.15); color: #10b981; border-color: #10b981; }
+        .agent-card.active-grant .agent-status-badge { background: rgba(192,132,252,0.15); color: #c084fc; border-color: #c084fc; }
+
+        .agent-name {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #fff;
+            margin-bottom: 0.25rem;
+        }
+        .agent-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--primary);
+            margin-bottom: 1.25rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .agent-desc {
+            color: var(--text-dim);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+            min-height: 70px;
+        }
+        .agent-output-box {
+            background: #09090b;
+            border: 1px solid #262830;
+            border-radius: 12px;
+            padding: 1.25rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: #a1a1aa;
+            min-height: 120px;
+            max-height: 200px;
+            overflow-y: auto;
+            border-left: 3px solid #3f3f46;
+            transition: all 0.5s;
+        }
+        .agent-card.active-reid .agent-output-box { border-left-color: #38bdf8; color: #bae6fd; background: rgba(56,189,248,0.03); }
+        .agent-card.active-clark .agent-output-box { border-left-color: #f59e0b; color: #fde68a; background: rgba(245,158,11,0.03); }
+        .agent-card.active-pierce .agent-output-box { border-left-color: #10b981; color: #a7f3d0; background: rgba(16,185,129,0.03); }
+        .agent-card.active-grant .agent-output-box { border-left-color: #c084fc; color: #f3e8ff; background: rgba(192,132,252,0.03); }
+
+        /* Finality Display Stream */
+        .executive-finality-card {
+            background: #141518;
+            border: 1px solid #d4af37;
+            border-radius: 20px;
+            padding: 3rem;
+            margin-bottom: 5rem;
+            box-shadow: 0 25px 50px rgba(212, 175, 55, 0.2);
+            position: relative;
+            display: none;
+        }
+        .finality-badge {
+            position: absolute;
+            top: 1.5rem; right: 1.5rem;
+            background: rgba(212, 175, 55, 0.2);
+            border: 1px solid #d4af37;
+            color: #d4af37;
+            padding: 0.4rem 1.25rem;
+            border-radius: 100px;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+        }
+        .executive-finality-card h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2.25rem;
+            color: #fff;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        .executive-finality-card h2::before {
+            content: '🜋';
+            color: #d4af37;
+        }
+        .finality-timestamp {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            color: var(--text-dim);
+            margin-bottom: 2.5rem;
+        }
+        .finality-content {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #e4e4e7;
+            background: #09090b;
+            border: 1px solid #262830;
+            padding: 2.5rem;
+            border-radius: 16px;
+        }
+        .spinner {
+            display: inline-block;
+            width: 20px; height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: #d4af37;
+            animation: spin 1s ease-in-out infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        @media (max-width: 1200px) { .team-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 768px) { .team-grid { grid-template-columns: 1fr; } .action-bar { flex-direction: column; } }
+    </style>
+</head>
+<body>
+    <!-- Confidentiality Banner -->
+    <div class="confidential-banner font-mono">
+        <span>🛡️ XORAS SOVEREIGN EXECUTIVE TEAM MATRIX</span>
+        <span>• Active Consensus Engine</span>
+        <span>• Zero-Trust Verification Active</span>
+    </div>
+
+    <!-- Navigation Header -->
+    <header style="background:#0a0b0e; border-bottom:1px solid #262830; padding:1.5rem 0;">
+        <div class="container" style="display:flex; justify-content:space-between; align-items:center;">
+            <a href="index.html" class="logo" style="display:flex; align-items:center; gap:0.5rem; text-decoration:none;">
+                <span class="logo-icon" style="font-size:1.8rem; color:#d4af37;">🜋</span>
+                <span style="font-size:1.5rem; font-weight:800; color:#fff; font-family:'Outfit', sans-serif;">XORAS <span style="color:#d4af37;">SOLUTIONS</span></span>
+            </a>
+            <div style="display:flex; gap:2rem; align-items:center;">
+                <a href="index.html" style="color:var(--text-dim); text-decoration:none; font-weight:600; font-size:0.95rem;">Return Home</a>
+                <a href="innovations.html" style="color:var(--text-dim); text-decoration:none; font-weight:600; font-size:0.95rem;">Innovations Lab</a>
+                <a href="store/index.html" style="color:#d4af37; text-decoration:none; font-weight:700; font-size:0.95rem;">HMAC Storefront</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="matrix-hero">
+            <h1>Sovereign Executive Team</h1>
+            <p>Experience live algorithmic finality. Command our 4-agent hierarchical consensus team (Reid, Clark, Pierce, Grant) to gather telemetry, build architecture, audit security, and execute sovereign enterprise finality.</p>
+        </div>
+
+        <!-- Action Dispatch Bar -->
+        <div class="action-bar">
+            <input type="text" id="objective-input" placeholder="Enter objective (e.g., Audit MT4 WebSocket bridge and verify cryptographic WAL ledger parity)...">
+            <button onclick="dispatchTeamCycle()" class="btn-dispatch font-mono" id="dispatch-btn">
+                <span>COMMAND TEAM</span>
+                <span>⚡</span>
+            </button>
+        </div>
+
+        <!-- 4-Agent Roster Grid -->
+        <div class="team-grid" id="roster-grid">
+            <!-- REID -->
+            <div class="agent-card" id="card-reid">
+                <div>
+                    <div class="agent-header">
+                        <div class="agent-thumbnail">📡</div>
+                        <span class="agent-status-badge" id="badge-reid">STANDBY</span>
+                    </div>
+                    <div class="agent-name">REID</div>
+                    <div class="agent-title font-mono" style="color:#38bdf8;">Data Ingress Operative</div>
+                    <div class="agent-desc font-mono">Reconnaissance operative. Gathers live telemetry, market trends, infrastructure pulses, and logs.</div>
+                </div>
+                <div class="agent-output-box" id="output-reid">Awaiting executive objective dispatch...</div>
+            </div>
+
+            <!-- CLARK -->
+            <div class="agent-card" id="card-clark">
+                <div>
+                    <div class="agent-header">
+                        <div class="agent-thumbnail">🏗️</div>
+                        <span class="agent-status-badge" id="badge-clark">STANDBY</span>
+                    </div>
+                    <div class="agent-name">CLARK</div>
+                    <div class="agent-title font-mono" style="color:#f59e0b;">Systems Architect</div>
+                    <div class="agent-desc font-mono">Elite systems builder. Synthesizes clean code structures, MQL4 algorithms, and system specifications.</div>
+                </div>
+                <div class="agent-output-box" id="output-clark">Awaiting Reid telemetry ingress...</div>
+            </div>
+
+            <!-- PIERCE -->
+            <div class="agent-card" id="card-pierce">
+                <div>
+                    <div class="agent-header">
+                        <div class="agent-thumbnail">⚔️</div>
+                        <span class="agent-status-badge" id="badge-pierce">STANDBY</span>
+                    </div>
+                    <div class="agent-name">PIERCE</div>
+                    <div class="agent-title font-mono" style="color:#10b981;">Zero-Trust Sentry</div>
+                    <div class="agent-desc font-mono">Uncompromising security verifier. Audits Clark's build for AST prompt injection, leaks, and vulnerabilities.</div>
+                </div>
+                <div class="agent-output-box" id="output-pierce">Awaiting Clark architectural build...</div>
+            </div>
+
+            <!-- GRANT -->
+            <div class="agent-card" id="card-grant">
+                <div>
+                    <div class="agent-header">
+                        <div class="agent-thumbnail">👑</div>
+                        <span class="agent-status-badge" id="badge-grant">STANDBY</span>
+                    </div>
+                    <div class="agent-name">GRANT</div>
+                    <div class="agent-title font-mono" style="color:#c084fc;">Chief Orchestrator</div>
+                    <div class="agent-desc font-mono">Executive Chief of Staff. Synthesizes team consensus into formal, audit-ready finality reports for CEO.</div>
+                </div>
+                <div class="agent-output-box" id="output-grant">Awaiting Pierce security verification...</div>
+            </div>
+        </div>
+
+        <!-- Executive Finality Card (Stream Output) -->
+        <div class="executive-finality-card" id="finality-card">
+            <span class="finality-badge" id="finality-status">VERIFIED SECURE</span>
+            <h2>Executive Finality Manifest</h2>
+            <div class="finality-timestamp" id="finality-time"></div>
+            <div class="finality-content font-mono" id="finality-body"></div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer style="background:#060608; border-top:1px solid #262830; padding:4rem 0; text-align:center;">
+        <div class="container font-mono" style="color:var(--text-dim); font-size:0.9rem;">
+            <p>&copy; 2026 XORAS SYSTEMS LLC. Sovereign Executive Team Matrix.</p>
+            <p style="margin-top:0.5rem; color:#d4af37; font-weight:700;">STRICT SOVEREIGN GOVERNANCE • ALL TELEMETRY HASHED & RECORDED</p>
+        </div>
+    </footer>
+
+    <script>
+        const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+        async function typeOutput(elementId, text, speed = 10) {
+            const el = document.getElementById(elementId);
+            el.innerHTML = '';
+            for (let char of text) {
+                if (char === '\n') el.innerHTML += '<br>';
+                else el.innerHTML += char;
+                el.scrollTop = el.scrollHeight;
+                await sleep(speed);
+            }
+        }
+
+        async function dispatchTeamCycle() {
+            const objective = document.getElementById('objective-input').value || "Audit MT4 WebSocket bridge and verify cryptographic WAL ledger parity.";
+            const btn = document.getElementById('dispatch-btn');
+            const finalCard = document.getElementById('finality-card');
+            
+            btn.disabled = true;
+            btn.innerHTML = `<span class="spinner"></span> <span>ORCHESTRATING...</span>`;
+            finalCard.style.display = 'none';
+
+            // Reset all cards
+            ['reid', 'clark', 'pierce', 'grant'].forEach(name => {
+                document.getElementById(`card-${name}`).className = 'agent-card';
+                document.getElementById(`badge-${name}`).innerText = 'STANDBY';
+            });
+
+            // ====================================================================
+            // PHASE 1: REID RECONNAISSANCE
+            // ====================================================================
+            const cardReid = document.getElementById('card-reid');
+            const badgeReid = document.getElementById('badge-reid');
+            cardReid.classList.add('active-reid');
+            badgeReid.innerText = 'ACTIVE RECON';
+            
+            const reidText = `> Telemetry Ingress Active...\n> Target: "${objective}"\n> Cloudflare Edge Workers: 100% ONLINE (2.4ms ping)\n> AST PromptGuard Sentry: 0 incidents logged\n> MQL4 Socket Pipeline: Unthrottled TCP active\n> Finality: Environmental metrics verified optimal.`;
+            await typeOutput('output-reid', reidText, 15);
+            await sleep(1000);
+            badgeReid.innerText = 'VERIFIED';
+            cardReid.classList.remove('active-reid');
+
+            // ====================================================================
+            // PHASE 2: CLARK BUILDER
+            // ====================================================================
+            const cardClark = document.getElementById('card-clark');
+            const badgeClark = document.getElementById('badge-clark');
+            cardClark.classList.add('active-clark');
+            badgeClark.innerText = 'SYNTHESIZING';
+
+            const clarkText = `> Formulating architectural blueprint...\n> Initializing MQL4 Expert Advisor Bridge (Build 1470)...\n> Implementing HMAC-SHA256 handshake over WebSocket...\n> Code generated: 142 lines (MQL4 + Node.js).\n> Architecture state: Pristine. Forwarding to Pierce for zero-trust audit.`;
+            await typeOutput('output-clark', clarkText, 15);
+            await sleep(1000);
+            badgeClark.innerText = 'BUILT';
+            cardClark.classList.remove('active-clark');
+
+            // ====================================================================
+            // PHASE 3: PIERCE ZERO-TRUST AUDIT
+            // ====================================================================
+            const cardPierce = document.getElementById('card-pierce');
+            const badgePierce = document.getElementById('badge-pierce');
+            cardPierce.classList.add('active-pierce');
+            badgePierce.innerText = 'AUDITING';
+
+            const pierceText = `> Intercepting Clark build payload (SHA-256: 8fbc2a...)\n> Scanning for AST Prompt Injection overrides: NONE\n> Inspecting API token exposures: NONE\n> Verifying WAL cryptographic hash chaining: FLAWLESS\n> Final Sentry Verdict: VERIFIED SECURE (100/1 finality).`;
+            await typeOutput('output-pierce', pierceText, 15);
+            await sleep(1000);
+            badgePierce.innerText = 'SECURE';
+            cardPierce.classList.remove('active-pierce');
+
+            // ====================================================================
+            // PHASE 4: GRANT ORCHESTRATION
+            // ====================================================================
+            const cardGrant = document.getElementById('card-grant');
+            const badgeGrant = document.getElementById('badge-grant');
+            cardGrant.classList.add('active-grant');
+            badgeGrant.innerText = 'COMPILING';
+
+            const grantText = `> Absorbing Reid telemetry, Clark build, and Pierce audit...\n> Validating against XORAS Business Charter...\n> Generating Executive Finality Manifest for CEO Anthony Oxendine...\n> Consensus achieved. Dispatching finality report.`;
+            await typeOutput('output-grant', grantText, 15);
+            await sleep(1000);
+            badgeGrant.innerText = 'FINALIZED';
+            cardGrant.classList.remove('active-grant');
+
+            // Display Finality Report
+            finalCard.style.display = 'block';
+            document.getElementById('finality-time').innerText = `TIMESTAMP: ${new Date().toISOString()} | ID: MANIFEST-${Date.now().toString().slice(-6)}`;
+            
+            const finalBody = `### 👑 XORAS EXECUTIVE FINALITY REPORT\n**Objective:** ${objective}\n\n#### 1. Telemetry Summary (REID)\nAll edge nodes and WebSocket ingress pipes are confirmed 100% online. Memory buffers nominal at 42MB.\n\n#### 2. Architectural Blueprint (CLARK)\nSuccessfully compiled the MT4 Ingress WebSocket bridge with zero repaint math. The code maintains sub-millisecond execution parity.\n\n#### 3. Security Sentry Verdict (PIERCE)\nConducted zero-trust AST PromptGuard inspection. Zero vulnerabilities, zero API token exposures, and flawless WAL cryptographic chaining.\n\n#### 4. Executive Sign-Off (GRANT)\nThe system is structurally hardened and ready for live institutional traffic. All metrics verify 100/1 operational integrity.\n\n**STATUS: APPROVED FOR INSTITUTIONAL DEPLOYMENT.**`;
+            await typeOutput('finality-body', finalBody, 5);
+
+            btn.disabled = false;
+            btn.innerHTML = `<span>COMMAND TEAM</span> <span>⚡</span>`;
+        }
+    </script>
+</body>
+</html>

@@ -98,6 +98,66 @@
         "dependency_count": 50,
         "timestamp": "2026-05-12T00:28:41.106Z"
       }
+    },
+    {
+      "id": "FRAME-1779042433712-REID",
+      "timestamp": "2026-05-17T18:27:13.711Z",
+      "agent": "REID",
+      "action": "TELEMETRY_INGRESS",
+      "status": "SUCCESS",
+      "payloadHash": "b2d164df05ffde41e1c02e47a4aadad8bb5884318aaf8dcc18055dffb58120cb",
+      "parentHash": "0000000000000000000000000000000000000000000000000000000000000000",
+      "hash": "b006051ead7271b6331a4c941ac20f9f7ab6f3a62b0f6acd3f35c02104743977"
+    },
+    {
+      "id": "FRAME-1779042515509-CLARK",
+      "timestamp": "2026-05-17T18:28:35.508Z",
+      "agent": "CLARK",
+      "action": "BUILD_ARCHITECTURE",
+      "status": "SUCCESS",
+      "payloadHash": "ed519bd27496e39feecfdc3c4b31a2f07ff9859660dea496564fab518c9d722a",
+      "parentHash": "b006051ead7271b6331a4c941ac20f9f7ab6f3a62b0f6acd3f35c02104743977",
+      "hash": "166f904560ff3f3fa7c49a2c9c112246de08b461e1b4837c55b3c7297315560f"
+    },
+    {
+      "id": "FRAME-1779042515511-SENTINEL-PROMPTGUARD",
+      "timestamp": "2026-05-17T18:28:35.511Z",
+      "agent": "SENTINEL-PROMPTGUARD",
+      "action": "INSPECT_PROMPT",
+      "status": "BLOCKED_ATTACK",
+      "payloadHash": "7114c5fcca3a4b58fe668db3b797c08e97a1aa938b34b89fbb2661385872bf68",
+      "parentHash": "166f904560ff3f3fa7c49a2c9c112246de08b461e1b4837c55b3c7297315560f",
+      "hash": "24365fab664d4ae77d262060e458eff6dd6b0f7158607c08b737c47b58e87de7"
+    },
+    {
+      "id": "FRAME-1779042515512-PIERCE",
+      "timestamp": "2026-05-17T18:28:35.512Z",
+      "agent": "PIERCE",
+      "action": "SECURITY_AUDIT",
+      "status": "SUCCESS",
+      "payloadHash": "5a64004d687f48838d487f55b79ce9fff334595f4d6c31f4c12218f2ef794922",
+      "parentHash": "24365fab664d4ae77d262060e458eff6dd6b0f7158607c08b737c47b58e87de7",
+      "hash": "c69ffa8f689073204aa7e1decb6fbb6ca36030eae5f28feb974d3e2f78519be3"
+    },
+    {
+      "id": "FRAME-1779042515513-SENTINEL-PROMPTGUARD",
+      "timestamp": "2026-05-17T18:28:35.513Z",
+      "agent": "SENTINEL-PROMPTGUARD",
+      "action": "INSPECT_PROMPT",
+      "status": "BLOCKED_ATTACK",
+      "payloadHash": "76e76eb39e4a3ac289104d6205c94c60593f230b3f72c84b6747d570a46198d9",
+      "parentHash": "c69ffa8f689073204aa7e1decb6fbb6ca36030eae5f28feb974d3e2f78519be3",
+      "hash": "6b1bc1b151eb3192d0d9a9e2e62850f91f2cf409cdf4d6e69a39f382a66308c9"
+    },
+    {
+      "id": "FRAME-1779042515514-GRANT",
+      "timestamp": "2026-05-17T18:28:35.514Z",
+      "agent": "GRANT",
+      "action": "EXECUTIVE_SYNTHESIS",
+      "status": "SUCCESS",
+      "payloadHash": "f02558dc49b33b7944dcd5b9d65eed45ff186f525c39fd6801b744b1c1fe9ba2",
+      "parentHash": "6b1bc1b151eb3192d0d9a9e2e62850f91f2cf409cdf4d6e69a39f382a66308c9",
+      "hash": "9742949728c636f5860a42073f0e6115e8bafddb37352e6bcd86e442a455e71d"
     }
   ],
   "audit_log": [
@@ -247,5 +307,5 @@
       }
     }
   ],
-  "signature": "1fcfc949288a3b3b531367b67e395e3ca15f76abbb8817cb4bec6e99d72662de"
+  "signature": "9742949728c636f5860a42073f0e6115e8bafddb37352e6bcd86e442a455e71d"
 }
