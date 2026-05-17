@@ -59,7 +59,7 @@ class PRDispatcherWorker {
             headers: {
                 'Authorization': `Bearer ${token}`,
                 'Accept': 'application/vnd.github.v3+json',
-                'User-Agent': 'XORAS_SOVEREIGN_NODE'
+                'User-Agent': 'XORAS_APEX_NODE'
             }
         };
         const res = await this.fetchWithRetry(url, options, 3);
@@ -89,7 +89,7 @@ class PRDispatcherWorker {
                 headers: {
                     'Authorization': `Bearer ${this.token}`,
                     'Accept': 'application/vnd.github.v3+json',
-                    'User-Agent': 'XORAS_SOVEREIGN_NODE'
+                    'User-Agent': 'XORAS_APEX_NODE'
                 }
             }, 3);
 
@@ -171,7 +171,7 @@ class PRDispatcherWorker {
                     headers: {
                         'Authorization': `Bearer ${this.token}`,
                         'Accept': 'application/vnd.github.v3+json',
-                        'User-Agent': 'XORAS_SOVEREIGN_NODE'
+                        'User-Agent': 'XORAS_APEX_NODE'
                     }
                 }, 3);
 

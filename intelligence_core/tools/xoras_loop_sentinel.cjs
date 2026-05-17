@@ -1,5 +1,5 @@
 /**
- * 🏛️ XORAS // Sovereign Structural Loop Sentinel (xoras_loop_sentinel.cjs)
+ * 🏛️ XORAS // Apex Structural Loop Sentinel (xoras_loop_sentinel.cjs)
  * 
  * Advanced heuristic execution monitor. Distinguishes between runaway infinite generative loops 
  * (repetitive static content) and legitimate high-velocity disciplined execution (consistent B2B structure).
