@@ -2,6 +2,7 @@ require('dotenv').config();
 const memoryLedger = require('../memory_ledger.cjs');
 const bridge = require('../local_inference/tri_model_bridge.cjs');
 const PromptGuard = require('../security/prompt_guard.cjs');
+const TimeZoneScheduler = require('./tz_scheduler.cjs');
 
 const TIMEOUT_MS = 15000;
 const GITHUB_API_BASE = (process.env.GITHUB_API_BASE_URL || 'https://api.github.com').replace(/\/$/, '');
@@ -24,10 +25,10 @@ class PRDispatcherWorker {
         const rawTitle = issueTitle || "AST Security Patch";
         const auditRes = PromptGuard.audit(rawTitle);
         if (!auditRes.safe) {
-            console.log(`[PROMPT_GUARD] blocked remediation patch generation for injection vector`);
-            return `[BLOCKED BY PROMPT GUARD]`;
+            console.log(`prompt guard blocked patch generation for injection vector`);
+            return `BLOCKED BY PROMPT GUARD`;
         }
-        const prompt = `Generate a first-principles production AST patch or remediation script for repository '${repoHandle}' addressing issue: '${auditRes.sanitized}'. Output the exact git diff format.`;
+        const prompt = `Generate a first-principles production AST patch or remediation script for repository '${repoHandle}' addressing issue: '${auditRes.sanitized}'. Output exact git diff format.`;
         const context = `Target repository: ${repoHandle}. Objective is release stability and zero-drift security.`;
         
         const reasonerPromise = bridge.deepReason(prompt, context);
@@ -45,17 +46,15 @@ class PRDispatcherWorker {
         for (let i = 0; i < retries; i++) {
             try {
                 const res = await fetch(url, options);
-                if (res.status === 401 || res.status === 403) {
-                    console.log(`[dispatch] auth response: http ${res.status} (attempt ${i+1}/${retries}). re-verifying connection...`);
-                    await new Promise(r => setTimeout(r, delayMs * Math.pow(2, i)));
+                if (res.status === 429 || res.status >= 500) {
                     if (i === retries - 1) return res;
+                    await new Promise(r => setTimeout(r, delayMs * Math.pow(2, i)));
                     continue;
                 }
                 return res;
-            } catch (e) {
-                console.log(`[dispatch] connection error: ${e.message} (attempt ${i+1}/${retries}). retrying...`);
+            } catch (err) {
+                if (i === retries - 1) throw err;
                 await new Promise(r => setTimeout(r, delayMs * Math.pow(2, i)));
-                if (i === retries - 1) throw e;
             }
         }
     }
@@ -76,16 +75,23 @@ class PRDispatcherWorker {
     }
 
     async dispatchSingleLead(payload) {
-        const { id, repoUrl, issueTitle } = payload;
+        const { id, repoUrl, issueTitle, tier, isRegionActive } = payload;
         const repoHandle = repoUrl.replace(/^https?:\/\/github\.com\//i, '').replace(/\/$/, '').trim();
 
-        console.log(`[dispatch] submitting fork preparation for ${repoHandle}`);
+        console.log(`submitting fork preparation for ${repoHandle}`);
 
         if (!this.token || (!this.token.startsWith('ghp_') && !this.token.startsWith('gho_'))) {
-            const errStr = 'valid ghp_* or gho_* token not configured in .env';
+            const errStr = 'valid token not configured in .env';
             memoryLedger.tagOutcome(id, JSON.stringify({ error: errStr, status: 'AUTH_FAILED' }), 'STAGED');
             if (process.send) process.send({ event: 'FATAL_AUTH_ERROR', payload: { error: errStr } });
             return;
+        }
+
+        // Apply TimeZoneScheduler stagger delay
+        const staggerMs = TimeZoneScheduler.getStaggerDelayMs(tier, isRegionActive);
+        if (staggerMs > 0) {
+            console.log(`staggering dispatch by ${staggerMs}ms to match regional cadence`);
+            await new Promise(r => setTimeout(r, staggerMs));
         }
 
         try {
@@ -107,12 +113,12 @@ class PRDispatcherWorker {
                 return;
             }
 
-            console.log(`  ├── [fork_success] @${login}/${repoHandle.split('/')[1]}`);
+            console.log(`fork success: @${login}/${repoHandle.split('/')[1]}`);
             
             const patch = await this.generateRemediationPatch(repoHandle, issueTitle || "AST Security Patch");
             
-            console.log(`  ├── [governance] Human-in-the-Loop Release Gating Policy engaged: staging candidate patch on private fork.`);
-            console.log(`  ├── [governance] Holding automated upstream PR submission to prevent unsolicited spam.`);
+            console.log(`gating policy engaged: staging candidate patch on private fork`);
+            console.log(`holding automated upstream submission`);
             
             memoryLedger.tagOutcome(id, JSON.stringify({ fork_url: `https://github.com/${login}/${repoHandle.split('/')[1]}`, status: "WAITING_FOR_APPROVAL", patch_preview: patch.substring(0, 100) }), 'WAITING_FOR_APPROVAL');
             memoryLedger.tagExecutionMode(id, 'REAL');
@@ -120,26 +126,22 @@ class PRDispatcherWorker {
             if (process.send) process.send({ event: 'DISPATCH_SUCCESS', payload: { id, repoUrl, repoHandle } });
         } catch (e) {
             memoryLedger.tagOutcome(id, JSON.stringify({ error: e.message, status: 'DISPATCH_FAILED' }), 'STAGED');
-            if (process.send) process.send({ event: 'FATAL_AUTH_ERROR', payload: { error: e.message } });
         }
     }
 
     async executeUniversalForkAndPullDispatch() {
-        console.log(`[dispatch] initiating automated fork preparation workflow (${GITHUB_API_BASE})`);
-        console.log(`[dispatch] governance: verified Human-in-the-Loop Gating Policy (zero unsolicited upstream spam)`);
-
-        if (!this.token || (!this.token.startsWith('ghp_') && !this.token.startsWith('gho_'))) {
-            console.error("[dispatch] error: valid ghp_* or gho_* token not configured in .env");
-            process.exit(1);
+        console.log(`executing universal fork and pull dispatch`);
+        if (!this.token) {
+            console.log(`auth missing in .env. operating in simulation bypass mode`);
+            return;
         }
 
-        let userLogin = "aoxendine3";
+        let userLogin = '';
         try {
             userLogin = await this.verifyAuthenticatedUser(this.token);
-            console.log(`[dispatch] authenticated session verified: @${userLogin}`);
+            console.log(`verified live session @${userLogin}`);
         } catch (e) {
-            console.error(`[dispatch] fatal: live auth rejected (${e.message})`);
-            console.error(`[dispatch] user intervention required: verify valid token with 'repo' scope in .env`);
+            console.error(`fatal: live auth rejected (${e.message})`);
             process.exit(1);
         }
 
@@ -152,7 +154,7 @@ class PRDispatcherWorker {
         }
 
         if (candidateRows.length === 0) {
-            console.log("[dispatch] no candidate leads available in queue");
+            console.log(`no candidate leads available in queue`);
             return;
         }
 
@@ -169,7 +171,7 @@ class PRDispatcherWorker {
             const c = target.lead;
             const repoHandle = (c.query || '').replace(/^AUDIT_REPO:\s*https?:\/\/github\.com\//i, '').replace(/\/$/, '').trim();
             const repoName = repoHandle.split('/')[1] || repoHandle;
-            console.log(`[dispatch] executing fork preparation [${target.label}]: ${repoHandle}`);
+            console.log(`executing fork preparation [${target.label}]: ${repoHandle}`);
             
             try {
                 const forkUrl = `${GITHUB_API_BASE}/repos/${repoHandle}/forks`;
@@ -183,34 +185,33 @@ class PRDispatcherWorker {
                 }, 3);
 
                 if (forkRes.status === 401 || forkRes.status === 403) {
-                    console.log(`  ├── [error] fork rejected: http ${forkRes.status}`);
+                    console.log(`error: fork rejected http ${forkRes.status}`);
                     memoryLedger.tagOutcome(c.id, JSON.stringify({ error: `http ${forkRes.status}`, status: 'AUTH_FAILED' }), 'STAGED');
                     continue;
                 }
 
-                console.log(`  ├── [fork_success] @${userLogin}/${repoName}`);
+                console.log(`fork success: @${userLogin}/${repoName}`);
                 
                 const patch = await this.generateRemediationPatch(repoHandle, "Level-4 AST Parameter Gating");
                 
-                console.log(`  ├── [governance] Human-in-the-Loop Release Gating Policy engaged: candidate patch staged on private fork @${userLogin}/${repoName}`);
-                console.log(`  ├── [governance] Holding automated upstream PR submission to honor open-source community standards.`);
+                console.log(`gating policy engaged: candidate patch staged on private fork @${userLogin}/${repoName}`);
                 
                 memoryLedger.tagOutcome(c.id, JSON.stringify({ fork_url: `https://github.com/${userLogin}/${repoName}`, status: "WAITING_FOR_APPROVAL", patch_preview: patch.substring(0, 100), outreach_tier: target.label }), 'WAITING_FOR_APPROVAL');
                 memoryLedger.tagExecutionMode(c.id, 'REAL');
             } catch (e) {
-                console.log(`  ├── [connection_exception] ${e.message}`);
+                console.log(`connection exception: ${e.message}`);
                 memoryLedger.tagOutcome(c.id, JSON.stringify({ error: e.message, status: 'DISPATCH_FAILED' }), 'STAGED');
             }
         }
 
         if (throttledCandidates.length > 0) {
-            console.log(`\n[dispatch] policy enforcement: throttling remaining ${throttledCandidates.length} candidate leads`);
+            console.log(`policy enforcement: throttling remaining ${throttledCandidates.length} candidate leads`);
             for (const rem of throttledCandidates) {
-                memoryLedger.tagOutcome(rem.id, JSON.stringify({ status: "WAITING_FOR_APPROVAL", reason: "outreach limit reached (1 primary + 1 secondary max)" }), 'STAGED');
+                memoryLedger.tagOutcome(rem.id, JSON.stringify({ status: "WAITING_FOR_APPROVAL", reason: "outreach limit reached" }), 'STAGED');
             }
         }
 
-        console.log("[dispatch] workflow cycle complete: exit 0");
+        console.log(`workflow cycle complete: exit 0`);
     }
 }
 

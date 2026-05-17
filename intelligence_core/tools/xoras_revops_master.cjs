@@ -2,6 +2,7 @@ const { fork } = require('child_process');
 const path = require('path');
 const memoryLedger = require('../memory_ledger.cjs');
 const PromptGuard = require('../security/prompt_guard.cjs');
+const TimeZoneScheduler = require('./tz_scheduler.cjs');
 
 class RevOpsMaster {
     constructor() {
@@ -14,8 +15,9 @@ class RevOpsMaster {
     }
 
     async startOrchestration() {
-        console.log(`[orchestrator] initializing multi-agent workflow hub (mode: live-fire)`);
-        console.log(`[orchestrator] strict systems governance: active self-healing sentries and prompt guard armed`);
+        const activeRegion = TimeZoneScheduler.getCurrentActiveRegion();
+        console.log(`initializing multi-agent workflow hub (mode: live-fire)`);
+        console.log(`active global tranche: ${activeRegion.region} (${activeRegion.label})`);
 
         this.spawnWorker('sniper', 'pr_sniper.cjs');
         this.spawnWorker('prioritizer', 'queue_prioritizer.cjs');
@@ -34,29 +36,28 @@ class RevOpsMaster {
         const worker = fork(workerPath, args, { stdio: 'inherit' });
 
         worker.on('message', (msg) => this.handleIPCMessage(name, msg));
-        worker.on('error', (err) => console.error(`[orchestrator] worker error (${name}): ${err.message}`));
+        worker.on('error', (err) => console.error(`worker error (${name}): ${err.message}`));
         worker.on('exit', (code) => {
             delete this.workers[name];
             if (code !== 0 && code !== null) {
-                console.log(`[orchestrator] error detected: worker '${name}' exited with code ${code}. initiating self-healing recovery.`);
+                console.log(`error detected: worker '${name}' exited with code ${code}. initiating self-healing recovery.`);
                 this.stats.respawns++;
                 
-                // Record error in database to learn and prevent cyclic failure
                 try {
                     if (memoryLedger.logSecurityEvent) {
-                        memoryLedger.logSecurityEvent('WORKER_CRASH_RECOVERY', `${name}_crash_${code}`, `Respawning worker ${name} after unhandled exit ${code}`, 1);
+                        memoryLedger.logSecurityEvent('WORKER_CRASH_RECOVERY', `${name}_crash_${code}`, `Respawning worker ${name} after exit ${code}`, 1);
                     }
                 } catch (e) {}
 
                 const nextRetry = retryCount + 1;
                 if (nextRetry <= 5) {
                     const backoffMs = Math.pow(2, nextRetry) * 1000;
-                    console.log(`[orchestrator] learning loop: exponential backoff scheduled. respawning '${name}' in ${backoffMs}ms (attempt ${nextRetry}/5)`);
+                    console.log(`learning loop: exponential backoff scheduled. respawning '${name}' in ${backoffMs}ms (attempt ${nextRetry}/5)`);
                     setTimeout(() => {
                         this.spawnWorker(name, scriptBasename, nextRetry);
                     }, backoffMs);
                 } else {
-                    console.error(`[orchestrator] fatal: worker '${name}' exceeded max recovery limits. terminating.`);
+                    console.error(`fatal: worker '${name}' exceeded max recovery limits. terminating.`);
                     this.terminateAllWorkers(1);
                 }
             }
@@ -70,11 +71,10 @@ class RevOpsMaster {
     handleIPCMessage(sourceName, msg) {
         if (!msg || !msg.event) return;
 
-        // Apply PromptGuard injection defense to IPC payload strings
         if (msg.payload && typeof msg.payload.issueTitle === 'string') {
             const auditRes = PromptGuard.audit(msg.payload.issueTitle);
             if (!auditRes.safe) {
-                console.log(`[orchestrator] prompt guard blocked malformed IPC payload from '${sourceName}'`);
+                console.log(`prompt guard blocked malformed IPC payload from '${sourceName}'`);
                 return;
             }
             msg.payload.issueTitle = auditRes.sanitized;
@@ -125,8 +125,8 @@ class RevOpsMaster {
                 break;
 
             case 'FATAL_AUTH_ERROR':
-                console.error(`[orchestrator] fatal auth rejection received from dispatcher: ${msg.payload.error}`);
-                console.error(`[orchestrator] aborting active workflow. user intervention required in .env`);
+                console.error(`fatal auth rejection received from dispatcher: ${msg.payload.error}`);
+                console.error(`aborting active workflow. user intervention required in .env`);
                 this.terminateAllWorkers(1);
                 break;
         }
@@ -152,14 +152,14 @@ class RevOpsMaster {
     }
 
     reportAggregateMetricsAndExit() {
-        console.log(`\n[orchestrator] workflow execution aggregate metrics:`);
-        console.log(`  ├── leads staged         : ${this.stats.staged}`);
-        console.log(`  ├── leads qualified      : ${this.stats.qualified}`);
-        console.log(`  ├── leads dispatched     : ${this.stats.dispatched}`);
-        console.log(`  ├── pr threads tracked   : ${this.stats.monitored}`);
-        console.log(`  ├── proposals staged     : ${this.stats.won}`);
-        console.log(`  └── recovery respawns    : ${this.stats.respawns}`);
-        console.log("[orchestrator] multi-agent workflow loop complete: exit 0");
+        console.log(`workflow execution aggregate metrics:`);
+        console.log(`  leads staged: ${this.stats.staged}`);
+        console.log(`  leads qualified: ${this.stats.qualified}`);
+        console.log(`  leads dispatched: ${this.stats.dispatched}`);
+        console.log(`  pr threads tracked: ${this.stats.monitored}`);
+        console.log(`  proposals staged: ${this.stats.won}`);
+        console.log(`  recovery respawns: ${this.stats.respawns}`);
+        console.log(`multi-agent workflow loop complete: exit 0`);
         this.terminateAllWorkers(0);
     }
 
