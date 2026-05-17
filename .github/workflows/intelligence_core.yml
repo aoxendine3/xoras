@@ -1,5 +1,9 @@
 name: XORAS Intelligence Core
 on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
   workflow_dispatch:
     inputs:
       tier:
@@ -18,16 +22,30 @@ jobs:
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
       
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Dependencies
+        run: npm install
+
       - name: Initialize Intelligence Tier
         run: |
-          echo "🧠 Initializing XORAS Intelligence Tier: ${{ github.event.inputs.tier }}..."
-          node intelligence_core/orchestrator.js --tier ${{ github.event.inputs.tier }}
+          echo "🧠 Initializing XORAS Intelligence Tier: ${{ github.event.inputs.tier || 'EDGE_3B' }}..."
+          node intelligence_core/orchestrator.js --tier ${{ github.event.inputs.tier || 'EDGE_3B' }}
 
-      - name: Scour Open Avenues (Scout Mode)
+      - name: Run RevOps Master
         run: |
-          echo "🔍 Scouring GitHub for Intelligence Signals..."
-          node intelligence_core/scout.js
+          echo "⚡ Executing multi-agent revops hub..."
+          npm run revops
 
-      - name: Generate Audit Finality
+      - name: Verify Webhook Ingestion Bridge
         run: |
-          echo "✅ Audit Complete. Finality recorded in intelligence_core/AUDIT_FINALITY.md"
+          echo "⚡ Verifying Webhook Bridge server startup..."
+          timeout 5s node intelligence_core/cloud_bridge/multi_platform_webhook.cjs || [ $? -eq 124 ] && echo "Webhook Bridge successfully verified."
+
+      - name: Verify Storefront Backend
+        run: |
+          echo "⚡ Verifying Storefront Backend server startup..."
+          timeout 5s node intelligence_core/storefront_backend.cjs || [ $? -eq 124 ] && echo "Storefront Backend successfully verified."
