@@ -75,7 +75,7 @@ class LedgerInspector {
             const repoClean = (t.query || '').replace('AUDIT_REPO: https://github.com/', '').trim();
             try {
                 const url = `${GITHUB_API_BASE}/repos/${repoClean}`;
-                const res = await fetch(url, { headers: { 'User-Agent': 'XORAS_APEX_NODE' } });
+                const res = await fetch(url, { headers: { 'User-Agent': 'XORAS-Core/1.0' } });
                 if (res.status === 404) {
                     console.log(`  ├── [error 404] ${repoClean}: repository not found`);
                 } else if (res.status === 200) {

@@ -34,7 +34,7 @@ class PRMonitorWorker {
                     headers: {
                         'Authorization': `Bearer ${this.token}`,
                         'Accept': 'application/vnd.github.v3+json',
-                        'User-Agent': 'XORAS_APEX_NODE'
+                        'User-Agent': 'XORAS-Core/1.0'
                     }
                 });
 
