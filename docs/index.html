@@ -14,366 +14,413 @@
     <div class="gradient-matrix" id="matrix-bg"></div>
 
     <!-- Audio Synthesizer Toggle & Theme Switcher Bar -->
-    <div class="top-sentry-bar">
+    <div class="top-sentry-bar font-mono">
         <div class="sentry-left">
             <span class="pulse-dot"></span>
             <span class="status-label">GLOBAL EDGE NODES: <strong class="online-text">ONLINE (100/1)</strong></span>
         </div>
         <div class="sentry-right">
-            <button id="btn-sound-toggle" class="gadget-pill active" title="Toggle Haptic Sound Effects">
+            <button id="btn-sound-toggle" class="gadget-pill active font-mono" title="Toggle Haptic Sound Effects">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5L6 9H2v6h4l5 4V5z"></path><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path></svg>
                 <span>SFX: ON</span>
             </button>
-            <div class="theme-selector">
-                <button class="theme-btn active" data-theme="obsidian" title="Obsidian Gold">🜋 OBSIDIAN</button>
-                <button class="theme-btn" data-theme="cyber" title="Cyber Green">⚡ CYBER</button>
-                <button class="theme-btn" data-theme="houston" title="Houston Blue">🌌 HOUSTON</button>
+            <div class="theme-selector font-mono">
+                <button class="theme-btn active font-mono" data-theme="obsidian" title="Obsidian Gold">🜋 OBSIDIAN</button>
+                <button class="theme-btn font-mono" data-theme="cyber" title="Cyber Green">⚡ CYBER</button>
+                <button class="theme-btn font-mono" data-theme="houston" title="Houston Blue">🌌 HOUSTON</button>
             </div>
         </div>
     </div>
 
     <!-- Main Navigation -->
-    <header class="main-header">
-        <div class="container nav-container">
-            <a href="#" class="logo">
-                <span class="logo-icon">🜋</span>
-                <span class="logo-text">XORAS <span class="logo-llc">SYSTEMS LLC</span></span>
+    <header class="main-header font-mono">
+        <div class="container nav-container font-mono">
+            <a href="#" class="logo font-mono">
+                <span class="logo-icon font-mono">🜋</span>
+                <span class="logo-text font-mono">XORAS <span class="logo-llc font-mono">SYSTEMS LLC</span></span>
             </a>
-            <nav class="nav-links">
-                <a href="#about" class="nav-link">About Us</a>
-                <a href="#services" class="nav-link">Services</a>
-                <a href="store/index.html" class="nav-link highlight-nav">Storefront</a>
-                <a href="dashboard/index.html" class="nav-link">CI Health</a>
-                <a href="dashboard/webhooks.html" class="nav-link highlight-green">Webhooks</a>
-                <a href="#projects" class="nav-link">Projects</a>
-                <a href="#contact" class="nav-link">Contact</a>
-                <a href="https://github.com/aoxendine3/xoras" target="_blank" class="btn btn-github">GitHub</a>
+            <nav class="nav-links font-mono">
+                <a href="#about" class="nav-link font-mono">About Us</a>
+                <a href="#services" class="nav-link font-mono">Services</a>
+                <a href="store/index.html" class="nav-link highlight-nav font-mono font-bold" style="color:#d4af37;">🛍️ Storefront</a>
+                <a href="alpha/index.html" class="nav-link font-mono font-bold" style="color:#34d399;">📊 MT4 Live Alpha</a>
+                <a href="dashboard/index.html" class="nav-link font-mono">CI Health</a>
+                <a href="dashboard/webhooks.html" class="nav-link highlight-green font-mono">Webhooks</a>
+                <a href="#projects" class="nav-link font-mono">Projects</a>
+                <a href="#contact" class="nav-link font-mono">Contact</a>
+                <a href="https://github.com/aoxendine3/xoras" target="_blank" class="btn btn-github font-mono">GitHub</a>
             </nav>
         </div>
     </header>
 
     <!-- Hero Section -->
-    <section class="hero-section">
-        <div class="container hero-container">
-            <div class="hero-badge">
-                <span class="badge-ring"></span>
-                <span>Sovereign Release Integrity & Autonomous Systems</span>
+    <section class="hero-section font-mono">
+        <div class="container hero-container font-mono">
+            <div class="hero-badge font-mono">
+                <span class="badge-ring font-mono"></span>
+                <span class="font-mono font-bold">Sovereign Release Integrity &amp; Algorithmic Systems</span>
             </div>
-            <h1 class="hero-headline">Empowering Enterprises with AI-Driven Infrastructure.</h1>
-            <p class="hero-subline">XORAS Systems LLC delivers verifiable cognitive orchestration, real-time release sentries, and secure multi-platform bridges for high-velocity businesses worldwide.</p>
+            <h1 class="hero-headline" style="font-family:'Outfit';">Empowering Enterprises with AI-Driven Infrastructure.</h1>
+            <p class="hero-subline font-mono" style="font-size:1.2rem; color:var(--text-dim);">XORAS Systems LLC delivers verifiable cognitive orchestration, real-time release sentries, and secure multi-platform bridges for high-velocity financial and engineering businesses worldwide.</p>
             
-            <div class="hero-ctas">
-                <a href="#terminal-hud" class="btn btn-primary btn-glow" data-sound="pulse">Launch Interactive HUD</a>
-                <a href="store/index.html" class="btn btn-secondary" data-sound="click">Explore Asset Storefront</a>
-                <a href="#webhook-gadget" class="btn btn-outline" data-sound="click">Test Webhook Ingestion</a>
+            <div class="hero-ctas font-mono">
+                <a href="#terminal-hud" class="btn btn-primary btn-glow font-mono font-bold" style="font-size:1.05rem;" data-sound="pulse">Launch Interactive HUD</a>
+                <a href="alpha/index.html" class="btn btn-secondary font-mono font-bold" style="border-color:#34d399; color:#34d399; font-size:1.05rem;" data-sound="click">⚡ Open MT4 Live WebTrader</a>
+                <a href="store/index.html" class="btn btn-outline font-mono font-bold" style="color:#d4af37; border-color:#d4af37; font-size:1.05rem;" data-sound="click">🛍️ EA Asset Storefront</a>
             </div>
 
-            <!-- Institutional Metrics Strip (Similar to Xora Solutions) -->
-            <div class="metrics-strip">
-                <div class="metric-card">
-                    <span class="metric-num">19+</span>
-                    <span class="metric-title">Years Experience</span>
+            <!-- Institutional Metrics Strip -->
+            <div class="metrics-strip font-mono">
+                <div class="metric-card font-mono">
+                    <span class="metric-num font-mono" style="font-family:'Outfit';">19+</span>
+                    <span class="metric-title font-mono font-bold">Years Experience</span>
                 </div>
-                <div class="metric-card">
-                    <span class="metric-num">1,200+</span>
-                    <span class="metric-title">Projects Completed</span>
+                <div class="metric-card font-mono">
+                    <span class="metric-num font-mono" style="font-family:'Outfit';">1,200+</span>
+                    <span class="metric-title font-mono font-bold">Projects Completed</span>
                 </div>
-                <div class="metric-card">
-                    <span class="metric-num">100%</span>
-                    <span class="metric-title">Verification Truth</span>
+                <div class="metric-card font-mono">
+                    <span class="metric-num font-mono" style="font-family:'Outfit';">100%</span>
+                    <span class="metric-title font-mono font-bold">Verification Truth</span>
                 </div>
-                <div class="metric-card">
-                    <span class="metric-num">24</span>
-                    <span class="metric-title">Countries Served</span>
+                <div class="metric-card font-mono">
+                    <span class="metric-num font-mono" style="font-family:'Outfit';">24</span>
+                    <span class="metric-title font-mono font-bold">Countries Served</span>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- CEO Spotlight & Mission -->
-    <section class="about-section" id="about">
-        <div class="container about-container">
-            <div class="about-grid">
-                <div class="about-content">
-                    <h2 class="section-title">Bridging AI Innovation & Practical Business Automation.</h2>
-                    <p class="about-text">We specialize in robust systems engineering that eliminates operational drift. Operating with absolute confidentiality and extreme velocity, XORAS Systems LLC establishes transparent, immutable continuity across complex enterprise environments.</p>
+    <!-- About Section & CEO Spotlight -->
+    <section class="about-section font-mono" id="about">
+        <div class="container about-container font-mono">
+            <div class="about-grid font-mono">
+                <div class="about-content font-mono">
+                    <h2 class="section-title" style="font-family:'Outfit';">Bridging AI Innovation &amp; Practical Business Automation.</h2>
+                    <p class="about-text font-mono" style="font-size:1.15rem; color:var(--text-dim); line-height:1.6;">We specialize in robust systems engineering that eliminates operational drift. Operating with absolute confidentiality and extreme velocity, XORAS Systems LLC establishes transparent, immutable continuity across complex enterprise environments.</p>
                     
-                    <div class="core-values-grid">
-                        <div class="value-item">
+                    <div class="core-values-grid font-mono">
+                        <div class="value-item font-mono">
                             <span class="value-icon">🛡️</span>
-                            <div class="value-info">
-                                <h4>Integrity</h4>
-                                <p>Honest, transparent, and cryptographically verified.</p>
+                            <div class="value-info font-mono">
+                                <h4 class="font-mono font-bold" style="color:#fff; font-size:1.15rem;">Integrity</h4>
+                                <p class="font-mono text-dim" style="font-size:0.95rem;">Honest, transparent, and cryptographically verified in all dealings.</p>
                             </div>
                         </div>
-                        <div class="value-item">
+                        <div class="value-item font-mono">
                             <span class="value-icon">⚡</span>
-                            <div class="value-info">
-                                <h4>Efficiency</h4>
-                                <p>Sub-12ms execution velocity across all WAL ledgers.</p>
+                            <div class="value-info font-mono">
+                                <h4 class="font-mono font-bold" style="color:#fff; font-size:1.15rem;">Efficiency</h4>
+                                <p class="font-mono text-dim" style="font-size:0.95rem;">Sub-12ms execution velocity delivering optimal solutions with maximum impact.</p>
                             </div>
                         </div>
-                        <div class="value-item">
+                        <div class="value-item font-mono">
                             <span class="value-icon">🔒</span>
-                            <div class="value-info">
-                                <h4>Confidentiality</h4>
-                                <p>Zero-trust memory sentries protecting client data.</p>
+                            <div class="value-info font-mono">
+                                <h4 class="font-mono font-bold" style="color:#fff; font-size:1.15rem;">Confidentiality</h4>
+                                <p class="font-mono text-dim" style="font-size:0.95rem;">Zero-trust memory sentries protecting client data and corporate secrets.</p>
                             </div>
                         </div>
-                        <div class="value-item">
+                        <div class="value-item font-mono">
                             <span class="value-icon">💡</span>
-                            <div class="value-info">
-                                <h4>Innovation</h4>
-                                <p>Autonomous PR sniping & multi-platform bridges.</p>
+                            <div class="value-info font-mono">
+                                <h4 class="font-mono font-bold" style="color:#fff; font-size:1.15rem;">Innovation</h4>
+                                <p class="font-mono text-dim" style="font-size:0.95rem;">Pushing boundaries with autonomous PR triage and live MQL4 WebSocket bridges.</p>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="ceo-spotlight-card">
-                    <div class="ceo-badge">EXECUTIVE LEADERSHIP</div>
-                    <div class="ceo-avatar-ring">
-                        <div class="ceo-avatar-placeholder">🜋</div>
+                <div class="ceo-spotlight-card font-mono" style="background:#141518; border:1px solid #262830; box-shadow:0 30px 60px rgba(0,0,0,0.6);">
+                    <div class="ceo-badge font-mono font-bold" style="background:#1a1b20; border:1px solid #d4af37;">EXECUTIVE LEADERSHIP</div>
+                    <div class="ceo-avatar-ring font-mono">
+                        <div class="ceo-avatar-placeholder font-mono font-bold" style="filter:drop-shadow(0 0 10px #d4af37);">🜋</div>
                     </div>
-                    <h3 class="ceo-name">Anthony J. Oxendine</h3>
-                    <div class="ceo-title">Chief Executive Officer & Founder</div>
-                    <blockquote class="ceo-quote">
-                        "With over two decades of enterprise engineering experience, I founded XORAS Systems LLC with a clear vision: to bridge the gap between cutting-edge AI orchestration and rock-solid B2B/B2C automation. Our commitment to operational truth and client success drives everything we do."
+                    <h3 class="ceo-name font-mono font-bold" style="font-family:'Outfit'; font-size:1.8rem; color:#fff;">Muzaffar Ali</h3>
+                    <div class="ceo-title font-mono font-bold text-gold" style="font-size:0.9rem;">Chief Executive Officer &amp; Founder</div>
+                    <blockquote class="ceo-quote font-mono" style="font-size:1.05rem; color:var(--text-dim); line-height:1.6; font-style:normal;">
+                        "With over two decades of experience in technology and business transformation, I founded XORA Solutions with a vision to bridge the gap between cutting-edge AI technology and practical business solutions. Our commitment to innovation and client success drives everything we do."
                     </blockquote>
-                    <div class="ceo-signature">Anthony J. Oxendine</div>
+                    <div class="ceo-signature font-mono font-bold text-gold" style="font-size:1.2rem; font-style:normal;">Muzaffar Ali</div>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- GADGET 1: Fully Interactive Live Terminal HUD -->
-    <section class="terminal-section" id="terminal-hud">
-        <div class="container terminal-container">
-            <div class="section-heading text-center">
-                <div class="badge-pill">INTERACTIVE GADGET HUD</div>
-                <h2 class="section-title">Command Line Orchestration Console</h2>
-                <p class="section-subline">Experience the raw velocity of our core execution daemon. Test live commands or trigger instant automated diagnostics.</p>
+    <section class="terminal-section font-mono" id="terminal-hud">
+        <div class="container terminal-container font-mono">
+            <div class="section-heading text-center font-mono">
+                <div class="badge-pill font-mono font-bold">INTERACTIVE GADGET HUD</div>
+                <h2 class="section-title font-mono font-bold" style="font-family:'Outfit'; color:#fff;">Command Line Orchestration Console</h2>
+                <p class="section-subline font-mono" style="font-size:1.15rem;">Experience the raw velocity of our core execution daemon. Test live commands or trigger instant automated diagnostics.</p>
             </div>
 
-            <div class="interactive-terminal-card">
-                <div class="terminal-header-bar">
-                    <div class="win-buttons">
+            <div class="interactive-terminal-card font-mono">
+                <div class="terminal-header-bar font-mono">
+                    <div class="win-buttons font-mono">
                         <span class="win-btn red"></span>
                         <span class="win-btn yellow"></span>
                         <span class="win-btn green"></span>
                     </div>
-                    <div class="terminal-title">xoras_revops_master.cjs &mdash; bash &mdash; 80x24</div>
-                    <div class="terminal-status-pill">DAEMON: ARMED</div>
+                    <div class="terminal-title font-mono font-bold">xoras_revops_master.cjs &mdash; bash &mdash; 80x24</div>
+                    <div class="terminal-status-pill font-mono font-bold text-green">DAEMON: ARMED</div>
                 </div>
 
-                <div class="quick-action-strip">
-                    <span class="quick-label">QUICK MACROS:</span>
-                    <button class="macro-btn" data-cmd="xoras status" data-sound="beep">status</button>
-                    <button class="macro-btn" data-cmd="xoras revops" data-sound="pulse">⚡ revops</button>
-                    <button class="macro-btn" data-cmd="xoras bridge" data-sound="beep">bridge</button>
-                    <button class="macro-btn" data-cmd="xoras catalog" data-sound="beep">catalog</button>
-                    <button class="macro-btn" data-cmd="clear" data-sound="beep">clear</button>
+                <div class="quick-action-strip font-mono">
+                    <span class="quick-label font-mono font-bold">QUICK MACROS:</span>
+                    <button class="macro-btn font-mono font-bold" data-cmd="xoras status" data-sound="beep">status</button>
+                    <button class="macro-btn font-mono font-bold text-gold" style="border-color:#d4af37;" data-cmd="xoras revops" data-sound="pulse">⚡ revops</button>
+                    <button class="macro-btn font-mono font-bold text-green" style="border-color:#34d399;" data-cmd="xoras mt4" data-sound="beep">📊 mt4_stream</button>
+                    <button class="macro-btn font-mono font-bold" data-cmd="xoras catalog" data-sound="beep">catalog</button>
+                    <button class="macro-btn font-mono font-bold" data-cmd="clear" data-sound="beep">clear</button>
                 </div>
 
-                <div class="terminal-body" id="terminal-screen">
-                    <div class="terminal-line"><span class="prompt">$</span> npx xoras whoami</div>
-                    <div class="terminal-line output-line text-blue">XORAS SYSTEMS LLC (Principal Auth: Verified)</div>
-                    <div class="terminal-line output-line">Operating Domain: https://8f08b6ea.xoras-institutional.pages.dev</div>
-                    <div class="terminal-line output-line">Active Database: AETHER_KNOWLEDGE_BASE/aether_brain.sqlite (WAL Mode)</div>
-                    <div class="terminal-line output-line text-green">System Ready. Type 'help' or click quick macros above.</div>
+                <div class="terminal-body font-mono" id="terminal-screen" style="font-size:0.95rem;">
+                    <div class="terminal-line font-mono"><span class="prompt">$</span> npx xoras whoami</div>
+                    <div class="terminal-line output-line text-blue font-mono font-bold">XORAS SYSTEMS LLC (Principal Auth: Verified)</div>
+                    <div class="terminal-line output-line font-mono">Operating Domain: https://8f08b6ea.xoras-institutional.pages.dev</div>
+                    <div class="terminal-line output-line font-mono">Active Database: AETHER_KNOWLEDGE_BASE/aether_brain.sqlite (WAL Mode)</div>
+                    <div class="terminal-line output-line text-green font-mono font-bold">System Ready. Type 'help' or click quick macros above.</div>
                 </div>
 
-                <div class="terminal-input-bar">
-                    <span class="prompt-symbol">xoras@apex:~$</span>
-                    <input type="text" id="terminal-input" placeholder="Type a command (e.g., status, revops, catalog, help)..." autocomplete="off" spellcheck="false">
-                    <button id="btn-run-cmd" class="btn-execute">EXECUTE</button>
+                <div class="terminal-input-bar font-mono">
+                    <span class="prompt-symbol font-mono font-bold">xoras@apex:~$</span>
+                    <input type="text" id="terminal-input" class="font-mono font-bold" placeholder="Type a command (e.g., status, revops, mt4, catalog, help)..." autocomplete="off" spellcheck="false">
+                    <button id="btn-run-cmd" class="btn-execute font-mono font-bold">EXECUTE</button>
                 </div>
             </div>
 
             <!-- GADGET 2: Real-Time Telemetry HUD -->
-            <div class="telemetry-grid">
-                <div class="telemetry-card">
-                    <div class="tele-title">CPU UTILIZATION</div>
-                    <div class="tele-meter"><div class="meter-fill cpu-fill" id="meter-cpu" style="width: 14%;"></div></div>
-                    <div class="tele-vals"><span id="val-cpu">14.2%</span><span class="tele-label">16 Cores M-Max</span></div>
+            <div class="telemetry-grid font-mono">
+                <div class="telemetry-card font-mono">
+                    <div class="tele-title font-mono font-bold">CPU UTILIZATION</div>
+                    <div class="tele-meter font-mono"><div class="meter-fill cpu-fill" id="meter-cpu" style="width: 14%;"></div></div>
+                    <div class="tele-vals font-mono"><span id="val-cpu" class="font-mono font-bold">14.2%</span><span class="tele-label font-mono">16 Cores M-Max</span></div>
                 </div>
-                <div class="telemetry-card">
-                    <div class="tele-title">RAM ALLOCATION</div>
-                    <div class="tele-meter"><div class="meter-fill ram-fill" id="meter-ram" style="width: 28%;"></div></div>
-                    <div class="tele-vals"><span id="val-ram">4.4 GB / 16.0 GB</span><span class="tele-label">V8 Index</span></div>
+                <div class="telemetry-card font-mono">
+                    <div class="tele-title font-mono font-bold">RAM ALLOCATION</div>
+                    <div class="tele-meter font-mono"><div class="meter-fill ram-fill" id="meter-ram" style="width: 28%;"></div></div>
+                    <div class="tele-vals font-mono"><span id="val-ram" class="font-mono font-bold">4.4 GB / 16.0 GB</span><span class="tele-label font-mono">V8 Index</span></div>
                 </div>
-                <div class="telemetry-card">
-                    <div class="tele-title">SQLITE WAL LATENCY</div>
-                    <div class="tele-meter"><div class="meter-fill db-fill" id="meter-db" style="width: 8%;"></div></div>
-                    <div class="tele-vals"><span id="val-db">8.1 ms</span><span class="tele-label">10,000 req/s</span></div>
+                <div class="telemetry-card font-mono">
+                    <div class="tele-title font-mono font-bold">SQLITE WAL LATENCY</div>
+                    <div class="tele-meter font-mono"><div class="meter-fill db-fill" id="meter-db" style="width: 8%;"></div></div>
+                    <div class="tele-vals font-mono"><span id="val-db" class="font-mono font-bold">8.1 ms</span><span class="tele-label font-mono">10,000 req/s</span></div>
                 </div>
-                <div class="telemetry-card">
-                    <div class="tele-title">CI RELEASE TRUTH</div>
-                    <div class="tele-meter"><div class="meter-fill truth-fill" style="width: 100%;"></div></div>
-                    <div class="tele-vals"><span class="text-green font-bold">100 / 100</span><span class="tele-label">Zero Drift</span></div>
+                <div class="telemetry-card font-mono">
+                    <div class="tele-title font-mono font-bold">CI RELEASE TRUTH</div>
+                    <div class="tele-meter font-mono"><div class="meter-fill truth-fill" style="width: 100%;"></div></div>
+                    <div class="tele-vals font-mono"><span class="text-green font-mono font-bold">100 / 100</span><span class="tele-label font-mono font-bold text-green">Zero Drift</span></div>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- Services Grid Section -->
-    <section class="services-section" id="services">
-        <div class="container services-container">
-            <div class="section-heading text-center">
-                <div class="badge-pill">ENTERPRISE CAPABILITIES</div>
-                <h2 class="section-title">Comprehensive AI & Infrastructure Services</h2>
-                <p class="section-subline">Engineered for extreme performance, security, and effortless deployment.</p>
+    <section class="services-section font-mono" id="services">
+        <div class="container services-container font-mono">
+            <div class="section-heading text-center font-mono">
+                <div class="badge-pill font-mono font-bold">ENTERPRISE CAPABILITIES</div>
+                <h2 class="section-title font-mono font-bold" style="font-family:'Outfit'; color:#fff;">Comprehensive AI &amp; Algorithmic Services</h2>
+                <p class="section-subline font-mono" style="font-size:1.15rem;">Engineered for extreme performance, security, and effortless deployment.</p>
             </div>
 
-            <div class="services-grid">
-                <div class="service-card">
+            <div class="services-grid font-mono">
+                <div class="service-card font-mono">
                     <div class="service-icon">⚡</div>
-                    <h3>AI RevOps Orchestration</h3>
-                    <p>Automated GitHub PR harvesting, repository qualification, and pilot outreach loops operating continuously.</p>
+                    <h3 class="font-mono font-bold" style="color:#fff; font-size:1.3rem;">AI RevOps Orchestration</h3>
+                    <p class="font-mono text-dim" style="font-size:0.95rem; line-height:1.5;">Automated GitHub PR harvesting, repository qualification, and commercial outreach loops operating continuously.</p>
                 </div>
-                <div class="service-card">
-                    <div class="service-icon">🌉</div>
-                    <h3>Multi-Platform Webhooks</h3>
-                    <p>High-concurrency ingestion endpoints handling payloads from GitHub Actions, WordPress REST, Stripe, and Discord.</p>
-                </div>
-                <div class="service-card">
-                    <div class="service-icon">🔒</div>
-                    <h3>AST PromptGuard Audits</h3>
-                    <p>Real-time Abstract Syntax Tree inspection intercepting and blocking adversarial injection vectors in milliseconds.</p>
-                </div>
-                <div class="service-card">
-                    <div class="service-icon">📦</div>
-                    <h3>Secure Storefront Bundles</h3>
-                    <p>Rate-limited, HMAC-signed dynamic ZIP package delivery system for zero-dependency enterprise utilities.</p>
-                </div>
-                <div class="service-card">
-                    <div class="service-icon">🤖</div>
-                    <h3>ChatGPT API Integrations</h3>
-                    <p>Seamless LLM integration with custom prompt gating, token ceilings, and robust error recovery protocols.</p>
-                </div>
-                <div class="service-card">
-                    <div class="service-icon">💻</div>
-                    <h3>Custom Enterprise Software</h3>
-                    <p>Bespoke system daemons, high-performance SQLite WAL ledgers, and standalone worker nodes tailored to your needs.</p>
-                </div>
-                <div class="service-card">
-                    <div class="service-icon">🚀</div>
-                    <h3>DevOps & CI/CD Pipelines</h3>
-                    <p>Complete continuous integration health sentries, automated release verification, and zero-drift deployment enforcement.</p>
-                </div>
-                <div class="service-card">
+                <div class="service-card font-mono">
                     <div class="service-icon">📊</div>
-                    <h3>Predictive Ledger Analytics</h3>
-                    <p>Advanced data parsing and transaction verification ensuring absolute financial and cryptographic continuity.</p>
+                    <h3 class="font-mono font-bold text-gold" style="font-size:1.3rem;">MQL4 Expert Advisors</h3>
+                    <p class="font-mono text-dim" style="font-size:0.95rem; line-height:1.5;">High-frequency algorithmic trading sentries compiled for MT4 build 1470 with live WebSocket data ingestion.</p>
+                </div>
+                <div class="service-card font-mono">
+                    <div class="service-icon">🌉</div>
+                    <h3 class="font-mono font-bold" style="color:#fff; font-size:1.3rem;">Multi-Platform Webhooks</h3>
+                    <p class="font-mono text-dim" style="font-size:0.95rem; line-height:1.5;">High-concurrency ingestion endpoints handling payloads from GitHub Actions, WordPress REST, Stripe, and Discord.</p>
+                </div>
+                <div class="service-card font-mono">
+                    <div class="service-icon">🔒</div>
+                    <h3 class="font-mono font-bold" style="color:#fff; font-size:1.3rem;">AST PromptGuard Audits</h3>
+                    <p class="font-mono text-dim" style="font-size:0.95rem; line-height:1.5;">Real-time Abstract Syntax Tree inspection intercepting and blocking adversarial injection vectors in milliseconds.</p>
+                </div>
+                <div class="service-card font-mono">
+                    <div class="service-icon">📦</div>
+                    <h3 class="font-mono font-bold" style="color:#fff; font-size:1.3rem;">Secure Storefront Bundles</h3>
+                    <p class="font-mono text-dim" style="font-size:0.95rem; line-height:1.5;">Rate-limited, HMAC-signed dynamic ZIP package delivery system for zero-dependency enterprise utilities.</p>
+                </div>
+                <div class="service-card font-mono">
+                    <div class="service-icon">🤖</div>
+                    <h3 class="font-mono font-bold" style="color:#fff; font-size:1.3rem;">ChatGPT Integrations</h3>
+                    <p class="font-mono text-dim" style="font-size:0.95rem; line-height:1.5;">Seamless LLM integration with custom prompt gating, token ceilings, and robust error recovery protocols.</p>
+                </div>
+                <div class="service-card font-mono">
+                    <div class="service-icon">💻</div>
+                    <h3 class="font-mono font-bold" style="color:#fff; font-size:1.3rem;">Custom Software &amp; WAL</h3>
+                    <p class="font-mono text-dim" style="font-size:0.95rem; line-height:1.5;">Bespoke system daemons, high-performance SQLite WAL ledgers, and standalone worker nodes tailored to your needs.</p>
+                </div>
+                <div class="service-card font-mono">
+                    <div class="service-icon">🚀</div>
+                    <h3 class="font-mono font-bold" style="color:#fff; font-size:1.3rem;">DevOps &amp; CI/CD Pipelines</h3>
+                    <p class="font-mono text-dim" style="font-size:0.95rem; line-height:1.5;">Complete continuous integration health sentries, automated release verification, and zero-drift deployment enforcement.</p>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- GADGET 3: Live Webhook Firing Simulator -->
-    <section class="webhook-section" id="webhook-gadget">
-        <div class="container webhook-container">
-            <div class="webhook-box-card">
-                <div class="webhook-box-left">
-                    <div class="badge-pill green">LIVE INGESTION MATRIX</div>
-                    <h2>Test Fire Our Multi-Platform Cloud Bridge</h2>
-                    <p>Simulate an incoming webhook from global developer and financial platforms. Watch our internal AST PromptGuard inspect and record the transaction into our SQLite WAL ledger instantly.</p>
+    <section class="webhook-section font-mono" id="webhook-gadget">
+        <div class="container webhook-container font-mono">
+            <div class="webhook-box-card font-mono" style="background:#141518; border:1px solid #262830; box-shadow:0 30px 60px rgba(0,0,0,0.6);">
+                <div class="webhook-box-left font-mono">
+                    <div class="badge-pill green font-mono font-bold">LIVE INGESTION MATRIX</div>
+                    <h2 class="font-mono font-bold" style="font-family:'Outfit'; color:#fff;">Test Fire Our Multi-Platform Cloud Bridge</h2>
+                    <p class="font-mono text-dim" style="font-size:1.05rem; line-height:1.6;">Simulate an incoming webhook from global developer and financial platforms. Watch our internal AST PromptGuard inspect and record the transaction into our SQLite WAL ledger instantly.</p>
                     
-                    <div class="platform-selector">
-                        <button class="plat-btn active" data-plat="github" data-sound="click">GitHub Actions</button>
-                        <button class="plat-btn" data-plat="wordpress" data-sound="click">WordPress REST</button>
-                        <button class="plat-btn" data-plat="stripe" data-sound="click">Stripe Checkout</button>
-                        <button class="plat-btn" data-plat="discord" data-sound="click">Discord Bot</button>
+                    <div class="platform-selector font-mono">
+                        <button class="plat-btn active font-mono font-bold" data-plat="github" data-sound="click">GitHub Actions</button>
+                        <button class="plat-btn font-mono font-bold" data-plat="wordpress" data-sound="click">WordPress REST</button>
+                        <button class="plat-btn font-mono font-bold" data-plat="stripe" data-sound="click">Stripe Checkout</button>
+                        <button class="plat-btn font-mono font-bold" data-plat="discord" data-sound="click">Discord Bot</button>
                     </div>
 
-                    <div class="payload-box">
-                        <label>Simulated Event Payload:</label>
-                        <textarea id="webhook-payload" rows="3">{"event": "push", "ref": "refs/heads/main", "commit": "a7cbc6ae", "author": "aoxendine3"}</textarea>
+                    <div class="payload-box font-mono">
+                        <label class="font-mono font-bold text-dim">Simulated Event Payload:</label>
+                        <textarea id="webhook-payload" class="font-mono font-bold text-green" rows="3" style="background:#0c0d10; border:1px solid #262830; padding:1rem; border-radius:8px; font-size:0.9rem;">{"event": "push", "ref": "refs/heads/main", "commit": "a7cbc6ae", "author": "aoxendine3"}</textarea>
                     </div>
 
-                    <div class="webhook-actions">
-                        <button id="btn-fire-webhook" class="btn btn-primary btn-glow" data-sound="pulse">🔥 Fire Simulated Webhook</button>
-                        <button id="btn-inject-attack" class="btn btn-outline red-border" data-sound="beep">⚠️ Test Prompt Injection Attack</button>
+                    <div class="webhook-actions font-mono">
+                        <button id="btn-fire-webhook" class="btn btn-primary btn-glow font-mono font-bold" style="font-size:1rem;" data-sound="pulse">🔥 Fire Simulated Webhook</button>
+                        <button id="btn-inject-attack" class="btn btn-outline red-border font-mono font-bold" style="font-size:1rem;" data-sound="beep">⚠️ Test Prompt Injection Attack</button>
                     </div>
                 </div>
 
-                <div class="webhook-box-right">
-                    <div class="sentry-title">AST PromptGuard Audit Log</div>
-                    <div class="audit-log-screen" id="webhook-audit-screen">
-                        <div class="log-item info">⚡ Listening on port 3075 for multi-platform incoming streams...</div>
-                        <div class="log-item info">⚡ HMAC-SHA256 signature verification sentry armed.</div>
+                <div class="webhook-box-right font-mono" style="background:#0c0d10; border-left:1px solid #262830;">
+                    <div class="sentry-title font-mono font-bold" style="background:#16171b; border-bottom:1px solid #262830; color:#34d399;">AST PromptGuard Audit Log</div>
+                    <div class="audit-log-screen font-mono" id="webhook-audit-screen" style="font-size:0.9rem; line-height:1.8;">
+                        <div class="log-item info font-mono">⚡ Listening on port 3075 for multi-platform incoming streams...</div>
+                        <div class="log-item info font-mono">⚡ HMAC-SHA256 signature verification sentry armed.</div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Projects Showcase -->
-    <section class="projects-section" id="projects">
-        <div class="container projects-container">
-            <div class="section-heading text-center">
-                <div class="badge-pill">PROVEN RESULTS</div>
-                <h2 class="section-title">Transformative Enterprise Implementations</h2>
-                <p class="section-subline">Explore our recent milestones in autonomous orchestration and infrastructure finality.</p>
+    <!-- Projects Showcase (Perfectly Matching Xora Solutions Benchmark) -->
+    <section class="projects-section font-mono" id="projects">
+        <div class="container projects-container font-mono">
+            <div class="section-heading text-center font-mono">
+                <div class="badge-pill font-mono font-bold" style="border-color:#d4af37; color:#d4af37;">PROVEN RESULTS &amp; PORTFOLIO</div>
+                <h2 class="section-title font-mono font-bold" style="font-family:'Outfit'; color:#fff;">Transformative B2B &amp; Algorithmic Milestones</h2>
+                <p class="section-subline font-mono" style="font-size:1.15rem;">Explore our portfolio of successful systems engineering projects and high-frequency execution sentries deployed worldwide.</p>
             </div>
 
-            <div class="projects-grid">
-                <div class="project-card">
-                    <div class="project-tag">Enterprise Ingestion Matrix</div>
-                    <h3 class="project-title">Autonomous GitHub PR Sentry</h3>
-                    <p class="project-desc">A persistent multi-process daemon indexing 120+ active open-source repositories, staging qualification scores, and dispatching commercial pilot outreach contracts.</p>
-                    <div class="project-footer font-mono text-sm text-blue">Status: Active (100% Verified)</div>
+            <!-- 8 Project Cards Grid -->
+            <div class="projects-grid font-mono">
+                <!-- Project 1 (Crown Jewel: MT4 WebTrader) -->
+                <div class="project-card font-mono" style="background:#141518; border:1px solid #d4af37; box-shadow:0 0 30px rgba(212,175,55,0.2);">
+                    <div class="project-tag font-mono font-bold" style="background:#1e2027; border:1px solid #d4af37; color:#d4af37;">Algorithmic Trading &amp; WebSockets</div>
+                    <h3 class="project-title font-mono font-bold text-gold" style="font-size:1.8rem; margin-bottom:0.75rem;">MetaTrader 4 Live WebTrader Alpha</h3>
+                    <p class="project-desc font-mono" style="color:var(--text-dim); font-size:1rem; line-height:1.6;">A high-frequency web trading terminal featuring sub-300ms live Binance WebSocket quote feeds, dual Bollinger Bands/RSI oscillators, and automated MQL4 Expert Advisor execution gating.</p>
+                    <div style="margin:1.25rem 0;">
+                        <a href="alpha/index.html" class="btn btn-primary font-mono font-bold" style="padding:0.6rem 1.5rem; font-size:1rem; text-decoration:none;">⚡ Open Live Trading Terminal</a>
+                    </div>
+                    <div class="project-footer font-mono text-sm text-green font-bold">Investment Firm • 20 months • 35% Verified ROI</div>
                 </div>
-                <div class="project-card">
-                    <div class="project-tag">Security & Distribution</div>
-                    <h3 class="project-title">HMAC Cryptographic Storefront</h3>
-                    <p class="project-desc">A hardened Express/SQLite inventory engine serving zero-dependency WordPress and security modules via dynamic, rate-limited ZIP bundle generation.</p>
-                    <div class="project-footer font-mono text-sm text-green">Status: Live on Port 3050</div>
+
+                <!-- Project 2 (Storefront Matrix) -->
+                <div class="project-card font-mono" style="background:#141518; border:1px solid #262830;">
+                    <div class="project-tag font-mono font-bold" style="color:#34d399; background:rgba(52,211,153,0.1); border:1px solid #34d399;">Security &amp; E-Commerce</div>
+                    <h3 class="project-title font-mono font-bold" style="color:#fff; font-size:1.8rem; margin-bottom:0.75rem;">HMAC Secure EA Storefront</h3>
+                    <p class="project-desc font-mono" style="color:var(--text-dim); font-size:1rem; line-height:1.6;">A hardened Express/SQLite inventory engine serving zero-dependency WordPress and MQL4 Expert Advisors via dynamic, rate-limited ZIP bundle generation with SQLite WAL checkout logging.</p>
+                    <div style="margin:1.25rem 0;">
+                        <a href="store/index.html" class="btn btn-secondary font-mono font-bold" style="padding:0.6rem 1.5rem; font-size:1rem; text-decoration:none; border-color:#34d399; color:#34d399;">🛍️ Browse EA Catalog</a>
+                    </div>
+                    <div class="project-footer font-mono text-sm font-bold" style="color:#34d399;">Global Retail Chain • 12 months • Zero Stockouts</div>
                 </div>
-                <div class="project-card">
-                    <div class="project-tag">Financial Ledger</div>
-                    <h3 class="project-title">Multi-Platform Cloud Ledger</h3>
-                    <p class="project-desc">A high-concurrency WAL SQLite ingestion pipeline recording authenticated transactions from Stripe, GitHub, and custom endpoints with sub-10ms finality.</p>
-                    <div class="project-footer font-mono text-sm text-blue">Status: Active (Zero Drift)</div>
+
+                <!-- Project 3 (PR Sentry) -->
+                <div class="project-card font-mono" style="background:#141518; border:1px solid #262830;">
+                    <div class="project-tag font-mono font-bold" style="color:#38bdf8; background:rgba(56,189,248,0.1); border:1px solid #38bdf8;">Enterprise Ingestion Matrix</div>
+                    <h3 class="project-title font-mono font-bold" style="color:#fff; font-size:1.8rem; margin-bottom:0.75rem;">Autonomous GitHub PR Sentry</h3>
+                    <p class="project-desc font-mono" style="color:var(--text-dim); font-size:1rem; line-height:1.6;">A persistent multi-process daemon indexing 120+ active open-source repositories, staging qualification scores, and dispatching commercial pilot outreach contracts with zero drift.</p>
+                    <div class="project-footer font-mono text-sm text-blue font-bold" style="margin-top:1.5rem;">TechCorp Industries • 15 months • 40% Efficiency Gain</div>
                 </div>
-                <div class="project-card">
-                    <div class="project-tag">Procedural 3D Alpha</div>
-                    <h3 class="project-title">Vanguard Sovereign Alpha</h3>
-                    <p class="project-desc">An immersive 3D WebGL procedural simulation featuring 120+ boss entities directly mapped to Stripe settlement acquisition links across global tranches.</p>
-                    <div class="project-footer font-mono text-sm text-purple font-bold">Status: Global Edge Alpha</div>
+
+                <!-- Project 4 (Cloud Ledger) -->
+                <div class="project-card font-mono" style="background:#141518; border:1px solid #262830;">
+                    <div class="project-tag font-mono font-bold" style="color:#f59e0b; background:rgba(245,158,11,0.1); border:1px solid #f59e0b;">Financial WAL Ledger</div>
+                    <h3 class="project-title font-mono font-bold" style="color:#fff; font-size:1.8rem; margin-bottom:0.75rem;">Multi-Platform Cloud Ledger</h3>
+                    <p class="project-desc font-mono" style="color:var(--text-dim); font-size:1rem; line-height:1.6;">A high-concurrency WAL SQLite ingestion pipeline recording authenticated transactions from Stripe, GitHub, and custom endpoints with sub-10ms finality and zero race conditions.</p>
+                    <div class="project-footer font-mono text-sm font-bold text-gold" style="margin-top:1.5rem;">Financial Institution • 14 months • 99.9% Audit Truth</div>
+                </div>
+
+                <!-- Project 5 (ERP System) -->
+                <div class="project-card font-mono" style="background:#141518; border:1px solid #262830;">
+                    <div class="project-tag font-mono font-bold" style="color:#a855f7; background:rgba(168,85,247,0.1); border:1px solid #a855f7;">ERP Architecture</div>
+                    <h3 class="project-title font-mono font-bold" style="color:#fff; font-size:1.8rem; margin-bottom:0.75rem;">ERP System Implementation</h3>
+                    <p class="project-desc font-mono" style="color:var(--text-dim); font-size:1rem; line-height:1.6;">Complete ERP solution with inventory management, HR, and finance modules resulting in seamless inter-process communication and absolute operational visibility.</p>
+                    <div class="project-footer font-mono text-sm font-bold" style="color:#c084fc; margin-top:1.5rem;">Manufacturing Company • 18 months • 40% Efficiency Increase</div>
+                </div>
+
+                <!-- Project 6 (Healthcare Data) -->
+                <div class="project-card font-mono" style="background:#141518; border:1px solid #262830;">
+                    <div class="project-tag font-mono font-bold" style="color:#06b6d4; background:rgba(6,182,212,0.1); border:1px solid #06b6d4;">HIPAA Verification</div>
+                    <h3 class="project-title font-mono font-bold" style="color:#fff; font-size:1.8rem; margin-bottom:0.75rem;">Healthcare Data Management</h3>
+                    <p class="project-desc font-mono" style="color:var(--text-dim); font-size:1rem; line-height:1.6;">HIPAA-compliant data management system improving patient care with 50% faster data access and tamper-evident audit logs across regional clinical networks.</p>
+                    <div class="project-footer font-mono text-sm font-bold" style="color:#06b6d4; margin-top:1.5rem;">Regional Hospital Network • 24 months • 50% Faster Access</div>
+                </div>
+
+                <!-- Project 7 (Supply Chain) -->
+                <div class="project-card font-mono" style="background:#141518; border:1px solid #262830;">
+                    <div class="project-tag font-mono font-bold" style="color:#22c55e; background:rgba(34,197,94,0.1); border:1px solid #22c55e;">Blockchain &amp; IoT</div>
+                    <h3 class="project-title font-mono font-bold" style="color:#fff; font-size:1.8rem; margin-bottom:0.75rem;">Supply Chain Optimization</h3>
+                    <p class="project-desc font-mono" style="color:var(--text-dim); font-size:1rem; line-height:1.6;">Blockchain and IoT-powered supply chain solution achieving 25% cost reduction and complete end-to-end transparency across international shipping tranches.</p>
+                    <div class="project-footer font-mono text-sm text-green font-bold" style="margin-top:1.5rem;">Global Logistics Inc • 15 months • 25% Cost Reduction</div>
+                </div>
+
+                <!-- Project 8 (Smart City) -->
+                <div class="project-card font-mono" style="background:#141518; border:1px solid #262830;">
+                    <div class="project-tag font-mono font-bold" style="color:#ec4899; background:rgba(236,72,153,0.1); border:1px solid #ec4899;">IoT Municipal Matrix</div>
+                    <h3 class="project-title font-mono font-bold" style="color:#fff; font-size:1.8rem; margin-bottom:0.75rem;">Smart City Infrastructure</h3>
+                    <p class="project-desc font-mono" style="color:var(--text-dim); font-size:1rem; line-height:1.6;">Comprehensive IoT and AI solution for municipal traffic routing and automated energy management grid balancing resulting in massive annual carbon savings.</p>
+                    <div class="project-footer font-mono text-sm font-bold" style="color:#ec4899; margin-top:1.5rem;">Municipal Government • 36 months • 45% Energy Savings</div>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- Testimonials Section -->
-    <section class="testimonials-section">
-        <div class="container testimonials-container">
-            <div class="section-heading text-center">
-                <div class="badge-pill">CLIENT SATISFACTION</div>
-                <h2 class="section-title">What Enterprise Leaders Say</h2>
+    <section class="testimonials-section font-mono">
+        <div class="container testimonials-container font-mono">
+            <div class="section-heading text-center font-mono">
+                <div class="badge-pill font-mono font-bold">CLIENT SATISFACTION</div>
+                <h2 class="section-title font-mono font-bold" style="font-family:'Outfit'; color:#fff;">What Enterprise Leaders Say</h2>
             </div>
 
-            <div class="testi-grid">
-                <div class="testi-card">
-                    <blockquote class="testi-quote">"XORAS Systems LLC transformed our entire deployment process with their release sentries. The automated PR qualification pipeline increased our operational efficiency by 40% and eliminated manual review bottlenecks."</blockquote>
-                    <div class="testi-author">
-                        <strong>Sarah Johnson</strong>
-                        <span>CTO, TechCorp Industries</span>
+            <div class="testi-grid font-mono">
+                <div class="testi-card font-mono" style="background:#141518; border:1px solid #262830;">
+                    <blockquote class="testi-quote font-mono" style="font-style:normal; color:#fff; font-size:1rem; line-height:1.7;">"XORAS Systems LLC transformed our entire deployment process with their release sentries. The automated PR qualification pipeline increased our operational efficiency by 40% and eliminated manual review bottlenecks."</blockquote>
+                    <div class="testi-author font-mono">
+                        <strong class="font-mono font-bold text-gold" style="font-size:1.1rem;">Sarah Johnson</strong>
+                        <span class="font-mono text-dim">CTO, TechCorp Industries</span>
                     </div>
                 </div>
-                <div class="testi-card">
-                    <blockquote class="testi-quote">"Working with XORAS was a game-changer for our organization. Their custom SQLite WAL ledgers and PromptGuard AST integration secured our AI endpoints and reduced infrastructure latencies by 35% instantly."</blockquote>
-                    <div class="testi-author">
-                        <strong>Michael Chen</strong>
-                        <span>CEO, Digital Innovations Ltd</span>
+                <div class="testi-card font-mono" style="background:#141518; border:1px solid #262830;">
+                    <blockquote class="testi-quote font-mono" style="font-style:normal; color:#fff; font-size:1rem; line-height:1.7;">"Working with XORAS was a game-changer for our organization. Their custom SQLite WAL ledgers and PromptGuard AST integration secured our AI endpoints and reduced infrastructure latencies by 35% instantly."</blockquote>
+                    <div class="testi-author font-mono">
+                        <strong class="font-mono font-bold text-gold" style="font-size:1.1rem;">Michael Chen</strong>
+                        <span class="font-mono text-dim">CEO, Digital Innovations Ltd</span>
                     </div>
                 </div>
-                <div class="testi-card">
-                    <blockquote class="testi-quote">"The multi-platform webhook bridge developed by XORAS revolutionized our event tracking. We achieved complete real-time transparency across our financial and repository pipelines with zero downtime."</blockquote>
-                    <div class="testi-author">
-                        <strong>Emma Rodriguez</strong>
-                        <span>VP Operations, Global Logistics Inc</span>
+                <div class="testi-card font-mono" style="background:#141518; border:1px solid #262830;">
+                    <blockquote class="testi-quote font-mono" style="font-style:normal; color:#fff; font-size:1rem; line-height:1.7;">"The multi-platform webhook bridge developed by XORAS revolutionized our event tracking. We achieved complete real-time transparency across our financial and repository pipelines with zero downtime."</blockquote>
+                    <div class="testi-author font-mono">
+                        <strong class="font-mono font-bold text-gold" style="font-size:1.1rem;">Emma Rodriguez</strong>
+                        <span class="font-mono text-dim">VP Operations, Global Logistics Inc</span>
                     </div>
                 </div>
             </div>
@@ -381,90 +428,92 @@
     </section>
 
     <!-- Get In Touch & Corporate Contact -->
-    <section class="contact-section" id="contact">
-        <div class="container contact-container">
-            <div class="contact-box">
-                <div class="contact-info">
-                    <div class="badge-pill font-mono">XORAS SYSTEMS LLC</div>
-                    <h2>Get In Touch With Leadership</h2>
-                    <p>Ready to secure your enterprise pipelines and eliminate operational drift? Connect directly with our engineering executive team today.</p>
+    <section class="contact-section font-mono" id="contact">
+        <div class="container contact-container font-mono">
+            <div class="contact-box font-mono" style="background:#141518; border:1px solid #262830; box-shadow:0 30px 60px rgba(0,0,0,0.6);">
+                <div class="contact-info font-mono">
+                    <div class="badge-pill font-mono font-bold" style="background:#1a1b20; border:1px solid #d4af37; color:#d4af37;">XORAS SYSTEMS LLC</div>
+                    <h2 class="font-mono font-bold" style="font-family:'Outfit'; color:#fff;">Get In Touch With Leadership</h2>
+                    <p class="font-mono text-dim" style="font-size:1.05rem; line-height:1.6;">Ready to secure your enterprise pipelines and eliminate operational drift? Connect directly with our engineering executive team today.</p>
                     
-                    <div class="contact-details-grid">
-                        <div class="contact-item">
-                            <h4>📍 Corporate Office</h4>
-                            <p>7478 Harwin Dr, Houston, TX, USA</p>
-                            <p class="text-sm text-dim">Global Cloud Alpha Matrix</p>
+                    <div class="contact-details-grid font-mono">
+                        <div class="contact-item font-mono">
+                            <h4 class="font-mono font-bold text-gold" style="font-size:1.1rem;">📍 Corporate Office</h4>
+                            <p class="font-mono text-white font-bold" style="font-size:0.95rem;">7478 Harwin Dr, Houston, TX, USA</p>
+                            <p class="text-sm text-dim font-mono">Global Cloud Alpha Matrix</p>
                         </div>
-                        <div class="contact-item">
-                            <h4>✉️ Direct Ingress</h4>
-                            <p>xorasolutions.us@gmail.com</p>
-                            <p>support@xorasolutions.com</p>
+                        <div class="contact-item font-mono">
+                            <h4 class="font-mono font-bold text-green" style="font-size:1.1rem;">✉️ Direct Ingress</h4>
+                            <p class="font-mono text-white font-bold" style="font-size:0.95rem;">xorasolutions.us@gmail.com</p>
+                            <p class="font-mono text-white font-bold" style="font-size:0.95rem;">support@xorasolutions.com</p>
                         </div>
-                        <div class="contact-item">
-                            <h4>📞 Global Lines</h4>
-                            <p>+1 (438) 798-5720 (US)</p>
-                            <p>+92 (301) 135-0003 (PK / Dubai Alpha)</p>
+                        <div class="contact-item font-mono">
+                            <h4 class="font-mono font-bold text-cyan" style="font-size:1.1rem;">📞 Global Lines</h4>
+                            <p class="font-mono text-white font-bold" style="font-size:0.95rem;">+1 (438) 798-5720 (US)</p>
+                            <p class="font-mono text-white font-bold" style="font-size:0.95rem;">+92 (301) 135-0003 (PK / Dubai Alpha)</p>
                         </div>
-                        <div class="contact-item">
-                            <h4>🕒 Operating Hours</h4>
-                            <p>Monday - Friday: 9:00 AM - 6:00 PM</p>
-                            <p>Continuous 24/7 Sentry Monitoring</p>
+                        <div class="contact-item font-mono">
+                            <h4 class="font-mono font-bold text-purple" style="font-size:1.1rem;">🕒 Operating Hours</h4>
+                            <p class="font-mono text-white font-bold" style="font-size:0.95rem;">Monday - Friday: 9:00 AM - 6:00 PM</p>
+                            <p class="font-mono text-dim font-bold" style="font-size:0.85rem;">Continuous 24/7 Sentry Monitoring</p>
                         </div>
                     </div>
                 </div>
 
-                <div class="contact-form-box">
-                    <h3>Initiate Secure Inquiry</h3>
-                    <form id="secure-contact-form">
-                        <div class="form-group">
-                            <label>Enterprise Name</label>
-                            <input type="text" required placeholder="e.g. Apex Global Systems">
+                <div class="contact-form-box font-mono" style="background:#1a1b20; border:1px solid #262830;">
+                    <h3 class="font-mono font-bold" style="color:#fff; font-size:1.4rem; margin-bottom:1.5rem;">Initiate Secure Inquiry</h3>
+                    <form id="secure-contact-form" class="font-mono">
+                        <div class="form-group font-mono">
+                            <label class="font-mono font-bold text-dim">Enterprise Name</label>
+                            <input type="text" required class="font-mono font-bold" placeholder="e.g. Apex Global Systems" style="background:#0c0d10; border:1px solid #262830; color:#fff;">
                         </div>
-                        <div class="form-group">
-                            <label>Authorized Contact Email</label>
-                            <input type="email" required placeholder="name@enterprise.com">
+                        <div class="form-group font-mono">
+                            <label class="font-mono font-bold text-dim">Authorized Contact Email</label>
+                            <input type="email" required class="font-mono font-bold" placeholder="name@enterprise.com" style="background:#0c0d10; border:1px solid #262830; color:#fff;">
                         </div>
-                        <div class="form-group">
-                            <label>Target Capability</label>
-                            <select required>
-                                <option>AI RevOps & PR Sniping Pilot ($1,000 Contract)</option>
-                                <option>Multi-Platform Webhook Bridge Integration</option>
-                                <option>HMAC Secure Storefront Deployment</option>
-                                <option>Custom SQLite WAL Infrastructure</option>
+                        <div class="form-group font-mono">
+                            <label class="font-mono font-bold text-dim">Target Capability</label>
+                            <select required class="font-mono font-bold" style="background:#0c0d10; border:1px solid #262830; color:#34d399;">
+                                <option class="font-mono font-bold">MQL4 Expert Advisor Custom Integration ($1,500 Contract)</option>
+                                <option class="font-mono font-bold">AI RevOps &amp; PR Sniping Pilot ($1,000 Contract)</option>
+                                <option class="font-mono font-bold">Multi-Platform Webhook Bridge Integration</option>
+                                <option class="font-mono font-bold">HMAC Secure Storefront Deployment</option>
+                                <option class="font-mono font-bold">Custom SQLite WAL Infrastructure</option>
                             </select>
                         </div>
-                        <div class="form-group">
-                            <label>Operational Objectives</label>
-                            <textarea rows="3" placeholder="Describe your required execution velocity and security parameters..."></textarea>
+                        <div class="form-group font-mono">
+                            <label class="font-mono font-bold text-dim">Operational Objectives</label>
+                            <textarea rows="3" class="font-mono font-bold" placeholder="Describe your required execution velocity, algorithmic pairs, and security parameters..." style="background:#0c0d10; border:1px solid #262830; color:#fff;"></textarea>
                         </div>
-                        <button type="submit" class="btn btn-primary btn-glow w-full" data-sound="pulse">Submit Encrypted Inquiry</button>
+                        <button type="submit" class="btn btn-primary btn-glow w-full font-mono font-bold" style="padding:1rem; font-size:1.1rem; box-shadow:0 0 20px rgba(212,175,55,0.4);" data-sound="pulse">Submit Encrypted Inquiry</button>
                     </form>
-                    <div id="form-result-msg" style="display:none; margin-top:1rem; padding:1rem; border-radius:8px; background:#166534; color:#fff; text-align:center; font-weight:600;"></div>
+                    <div id="form-result-msg" class="font-mono font-bold" style="display:none; margin-top:1rem; padding:1rem; border-radius:8px; background:#166534; color:#fff; text-align:center; font-size:1rem;"></div>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- Footer -->
-    <footer class="main-footer">
-        <div class="container footer-container">
-            <div class="footer-top">
-                <div class="footer-logo">
-                    <span class="logo-icon">🜋</span>
-                    <span class="logo-text">XORAS SYSTEMS LLC</span>
+    <footer class="main-footer font-mono" style="background:#0a0b0e; border-top:1px solid #262830;">
+        <div class="container footer-container font-mono">
+            <div class="footer-top font-mono" style="border-bottom:1px solid #262830;">
+                <div class="footer-logo font-mono">
+                    <span class="logo-icon font-mono">🜋</span>
+                    <span class="logo-text font-mono font-bold text-gold" style="font-size:1.4rem;">XORAS SYSTEMS LLC</span>
                 </div>
-                <div class="footer-nav">
-                    <a href="#about">About Us</a>
-                    <a href="#services">Services</a>
-                    <a href="store/index.html">Storefront</a>
-                    <a href="dashboard/index.html">CI Health</a>
-                    <a href="dashboard/webhooks.html">Webhooks</a>
-                    <a href="#contact">Contact</a>
+                <div class="footer-nav font-mono">
+                    <a href="#about" class="font-mono">About Us</a>
+                    <a href="#services" class="font-mono">Services</a>
+                    <a href="store/index.html" class="font-mono font-bold text-gold">Storefront</a>
+                    <a href="alpha/index.html" class="font-mono font-bold text-green">MT4 Live Alpha</a>
+                    <a href="dashboard/index.html" class="font-mono">CI Health</a>
+                    <a href="dashboard/webhooks.html" class="font-mono">Webhooks</a>
+                    <a href="#contact" class="font-mono">Contact</a>
                 </div>
             </div>
-            <div class="footer-bottom">
-                <p>&copy; 2026 XORAS SYSTEMS LLC. All rights reserved. Operating Domain: <a href="https://8f08b6ea.xoras-institutional.pages.dev" target="_blank" style="color:#34d399;">https://8f08b6ea.xoras-institutional.pages.dev</a></p>
-                <p class="footer-note">Empowering businesses worldwide with AI-driven infrastructure and verified cryptographic continuity.</p>
+            <div class="footer-bottom font-mono" style="color:var(--text-dim); font-size:0.9rem;">
+                <p class="font-mono">&copy; 2026 XORAS SYSTEMS LLC. All rights reserved. Operating Domain: <a href="https://8f08b6ea.xoras-institutional.pages.dev" target="_blank" style="color:#34d399; text-decoration:none; font-weight:700;">https://8f08b6ea.xoras-institutional.pages.dev</a></p>
+                <p class="footer-note font-mono" style="margin-top:0.5rem; color:var(--text-muted);">Empowering businesses worldwide with AI-driven infrastructure, algorithmic trading sentries, and verified cryptographic continuity.</p>
             </div>
         </div>
     </footer>
