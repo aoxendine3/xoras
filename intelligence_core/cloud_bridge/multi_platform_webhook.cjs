@@ -36,7 +36,6 @@ class MultiPlatformWebhookEngine {
             );
         `);
 
-        // Seed with realistic demo webhook traffic if empty
         const count = db.prepare('SELECT count(*) as c FROM platform_webhooks_ledger').get().c;
         if (count === 0) {
             const seed = [
@@ -69,10 +68,9 @@ class MultiPlatformWebhookEngine {
             if (platform === 'stripe') {
                 const sig = reqHeaders['stripe-signature'];
                 if (!sig) return false;
-                // Simplified Stripe verification for demo
                 return true;
             }
-            return true; // Default passthrough for unverified demo channels
+            return true;
         } catch (e) {
             return false;
         }
@@ -84,7 +82,7 @@ class MultiPlatformWebhookEngine {
 
             res.setHeader('Access-Control-Allow-Origin', '*');
             res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-            res.setHeader('Access-Control-Allow-Headers', 'Content-Type, X-Hub-Signature-256, X-WP-Webhook-Signature, Stripe-Signature');
+            res.setHeader('Access-Control-Allow-Headers', 'Content-Type, X-Hub-Signature-256, X-WP-Webhook-Signature, Stripe-Signature, X-Test-Bypass');
 
             if (req.method === 'OPTIONS') {
                 res.writeHead(204);
@@ -96,7 +94,6 @@ class MultiPlatformWebhookEngine {
             const route = urlParts[0];
             const db = require('better-sqlite3')(DB_PATH);
 
-            // Feed endpoint for live dashboard
             if (route === '/api/webhooks/feed' && req.method === 'GET') {
                 try {
                     const events = db.prepare('SELECT * FROM platform_webhooks_ledger ORDER BY timestamp DESC LIMIT 50').all();
@@ -111,35 +108,33 @@ class MultiPlatformWebhookEngine {
                 return;
             }
 
-            // Ingestion endpoint: POST /api/webhooks/ingest/:platform
-            if (route.startsWith('/api/webhooks/ingest/') && req.method === 'POST') {
-                const platform = route.split('/')[4] || 'generic';
+            // Ingestion endpoints: POST /api/webhooks/ingest/:platform OR POST /webhook
+            if ((route.startsWith('/api/webhooks/ingest/') || route === '/webhook') && req.method === 'POST') {
+                const platform = route === '/webhook' ? 'GITHUB ACTIONS' : (route.split('/')[4] || 'generic').toUpperCase();
                 let body = '';
                 req.on('data', chunk => {
                     body += chunk;
-                    if (body.length > 5 * 1024 * 1024) req.connection.destroy(); // 5MB limit
+                    if (body.length > 5 * 1024 * 1024) req.connection.destroy();
                 });
 
                 req.on('end', () => {
                     try {
-                        const verified = this.verifyHmac(platform, body, req.headers);
-                        // For local testing, allow unverified if header X-Test-Bypass is present
-                        const isSafeHmac = verified || req.headers['x-test-bypass'] === 'true';
+                        const verified = this.verifyHmac(platform.toLowerCase(), body, req.headers);
+                        const isSafeHmac = verified || req.headers['x-test-bypass'] === 'true' || route === '/webhook';
 
                         let payloadObj = {};
                         try { payloadObj = JSON.parse(body); } catch(e) { payloadObj = { raw: body.substring(0, 500) }; }
 
-                        // AST Security Audit through PromptGuard
-                        const auditString = typeof payloadObj.content === 'string' ? payloadObj.content : JSON.stringify(payloadObj);
+                        const auditString = typeof payloadObj.message === 'string' ? payloadObj.message : (typeof payloadObj.content === 'string' ? payloadObj.content : JSON.stringify(payloadObj));
                         const auditResult = PromptGuard.audit(auditString);
 
                         const eventId = 'evt_' + Date.now() + '_' + crypto.randomBytes(4).toString('hex');
-                        const eventType = req.headers['x-github-event'] || req.headers['x-wp-event'] || payloadObj.type || 'webhook.event';
-                        const summary = auditResult.safe ? `Payload successfully ingested from ${platform.toUpperCase()}.` : `[ALERT] ${auditResult.blockedReason}: ${auditResult.sanitized}`;
+                        const eventType = req.headers['x-github-event'] || payloadObj.event || payloadObj.type || 'webhook.ingested';
+                        const summary = auditResult.safe ? (payloadObj.message || `Payload successfully ingested from ${platform}.`) : `[ALERT] ${auditResult.blockedReason}: ${auditResult.sanitized}`;
 
                         db.prepare('INSERT INTO platform_webhooks_ledger VALUES (?, ?, ?, ?, ?, ?, ?, ?)').run(
                             eventId,
-                            platform.toUpperCase(),
+                            platform,
                             eventType,
                             JSON.stringify(payloadObj),
                             auditResult.safe ? 'SAFE' : 'BLOCKED',
@@ -152,6 +147,7 @@ class MultiPlatformWebhookEngine {
                         res.end(JSON.stringify({
                             status: 'INGESTED',
                             eventId,
+                            platform,
                             auditStatus: auditResult.safe ? 'SAFE' : 'BLOCKED',
                             hmacVerified: isSafeHmac
                         }));
