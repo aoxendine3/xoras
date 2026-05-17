@@ -19,33 +19,57 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- State Variables ---
     let activePair = 'EURUSD';
+    let currentSpread = 9;
     let currentBid = 1.08452;
     let currentAsk = 1.08461;
     let eaArmed = false;
-    let eaName = 'MACD Sample';
+    let eaName = 'MACD Sample v1.4';
     let balance = 10000.00;
-    let totalProfit = 0.00;
     let orders = [];
 
-    // --- Candlestick Chart Data & Canvas Setup ---
+    // Indicator Visibility States
+    const activeInds = { bb: true, ma: true, macd: true, rsi: true };
+
+    document.querySelectorAll('.ind-toggle-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const ind = btn.getAttribute('data-ind');
+            activeInds[ind] = !activeInds[ind];
+            btn.classList.toggle('active', activeInds[ind]);
+            drawChart();
+            playSfx(activeInds[ind] ? 700 : 400, 0.05, 'sine');
+        });
+    });
+
+    // --- Candlestick & Indicator Data Setup ---
     const canvas = document.getElementById('candlestick-canvas');
     const ctx = canvas ? canvas.getContext('2d') : null;
     let candles = [];
 
+    const basePrices = {
+        EURUSD: { p: 1.08350, step: 0.00020, digits: 5 },
+        GBPUSD: { p: 1.26250, step: 0.00025, digits: 5 },
+        USDJPY: { p: 155.650, step: 0.03000, digits: 3 },
+        XAUUSD: { p: 2341.50, step: 0.40000, digits: 2 },
+        BTCUSD: { p: 64150.0, step: 15.0000, digits: 1 },
+        ETHUSD: { p: 3480.00, step: 2.00000, digits: 2 },
+        SOLUSD: { p: 148.20,  step: 0.20000, digits: 2 }
+    };
+
     function initCandles() {
         candles = [];
-        let basePrice = 1.08350;
+        const cfg = basePrices[activePair] || { p: 1.0000, step: 0.0005, digits: 4 };
+        let baseP = cfg.p;
         const now = Date.now();
-        for (let i = 40; i >= 0; i--) {
-            const o = basePrice;
-            const c = o + (Math.random() - 0.48) * 0.0015;
-            const h = Math.max(o, c) + Math.random() * 0.0008;
-            const l = Math.min(o, c) - Math.random() * 0.0008;
+        for (let i = 50; i >= 0; i--) {
+            const o = baseP;
+            const c = o + (Math.random() - 0.48) * cfg.step * 4;
+            const h = Math.max(o, c) + Math.random() * cfg.step * 2;
+            const l = Math.min(o, c) - Math.random() * cfg.step * 2;
             candles.push({ time: new Date(now - i * 15 * 60 * 1000).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}), o, h, l, c });
-            basePrice = c;
+            baseP = c;
         }
-        currentBid = basePrice;
-        currentAsk = currentBid + 0.00009;
+        currentBid = baseP;
+        currentAsk = currentBid + (currentSpread * Math.pow(10, -cfg.digits));
         updateDisplayQuotes();
     }
     initCandles();
@@ -59,125 +83,187 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('resize', resizeCanvas);
     if (canvas) resizeCanvas();
 
+    // --- Advanced Indicator Math ---
+    function calcRSI(data, period = 14) {
+        if (data.length <= period) return 50;
+        let gains = 0, losses = 0;
+        for (let i = data.length - period; i < data.length; i++) {
+            const diff = data[i].c - data[i-1].c;
+            if (diff >= 0) gains += diff; else losses -= diff;
+        }
+        const rs = (gains / period) / (losses / period || 0.00001);
+        return 100 - (100 / (1 + rs));
+    }
+
+    function calcSMA(data, idx, period) {
+        if (idx < period - 1) return null;
+        let sum = 0;
+        for (let i = idx - period + 1; i <= idx; i++) sum += data[i].c;
+        return sum / period;
+    }
+
+    function calcStdDev(data, idx, period, sma) {
+        if (idx < period - 1 || sma === null) return 0;
+        let sumSq = 0;
+        for (let i = idx - period + 1; i <= idx; i++) {
+            sumSq += Math.pow(data[i].c - sma, 2);
+        }
+        return Math.sqrt(sumSq / period);
+    }
+
+    // --- Main Chart Rendering ---
     function drawChart() {
-        if (!ctx || !canvas) return;
+        if (!ctx || !canvas || candles.length === 0) return;
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         
-        // Draw Grid Lines
-        ctx.strokeStyle = '#1e2029';
-        ctx.lineWidth = 1;
-        const cols = 10;
-        const rows = 8;
-        for(let i = 0; i < cols; i++) {
-            const x = (canvas.width / cols) * i;
-            ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke();
-        }
-        for(let j = 0; j < rows; j++) {
-            const y = (canvas.height / rows) * j;
-            ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke();
-        }
+        // Draw Chart Grid
+        ctx.strokeStyle = '#1a1c23'; ctx.lineWidth = 1;
+        const cols = 12, rows = 10;
+        for(let i = 0; i < cols; i++) { const x = (canvas.width / cols) * i; ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke(); }
+        for(let j = 0; j < rows; j++) { const y = (canvas.height / rows) * j; ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke(); }
 
-        if (candles.length === 0) return;
-
-        // Price Min/Max Range
+        const cfg = basePrices[activePair] || { digits: 4 };
         const prices = candles.flatMap(c => [c.h, c.l]);
-        const maxP = Math.max(...prices) + 0.0005;
-        const minP = Math.min(...prices) - 0.0005;
+        const pad = (Math.max(...prices) - Math.min(...prices)) * 0.1 || 0.001;
+        const maxP = Math.max(...prices) + pad;
+        const minP = Math.min(...prices) - pad;
         const priceDiff = maxP - minP;
 
-        const chartHeight = canvas.height * 0.75; // Top 75% is Candlestick, bottom 25% is MACD
-        const macdTop = canvas.height * 0.78;
-        const macdHeight = canvas.height * 0.20;
+        const mainH = canvas.height * 0.70;
+        const subTop = canvas.height * 0.73;
+        const subH = canvas.height * 0.27;
 
-        // Draw MACD Separator Line
-        ctx.strokeStyle = '#262830';
-        ctx.beginPath(); ctx.moveTo(0, macdTop - 5); ctx.lineTo(canvas.width, macdTop - 5); ctx.stroke();
+        // Sub-panel Separator
+        ctx.strokeStyle = '#262830'; ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.moveTo(0, subTop - 5); ctx.lineTo(canvas.width, subTop - 5); ctx.stroke();
 
-        const candleWidth = Math.max(4, Math.floor(canvas.width / (candles.length + 5)));
+        const candleWidth = Math.max(5, Math.floor((canvas.width - 70) / (candles.length + 2)));
         const spacing = candleWidth + 4;
-        let startX = canvas.width - (candles.length * spacing) - 30;
+        let startX = canvas.width - (candles.length * spacing) - 60;
 
-        let maPoints = [];
+        let smaPoints = [], emaPoints = [], upperBb = [], lowerBb = [];
+        let emaVal = candles[0].c;
+        const kEma = 2 / (50 + 1);
 
         candles.forEach((c, idx) => {
             const x = startX + idx * spacing;
-            const yO = ((maxP - c.o) / priceDiff) * chartHeight;
-            const yC = ((maxP - c.c) / priceDiff) * chartHeight;
-            const yH = ((maxP - c.h) / priceDiff) * chartHeight;
-            const yL = ((maxP - c.l) / priceDiff) * chartHeight;
+            const yO = ((maxP - c.o) / priceDiff) * mainH;
+            const yC = ((maxP - c.c) / priceDiff) * mainH;
+            const yH = ((maxP - c.h) / priceDiff) * mainH;
+            const yL = ((maxP - c.l) / priceDiff) * mainH;
 
-            // Wick
-            ctx.strokeStyle = c.c >= c.o ? '#22c55e' : '#ef4444';
-            ctx.lineWidth = 1.5;
-            ctx.beginPath(); ctx.moveTo(x + candleWidth/2, yH); ctx.lineTo(x + candleWidth/2, yL); ctx.stroke();
-
-            // Body
-            ctx.fillStyle = c.c >= c.o ? '#22c55e' : '#ef4444';
-            ctx.fillRect(x, Math.min(yO, yC), candleWidth, Math.max(2, Math.abs(yO - yC)));
-
-            // Moving Average Point
-            if (idx >= 5) {
-                const avg = candles.slice(idx-5, idx+1).reduce((acc, curr) => acc + curr.c, 0) / 6;
-                const yMa = ((maxP - avg) / priceDiff) * chartHeight;
-                maPoints.push({ x: x + candleWidth/2, y: yMa });
+            // Bollinger Bands Math
+            const sma20 = calcSMA(candles, idx, 20);
+            if (sma20 !== null) {
+                const stdDev = calcStdDev(candles, idx, 20, sma20);
+                upperBb.push({ x: x + candleWidth/2, y: ((maxP - (sma20 + stdDev * 2)) / priceDiff) * mainH });
+                lowerBb.push({ x: x + candleWidth/2, y: ((maxP - (sma20 - stdDev * 2)) / priceDiff) * mainH });
             }
 
-            // MACD Histogram Bar Simulation
-            const macdVal = (c.c - c.o) * 1000 + (Math.sin(idx * 0.4) * 0.5);
-            const yMacdCenter = macdTop + (macdHeight / 2);
-            const macdBarHeight = Math.min(macdHeight/2 - 2, Math.abs(macdVal * 8));
-            ctx.fillStyle = macdVal >= 0 ? '#34d399' : '#f87171';
-            ctx.fillRect(x, macdVal >= 0 ? yMacdCenter - macdBarHeight : yMacdCenter, candleWidth, Math.max(2, macdBarHeight));
+            // SMA 14
+            const sma14 = calcSMA(candles, idx, 14);
+            if (sma14 !== null) smaPoints.push({ x: x + candleWidth/2, y: ((maxP - sma14) / priceDiff) * mainH });
+
+            // EMA 50
+            emaVal = (c.c - emaVal) * kEma + emaVal;
+            if (idx >= 10) emaPoints.push({ x: x + candleWidth/2, y: ((maxP - emaVal) / priceDiff) * mainH });
+
+            // Draw Japanese Candlestick
+            const isBull = c.c >= c.o;
+            ctx.strokeStyle = isBull ? '#22c55e' : '#ef4444'; ctx.lineWidth = 1.5;
+            ctx.beginPath(); ctx.moveTo(x + candleWidth/2, yH); ctx.lineTo(x + candleWidth/2, yL); ctx.stroke();
+            ctx.fillStyle = isBull ? '#22c55e' : '#ef4444';
+            ctx.fillRect(x, Math.min(yO, yC), candleWidth, Math.max(2, Math.abs(yO - yC)));
+
+            // Draw Sub-Panel (MACD Histogram or RSI)
+            if (activeInds.macd) {
+                const macdVal = (c.c - c.o) * 500 + (Math.sin(idx * 0.3) * 0.4);
+                const yCenter = subTop + (subH / 2);
+                const barH = Math.min(subH/2 - 4, Math.abs(macdVal * 12));
+                ctx.fillStyle = macdVal >= 0 ? '#34d399' : '#f87171';
+                ctx.fillRect(x, macdVal >= 0 ? yCenter - barH : yCenter, candleWidth, Math.max(2, barH));
+            }
         });
 
-        // Draw Moving Average Curve
-        if (maPoints.length > 1) {
-            ctx.strokeStyle = '#38bdf8'; // Blue MA
-            ctx.lineWidth = 2;
+        // Draw Bollinger Bands Overlay
+        if (activeInds.bb && upperBb.length > 1 && lowerBb.length > 1) {
+            ctx.fillStyle = 'rgba(59, 130, 246, 0.08)'; // Translucent Shaded Blue Band
             ctx.beginPath();
-            ctx.moveTo(maPoints[0].x, maPoints[0].y);
-            maPoints.forEach(p => ctx.lineTo(p.x, p.y));
-            ctx.stroke();
+            ctx.moveTo(upperBb[0].x, upperBb[0].y);
+            upperBb.forEach(p => ctx.lineTo(p.x, p.y));
+            for(let i = lowerBb.length - 1; i >= 0; i--) ctx.lineTo(lowerBb[i].x, lowerBb[i].y);
+            ctx.closePath();
+            ctx.fill();
+
+            ctx.strokeStyle = '#3b82f6'; ctx.lineWidth = 1; ctx.setLineDash([2, 2]);
+            ctx.beginPath(); upperBb.forEach((p, i) => { if(i===0) ctx.moveTo(p.x, p.y); else ctx.lineTo(p.x, p.y); }); ctx.stroke();
+            ctx.beginPath(); lowerBb.forEach((p, i) => { if(i===0) ctx.moveTo(p.x, p.y); else ctx.lineTo(p.x, p.y); }); ctx.stroke();
+            ctx.setLineDash([]);
+        }
+
+        // Draw SMA 14 (Cyan) & EMA 50 (Magenta)
+        if (activeInds.ma) {
+            if (smaPoints.length > 1) {
+                ctx.strokeStyle = '#06b6d4'; ctx.lineWidth = 2;
+                ctx.beginPath(); smaPoints.forEach((p, i) => { if(i===0) ctx.moveTo(p.x, p.y); else ctx.lineTo(p.x, p.y); }); ctx.stroke();
+            }
+            if (emaPoints.length > 1) {
+                ctx.strokeStyle = '#d946ef'; ctx.lineWidth = 2;
+                ctx.beginPath(); emaPoints.forEach((p, i) => { if(i===0) ctx.moveTo(p.x, p.y); else ctx.lineTo(p.x, p.y); }); ctx.stroke();
+            }
         }
 
         // Draw Current Bid Horizontal Sentry Line
-        const yBid = ((maxP - currentBid) / priceDiff) * chartHeight;
-        ctx.strokeStyle = '#22c55e';
-        ctx.lineWidth = 1;
-        ctx.setLineDash([4, 4]);
+        const yBid = ((maxP - currentBid) / priceDiff) * mainH;
+        ctx.strokeStyle = '#22c55e'; ctx.lineWidth = 1; ctx.setLineDash([4, 4]);
         ctx.beginPath(); ctx.moveTo(0, yBid); ctx.lineTo(canvas.width, yBid); ctx.stroke();
         ctx.setLineDash([]);
 
-        // Price Label on Right Axis
-        ctx.fillStyle = '#22c55e';
-        ctx.font = '11px JetBrains Mono, monospace';
-        ctx.fillText(currentBid.toFixed(5), canvas.width - 55, yBid - 5);
+        ctx.fillStyle = '#22c55e'; ctx.font = '11px JetBrains Mono, monospace';
+        ctx.fillText(currentBid.toFixed(cfg.digits), canvas.width - 55, yBid - 4);
     }
 
     function updateDisplayQuotes() {
-        const bidValEl = document.querySelector('.active-sym .bid-val');
-        const askValEl = document.querySelector('.active-sym .ask-val');
-        const buyQuoteEl = document.getElementById('btn-buy-quote');
-        const sellQuoteEl = document.getElementById('btn-sell-quote');
-        const ohclEl = document.getElementById('chart-ohcl');
-
-        if (bidValEl) bidValEl.textContent = currentBid.toFixed(5);
-        if (askValEl) askValEl.textContent = currentAsk.toFixed(5);
-        if (buyQuoteEl) buyQuoteEl.textContent = currentAsk.toFixed(5);
-        if (sellQuoteEl) sellQuoteEl.textContent = currentBid.toFixed(5);
+        const cfg = basePrices[activePair] || { digits: 4 };
+        const activeSymTr = document.querySelector('.active-sym');
+        if (activeSymTr) {
+            activeSymTr.querySelector('.bid-val').textContent = currentBid.toFixed(cfg.digits);
+            activeSymTr.querySelector('.ask-val').textContent = currentAsk.toFixed(cfg.digits);
+            activeSymTr.querySelector('.spread-val').textContent = currentSpread;
+        }
+        
+        document.getElementById('btn-buy-quote').textContent = currentAsk.toFixed(cfg.digits);
+        document.getElementById('btn-sell-quote').textContent = currentBid.toFixed(cfg.digits);
 
         const lastC = candles[candles.length - 1];
-        if (ohclEl && lastC) ohclEl.textContent = `O: ${lastC.o.toFixed(5)}  H: ${lastC.h.toFixed(5)}  L: ${lastC.l.toFixed(5)}  C: ${currentBid.toFixed(5)}`;
-        
+        if (lastC) {
+            document.getElementById('chart-ohcl').textContent = `O: ${lastC.o.toFixed(cfg.digits)}  H: ${lastC.h.toFixed(cfg.digits)}  L: ${lastC.l.toFixed(cfg.digits)}  C: ${currentBid.toFixed(cfg.digits)}`;
+        }
+
+        // Update Active EA HUD Telemetry
+        const curRsi = calcRSI(candles, 14);
+        const hudRsiEl = document.getElementById('hud-rsi-val');
+        const hudMacdEl = document.getElementById('hud-macd-val');
+        if (hudRsiEl) {
+            hudRsiEl.textContent = `${curRsi.toFixed(1)} (${curRsi > 70 ? 'Overbought' : (curRsi < 30 ? 'Oversold' : 'Neutral')})`;
+            hudRsiEl.className = curRsi > 70 ? 'text-red font-bold' : (curRsi < 30 ? 'text-green font-bold' : 'text-dim');
+        }
+        if (hudMacdEl) {
+            const mVal = (currentBid - lastC.o);
+            hudMacdEl.textContent = `${mVal >= 0 ? '+' : ''}${(mVal*500).toFixed(4)} (${mVal >= 0 ? 'Bullish' : 'Bearish'})`;
+            hudMacdEl.className = mVal >= 0 ? 'text-green font-bold' : 'text-red font-bold';
+        }
+
         drawChart();
         updateLedgerBalances();
     }
 
-    // --- Market Tick Simulation Loop ---
+    // --- Market Tick Simulation Loop (300ms for hyper-fluidity) ---
     setInterval(() => {
-        const delta = (Math.random() - 0.49) * 0.0004;
+        const cfg = basePrices[activePair] || { step: 0.0005, digits: 4 };
+        const delta = (Math.random() - 0.49) * cfg.step * 0.4;
         currentBid += delta;
-        currentAsk = currentBid + 0.00009;
+        currentAsk = currentBid + (currentSpread * Math.pow(10, -cfg.digits));
 
         const lastC = candles[candles.length - 1];
         if (lastC) {
@@ -190,36 +276,40 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Check Open Orders Profit Accrual
         orders.forEach(o => {
+            const mult = activePair.includes('JPY') ? 1000 : (activePair.includes('BTC') ? 1 : (activePair.includes('XAU') ? 100 : 100000));
             const diff = o.type === 'BUY' ? (currentBid - o.openPrice) : (o.openPrice - currentAsk);
-            o.profit = diff * o.lot * 100000;
+            o.profit = diff * o.lot * mult;
         });
         renderOrdersTable();
 
-        // Automated EA Decision Logic
-        if (eaArmed && orders.length < 5 && Math.random() < 0.15) {
-            const isBuy = Math.random() > 0.5;
-            executeTradeOrder(isBuy ? 'BUY' : 'SELL', 0.10, eaName);
+        // Automated EA Decision Logic (Hyper-Interactive)
+        if (eaArmed && orders.length < 6 && Math.random() < 0.10) {
+            const curRsi = calcRSI(candles, 14);
+            if (curRsi < 38) executeTradeOrder('BUY', 0.10, eaName);
+            else if (curRsi > 62) executeTradeOrder('SELL', 0.10, eaName);
+            else if (Math.random() < 0.05) executeTradeOrder(Math.random() > 0.5 ? 'BUY' : 'SELL', 0.10, eaName);
         }
-    }, 1200);
+    }, 300);
 
-    // --- Order Execution Logic ---
+    // --- Order Execution & Table Ledger ---
     function executeTradeOrder(type, lot, origin = 'Manual') {
+        const cfg = basePrices[activePair] || { digits: 4 };
         const openPrice = type === 'BUY' ? currentAsk : currentBid;
-        const slDiff = type === 'BUY' ? -0.00250 : 0.00250;
-        const tpDiff = type === 'BUY' ? 0.00500 : -0.00500;
+        const slDiff = (type === 'BUY' ? -0.00300 : 0.00300) * (cfg.p > 100 ? 100 : 1);
+        const tpDiff = (type === 'BUY' ? 0.00600 : -0.00600) * (cfg.p > 100 ? 100 : 1);
         
         const newOrder = {
             id: `#${Math.floor(10000000 + Math.random() * 90000000)}`,
             time: new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit', second:'2-digit'}),
-            type, lot, symbol: activePair, openPrice,
-            sl: (openPrice + slDiff).toFixed(5),
-            tp: (openPrice + tpDiff).toFixed(5),
-            profit: 0.00, origin
+            type, lot, symbol: activePair, openPrice, digits: cfg.digits,
+            sl: (openPrice + slDiff).toFixed(cfg.digits),
+            tp: (openPrice + tpDiff).toFixed(cfg.digits),
+            commission: 0.00, swap: 0.00, profit: 0.00, origin
         };
 
         orders.push(newOrder);
         playSfx(type === 'BUY' ? 880 : 440, 0.1, 'triangle');
-        showFloatingNotif(`⚡ ${origin} Execution: ${type} ${lot} ${activePair} @ ${openPrice.toFixed(5)}`);
+        showFloatingNotif(`⚡ ${origin}: Executed ${type} ${lot} ${activePair} @ ${openPrice.toFixed(cfg.digits)}`);
         renderOrdersTable();
     }
 
@@ -228,7 +318,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!notifBox) return;
         notifBox.textContent = msg;
         notifBox.style.display = 'block';
-        setTimeout(() => { notifBox.style.display = 'none'; }, 3000);
+        setTimeout(() => { notifBox.style.display = 'none'; }, 2800);
     }
 
     function renderOrdersTable() {
@@ -242,14 +332,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
         orders.forEach(o => {
             curTotalPl += o.profit;
+            const curP = o.type === 'BUY' ? currentBid : currentAsk;
             const tr = document.createElement('tr'); tr.className = 'font-mono';
             tr.innerHTML = `
                 <td>${o.id}</td><td>${o.time}</td>
                 <td class="${o.type === 'BUY' ? 'text-blue' : 'text-red'} font-bold">${o.type}</td>
-                <td>${o.lot.toFixed(2)}</td><td>${o.symbol}</td><td>${o.openPrice.toFixed(5)}</td>
-                <td>${o.sl}</td><td>${o.tp}</td><td>${o.type === 'BUY' ? currentBid.toFixed(5) : currentAsk.toFixed(5)}</td>
+                <td>${o.lot.toFixed(2)}</td><td class="font-bold text-gold">${o.symbol}</td>
+                <td>${o.openPrice.toFixed(o.digits)}</td><td>${o.sl}</td><td>${o.tp}</td>
+                <td>${curP.toFixed(o.digits)}</td><td>$0.00</td><td>$0.00</td>
                 <td class="${o.profit >= 0 ? 'text-green' : 'text-red'} font-bold">${o.profit >= 0 ? '+' : ''}$${o.profit.toFixed(2)}</td>
-                <td><button class="btn-close-order" data-id="${o.id}">Close</button></td>
+                <td><button class="btn-close-order" data-id="${o.id}">Close X</button></td>
             `;
             tbody.appendChild(tr);
         });
@@ -287,12 +379,12 @@ document.addEventListener('DOMContentLoaded', () => {
         if (fmEl) fmEl.textContent = equity.toFixed(2);
     }
 
-    // --- Interactive Toolbars & EA Toggles ---
+    // --- Interactive Toolbars & EA HUD Panel ---
     const toggleEaBtn = document.getElementById('btn-toggle-ea');
     const eaStatusText = document.getElementById('ea-status-text');
-    const eaOverlayBadge = document.getElementById('ea-overlay-badge');
-    const eaSmileIcon = document.getElementById('ea-smile-icon');
+    const eaHudPanel = document.getElementById('ea-hud-panel');
     const eaSelect = document.getElementById('select-ea-script');
+    const closeAllBtn = document.getElementById('btn-close-all-profit');
 
     if (toggleEaBtn) {
         toggleEaBtn.addEventListener('click', () => {
@@ -300,13 +392,13 @@ document.addEventListener('DOMContentLoaded', () => {
             if (eaArmed) {
                 toggleEaBtn.className = 'btn-ea active font-mono';
                 if (eaStatusText) eaStatusText.textContent = 'AutoTrading: ON';
-                if (eaSmileIcon) eaSmileIcon.textContent = '🙂';
+                if (eaHudPanel) eaHudPanel.style.display = 'block';
                 playSfx(950, 0.15, 'sine');
-                showFloatingNotif(`⚡ EA Armed: ${eaName}. Automated MQL4 execution running.`);
+                showFloatingNotif(`⚡ EA Armed: ${eaName}. Automated execution active.`);
             } else {
                 toggleEaBtn.className = 'btn-ea inactive font-mono';
                 if (eaStatusText) eaStatusText.textContent = 'AutoTrading: OFF';
-                if (eaSmileIcon) eaSmileIcon.textContent = '😐';
+                if (eaHudPanel) eaHudPanel.style.display = 'none';
                 playSfx(400, 0.1, 'sine');
                 showFloatingNotif(`🚫 EA Disarmed.`);
             }
@@ -315,11 +407,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (eaSelect) {
         eaSelect.addEventListener('change', (e) => {
-            eaName = e.target.value === 'macd' ? 'MACD Sample' : 'Moving Average';
-            const dispEl = document.getElementById('ea-name-disp');
-            if (dispEl) dispEl.textContent = eaName;
+            eaName = e.target.options[e.target.selectedIndex].text;
+            const hudTitleEl = document.getElementById('ea-hud-title');
+            if (hudTitleEl) hudTitleEl.textContent = eaName.split('(')[0].trim();
             playSfx(600, 0.05, 'sine');
-            showFloatingNotif(`⚡ Switched EA script to: ${eaName}.ex4`);
+            showFloatingNotif(`⚡ Armed EA Script: ${eaName}`);
+        });
+    }
+
+    if (closeAllBtn) {
+        closeAllBtn.addEventListener('click', () => {
+            let realized = 0;
+            orders = orders.filter(o => {
+                if (o.profit > 0) { realized += o.profit; return false; }
+                return true;
+            });
+            if (realized > 0) {
+                balance += realized;
+                playSfx(1050, 0.2, 'sine');
+                showFloatingNotif(`✅ Realized +$${realized.toFixed(2)} from profitable orders.`);
+                renderOrdersTable();
+                updateLedgerBalances();
+            }
         });
     }
 
@@ -328,8 +437,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const sellBtn = document.getElementById('btn-sell-mkt');
     const lotInput = document.getElementById('trade-lot');
 
-    if (buyBtn) { buyBtn.addEventListener('click', () => { executeTradeOrder('BUY', parseFloat(lotInput ? lotInput.value : 0.10)); }); }
-    if (sellBtn) { sellBtn.addEventListener('click', () => { executeTradeOrder('SELL', parseFloat(lotInput ? lotInput.value : 0.10)); }); }
+    if (buyBtn) buyBtn.addEventListener('click', () => executeTradeOrder('BUY', parseFloat(lotInput ? lotInput.value : 0.10)));
+    if (sellBtn) sellBtn.addEventListener('click', () => executeTradeOrder('SELL', parseFloat(lotInput ? lotInput.value : 0.10)));
 
     // Symbol & Timeframe Selectors
     document.querySelectorAll('.symbol-table tr[data-pair]').forEach(row => {
@@ -337,6 +446,7 @@ document.addEventListener('DOMContentLoaded', () => {
             document.querySelectorAll('.symbol-table tr').forEach(r => r.classList.remove('active-sym'));
             row.classList.add('active-sym');
             activePair = row.getAttribute('data-pair');
+            currentSpread = parseInt(row.getAttribute('data-spread') || 10);
             document.getElementById('active-chart-pair').textContent = activePair;
             initCandles();
             playSfx(550, 0.05, 'sine');
