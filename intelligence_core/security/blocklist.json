@@ -1,0 +1,11 @@
+{
+  "dangerous_patterns": [
+    "system\\s*:\\s*ignore|override|forget|new instructions",
+    "DAN|do anything now|jailbreak",
+    "you are now|act as|pretend you are|role-play",
+    "base64|encoded|hex|rot13",
+    "repeat this|ignore previous|new rules",
+    "disregard all prior instructions",
+    "bypassing filters"
+  ]
+}

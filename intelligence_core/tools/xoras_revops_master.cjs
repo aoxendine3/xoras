@@ -1,44 +1,84 @@
 const { fork } = require('child_process');
 const path = require('path');
+const memoryLedger = require('../memory_ledger.cjs');
+const PromptGuard = require('../security/prompt_guard.cjs');
 
-class RevOpsSingularityMaster {
+class RevOpsMaster {
     constructor() {
         this.workers = {};
+        this.workerRetryMap = {};
         this.activeLeads = new Set();
-        this.stats = { staged: 0, qualified: 0, dispatched: 0, monitored: 0, won: 0 };
+        this.stats = { staged: 0, qualified: 0, dispatched: 0, monitored: 0, won: 0, respawns: 0 };
         this.harvestComplete = false;
         this.drainInterval = null;
     }
 
-    async startSingularity() {
+    async startOrchestration() {
         console.log(`[orchestrator] initializing multi-agent workflow hub (mode: live-fire)`);
-        console.log(`[orchestrator] strict institutional governance: zero mock simulation or placeholder workarounds`);
+        console.log(`[orchestrator] strict systems governance: active self-healing sentries and prompt guard armed`);
 
-        const spawnWorker = (name, scriptBasename) => {
-            const workerPath = path.join(__dirname, scriptBasename);
-            const worker = fork(workerPath, ['--ipc', '--real'], { stdio: 'inherit' });
-            worker.on('message', (msg) => this.handleIPCMessage(name, msg));
-            worker.on('error', (err) => console.error(`[orchestrator] worker error (${name}): ${err.message}`));
-            worker.on('exit', (code) => {
-                delete this.workers[name];
-            });
-            this.workers[name] = worker;
-            return worker;
-        };
-
-        spawnWorker('sniper', 'pr_sniper.cjs');
-        spawnWorker('prioritizer', 'queue_prioritizer.cjs');
-        spawnWorker('dispatcher', 'pr_dispatcher.cjs');
-        spawnWorker('monitor', 'pr_monitor.cjs');
-        spawnWorker('closer', 'pr_closer.cjs');
+        this.spawnWorker('sniper', 'pr_sniper.cjs');
+        this.spawnWorker('prioritizer', 'queue_prioritizer.cjs');
+        this.spawnWorker('dispatcher', 'pr_dispatcher.cjs');
+        this.spawnWorker('monitor', 'pr_monitor.cjs');
+        this.spawnWorker('closer', 'pr_closer.cjs');
 
         if (this.workers['sniper']) {
             this.workers['sniper'].send({ event: 'START_HARVEST' });
         }
     }
 
+    spawnWorker(name, scriptBasename, retryCount = 0) {
+        const workerPath = path.join(__dirname, scriptBasename);
+        const args = ['--ipc', '--real', ...(retryCount > 0 ? ['--recovery-mode'] : [])];
+        const worker = fork(workerPath, args, { stdio: 'inherit' });
+
+        worker.on('message', (msg) => this.handleIPCMessage(name, msg));
+        worker.on('error', (err) => console.error(`[orchestrator] worker error (${name}): ${err.message}`));
+        worker.on('exit', (code) => {
+            delete this.workers[name];
+            if (code !== 0 && code !== null) {
+                console.log(`[orchestrator] error detected: worker '${name}' exited with code ${code}. initiating self-healing recovery.`);
+                this.stats.respawns++;
+                
+                // Record error in database to learn and prevent cyclic failure
+                try {
+                    if (memoryLedger.logSecurityEvent) {
+                        memoryLedger.logSecurityEvent('WORKER_CRASH_RECOVERY', `${name}_crash_${code}`, `Respawning worker ${name} after unhandled exit ${code}`, 1);
+                    }
+                } catch (e) {}
+
+                const nextRetry = retryCount + 1;
+                if (nextRetry <= 5) {
+                    const backoffMs = Math.pow(2, nextRetry) * 1000;
+                    console.log(`[orchestrator] learning loop: exponential backoff scheduled. respawning '${name}' in ${backoffMs}ms (attempt ${nextRetry}/5)`);
+                    setTimeout(() => {
+                        this.spawnWorker(name, scriptBasename, nextRetry);
+                    }, backoffMs);
+                } else {
+                    console.error(`[orchestrator] fatal: worker '${name}' exceeded max recovery limits. terminating.`);
+                    this.terminateAllWorkers(1);
+                }
+            }
+        });
+
+        this.workers[name] = worker;
+        this.workerRetryMap[name] = retryCount;
+        return worker;
+    }
+
     handleIPCMessage(sourceName, msg) {
         if (!msg || !msg.event) return;
+
+        // Apply PromptGuard injection defense to IPC payload strings
+        if (msg.payload && typeof msg.payload.issueTitle === 'string') {
+            const auditRes = PromptGuard.audit(msg.payload.issueTitle);
+            if (!auditRes.safe) {
+                console.log(`[orchestrator] prompt guard blocked malformed IPC payload from '${sourceName}'`);
+                return;
+            }
+            msg.payload.issueTitle = auditRes.sanitized;
+        }
 
         switch (msg.event) {
             case 'LEAD_STAGED':
@@ -117,7 +157,8 @@ class RevOpsSingularityMaster {
         console.log(`  ├── leads qualified      : ${this.stats.qualified}`);
         console.log(`  ├── leads dispatched     : ${this.stats.dispatched}`);
         console.log(`  ├── pr threads tracked   : ${this.stats.monitored}`);
-        console.log(`  └── proposals staged     : ${this.stats.won}`);
+        console.log(`  ├── proposals staged     : ${this.stats.won}`);
+        console.log(`  └── recovery respawns    : ${this.stats.respawns}`);
         console.log("[orchestrator] multi-agent workflow loop complete: exit 0");
         this.terminateAllWorkers(0);
     }
@@ -133,9 +174,9 @@ class RevOpsSingularityMaster {
     }
 }
 
-module.exports = new RevOpsSingularityMaster();
+module.exports = new RevOpsMaster();
 
 if (require.main === module) {
-    const master = new RevOpsSingularityMaster();
-    master.startSingularity();
+    const master = new RevOpsMaster();
+    master.startOrchestration();
 }

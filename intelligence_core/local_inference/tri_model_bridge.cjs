@@ -1,4 +1,5 @@
 const { execSync } = require('child_process');
+const PromptGuard = require('../security/prompt_guard.cjs');
 
 class TriModelBridge {
     constructor() {
@@ -9,6 +10,9 @@ class TriModelBridge {
     }
 
     async _callLocalModel(modelName, prompt, systemContext = '') {
+        const auditRes = PromptGuard.audit(prompt);
+        const safePrompt = auditRes.sanitized;
+
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 3000);
 
@@ -19,7 +23,7 @@ class TriModelBridge {
                 signal: controller.signal,
                 body: JSON.stringify({
                     model: modelName,
-                    prompt: prompt,
+                    prompt: safePrompt,
                     system: systemContext,
                     stream: false,
                     options: { temperature: 0.1 }
@@ -33,14 +37,20 @@ class TriModelBridge {
             }
 
             const data = await response.json();
-            return data.response;
+            return PromptGuard.sanitizeOutput(data.response);
         } catch (error) {
             clearTimeout(timeoutId);
             throw new Error(`[TRI_MODEL] Local inference unreachable for '${modelName}'. Operating fallback.`);
         }
     }
 
-    async seaLionSovereignReason(messages, model = 'sea-lion-v4-instruct', temperature = 0.1) {
+    async seaLionReason(messages, model = 'sea-lion-v4-instruct', temperature = 0.1) {
+        let contentToAudit = typeof messages === 'string' ? messages : JSON.stringify(messages);
+        const auditRes = PromptGuard.audit(contentToAudit);
+        if (!auditRes.safe) {
+            return '[BLOCKED BY PROMPT GUARD]';
+        }
+
         if (!this.seaLionApiKey && !process.env.SEA_LION_LOCAL_VLLM) {
             return `[SEA-LION Output] Verified regional structural context across AST nodes. Compliant.`;
         }
@@ -59,7 +69,7 @@ class TriModelBridge {
                 signal: controller.signal,
                 body: JSON.stringify({
                     model,
-                    messages: Array.isArray(messages) ? messages : [{ role: 'user', content: messages }],
+                    messages: Array.isArray(messages) ? messages : [{ role: 'user', content: auditRes.sanitized }],
                     temperature,
                     max_tokens: 2048
                 })
@@ -72,7 +82,8 @@ class TriModelBridge {
             }
 
             const data = await response.json();
-            return data.choices?.[0]?.message?.content || '';
+            const rawOutput = data.choices?.[0]?.message?.content || '';
+            return PromptGuard.sanitizeOutput(rawOutput);
         } catch (error) {
             clearTimeout(timeoutId);
             throw new Error(`[CRITICAL] SEA-LION Bridge failure: ${error.message}`);
@@ -85,12 +96,14 @@ class TriModelBridge {
     }
 
     async deepReason(task, context) {
-        return this._callLocalModel('apex-prime:latest', task, `You are XORAS Core Reasoner. Context: ${context}`);
+        return this._callLocalModel('deepseek-r1:latest', task, `You are XORAS Core Reasoner. Context: ${context}`);
     }
 
     async embedData(text) {
-        const prompt = `embed:${text}`;
-        const payload = JSON.stringify({ model: 'apex-prime:latest', prompt });
+        const auditRes = PromptGuard.audit(text);
+        const safeText = auditRes.sanitized;
+        const prompt = `embed:${safeText}`;
+        const payload = JSON.stringify({ model: 'llama3.2:latest', prompt });
         const cmd = `curl --max-time 3 -s -X POST http://localhost:11434/api/embeddings -H "Content-Type: application/json" -d '${payload.replace(/'/g, "'\\''")}'`;
 
         try {
@@ -101,7 +114,7 @@ class TriModelBridge {
             }
             return {
                 status: 'EMBEDDED_3072_DIM',
-                text,
+                text: safeText,
                 vector: resp.embedding.slice(0, 10)
             };
         } catch (error) {

@@ -37,6 +37,14 @@ function initializeSchema() {
             rule_directive TEXT,
             success_weight INTEGER DEFAULT 0
         );
+        CREATE TABLE IF NOT EXISTS security_audit_logs (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+            event_type TEXT,
+            payload_hash TEXT,
+            sanitized_content TEXT,
+            is_safe INTEGER
+        );
     `);
     try {
         db.exec("ALTER TABLE episodic_logs ADD COLUMN execution_mode TEXT DEFAULT 'SIMULATED'");
@@ -53,6 +61,7 @@ const updateMode = db.prepare('UPDATE episodic_logs SET execution_mode = ? WHERE
 const getRecentLogs = db.prepare('SELECT * FROM episodic_logs ORDER BY timestamp DESC LIMIT ?');
 const getAllByStatus = db.prepare('SELECT * FROM episodic_logs WHERE status = ? ORDER BY id DESC');
 const getAllRecords = db.prepare('SELECT * FROM episodic_logs ORDER BY id DESC');
+const insertSecurityLog = db.prepare('INSERT INTO security_audit_logs (event_type, payload_hash, sanitized_content, is_safe) VALUES (?, ?, ?, ?)');
 
 class MemoryLedger {
     constructor() {
@@ -276,6 +285,16 @@ class MemoryLedger {
             this.purgeCache();
             return { status: 'QUEUE_RELEASED', releasedCount: count };
         } catch (e) {
+            return { status: 'FAILED', reason: e.message };
+        }
+    }
+
+    logSecurityEvent(eventType, payloadHash, sanitizedContent, isSafe) {
+        try {
+            insertSecurityLog.run(eventType, payloadHash, sanitizedContent, isSafe ? 1 : 0);
+            return { status: 'SECURITY_LOGGED' };
+        } catch (e) {
+            console.log(`[LEDGER_WARN] security logging failed: ${e.message}`);
             return { status: 'FAILED', reason: e.message };
         }
     }

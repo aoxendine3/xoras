@@ -1,6 +1,7 @@
 require('dotenv').config();
 const memoryLedger = require('../memory_ledger.cjs');
 const bridge = require('../local_inference/tri_model_bridge.cjs');
+const PromptGuard = require('../security/prompt_guard.cjs');
 
 const TIMEOUT_MS = 15000;
 const GITHUB_API_BASE = (process.env.GITHUB_API_BASE_URL || 'https://api.github.com').replace(/\/$/, '');
@@ -20,7 +21,13 @@ class PRDispatcherWorker {
     }
 
     async generateRemediationPatch(repoHandle, issueTitle) {
-        const prompt = `Generate a first-principles production AST patch or remediation script for repository '${repoHandle}' addressing issue: '${issueTitle}'. Output the exact git diff format.`;
+        const rawTitle = issueTitle || "AST Security Patch";
+        const auditRes = PromptGuard.audit(rawTitle);
+        if (!auditRes.safe) {
+            console.log(`[PROMPT_GUARD] blocked remediation patch generation for injection vector`);
+            return `[BLOCKED BY PROMPT GUARD]`;
+        }
+        const prompt = `Generate a first-principles production AST patch or remediation script for repository '${repoHandle}' addressing issue: '${auditRes.sanitized}'. Output the exact git diff format.`;
         const context = `Target repository: ${repoHandle}. Objective is release stability and zero-drift security.`;
         
         const reasonerPromise = bridge.deepReason(prompt, context);
@@ -28,7 +35,7 @@ class PRDispatcherWorker {
 
         try {
             const patch = await Promise.race([reasonerPromise, timeoutPromise]);
-            return patch;
+            return PromptGuard.sanitizeOutput(patch);
         } catch (e) {
             return `diff --git a/src/index.js b/src/index.js\n--- a/src/index.js\n+++ b/src/index.js\n@@ -1,5 +1,6 @@\n+// Verified via XORAS Code Sentry\n+import { verifyAST } from '@xoras/core';\n function run() {\n-  console.log('Legacy Runtime');\n+  verifyAST(process.cwd());\n }`;
         }
