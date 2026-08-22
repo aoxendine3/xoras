@@ -1,6 +1,6 @@
 // docs/store/app.js
 
-const API_BASE = 'http://127.0.0.1:3050/api';
+const API_BASE = './catalog.json';
 let catalogData = [];
 let cart = JSON.parse(localStorage.getItem('xoras_cart')) || [];
 
@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 async function fetchCatalog() {
     try {
-        const res = await fetch(`${API_BASE}/catalog`);
+        const res = await fetch(API_BASE);
         if (!res.ok) throw new Error('Backend unlocatable.');
         catalogData = await res.json();
         
