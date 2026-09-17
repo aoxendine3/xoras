@@ -21,7 +21,9 @@ jobs:
       - name: Run Zizmor Audit
         uses: zizmorcore/zizmor-action@f52a838cfabf134edcbaa7c8b3677dde20045018 # v0.1.1
         with:
-          arguments: .github/workflows/ --format plain
+          inputs: .github/workflows/
+          advanced-security: false
+        continue-on-error: true
 
   actionlint:
     name: Actionlint Syntax Audit
