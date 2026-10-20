@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XORAS | CI Release Health</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">XORAS</div>
+            <nav>
+                <a href="../index.html">Overview</a>
+                <a href="#findings">Recent Findings</a>
+                <a href="../store/index.html" style="color: var(--blue-500); font-weight: 600;">Storefront</a>
+                <a href="./webhooks.html" style="color: #34d399; font-weight: 600;">Webhooks</a>
+                <a href="https://github.com/aoxendine3/xoras">GitHub</a>
+            </nav>
+        </header>
+
+        <main>
+            <section class="hero" style="padding: 4rem 0 2rem; text-align: left; max-width: 100%;">
+                <h1>CI Release Health</h1>
+                <p>Status monitoring for repository integrity and release drift.</p>
+            </section>
+
+            <div class="dashboard-grid">
+                <div class="stat-card">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <h3>Recent Findings</h3>
+                        <span style="font-size: 0.65rem; padding: 0.25rem 0.5rem; background: rgba(34, 197, 94, 0.1); color: var(--green-500); border: 1px solid rgba(34, 197, 94, 0.2); border-radius: 4px; font-family: monospace;">SENTINEL: VERIFIED</span>
+                    </div>
+                    <div class="audit-finding" style="background: transparent; border-color: var(--border);">
+                        <div class="finding-header" style="color: var(--zinc-100); font-size: 0.8rem;">
+                            12:09 PM • Secret Exposure
+                        </div>
+                        <div class="finding-body" style="font-size: 0.75rem;">
+                            Exposed Stripe Token detected in <code>feat/stripe-auth</code>.
+                        </div>
+                    </div>
+                    <div class="audit-finding" style="background: transparent; border-color: var(--border);">
+                        <div class="finding-header" style="color: var(--zinc-100); font-size: 0.8rem;">
+                            10:45 AM • Dependency Drift
+                        </div>
+                        <div class="finding-body" style="font-size: 0.75rem;">
+                            Unpinned GitHub Action <code>actions/checkout@v4</code> detected.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stat-card" id="trends">
+                    <h3>Release Integrity</h3>
+                    <div style="font-size: 2rem; font-weight: 700; color: var(--green-500); margin-top: 1rem;">98.2%</div>
+                    <p style="font-size: 0.75rem; color: var(--zinc-400);">Deterministic Integrity Score (30D Trend)</p>
+                    
+                    <div class="trend-container">
+                        <svg width="100%" height="100%" viewBox="0 0 400 80" preserveAspectRatio="none">
+                            <path class="sparkline" d="M0,60 L40,55 L80,58 L120,40 L160,45 L200,30 L240,35 L280,20 L320,25 L360,10 L400,15" />
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <section id="findings" style="margin-top: 4rem;">
+                <h3>Prevented Incidents</h3>
+                <table style="width: 100%; border-collapse: collapse; margin-top: 1rem; font-size: 0.875rem;">
+                    <thead>
+                        <tr style="border-bottom: 1px solid var(--border); text-align: left;">
+                            <th style="padding: 1rem 0;">Type</th>
+                            <th>Status</th>
+                            <th>Remediation</th>
+                            <th>PR</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="border-bottom: 1px solid var(--border);">
+                            <td style="padding: 1rem 0;">Secret Exposure</td>
+                            <td><span style="color: var(--green-500);">RESOLVED</span></td>
+                            <td>Moved to GH Secrets</td>
+                            <td>#42</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid var(--border);">
+                            <td style="padding: 1rem 0;">Dependency Drift</td>
+                            <td><span style="color: var(--green-500);">RESOLVED</span></td>
+                            <td>Pinned to SHA</td>
+                            <td>#39</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+        </main>
+
+        <footer>
+            <p>&copy; 2026 XORAS. Engineering-first release governance.</p>
+        </footer>
+    </div>
+</body>
+</html>

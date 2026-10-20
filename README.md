@@ -1,113 +1,77 @@
-# XORAS ENTERPRISE CORE
-**Sovereign Systems Governance & Automated Acquisition Infrastructure**
+# XORAS: Engineering Integrity Management
+
+Turn release anxiety into release confidence. 
+
+XORAS is the release confidence layer sitting between your CI and production. It analyzes pull requests for architectural bloat, performance drift, and security regressions *before* they merge—without blocking your engineers.
+
+## The Problem: Deployment Drift
+In fast-moving engineering teams:
+* Regressions slip through code review.
+* CI passes, but the architecture silently drifts.
+* Teams lose confidence in deployments due to "regression fatigue."
+* Performance degradation accumulates over months.
+
+## The Solution: XORAS Release Integrity
+XORAS detects release drift early and surfaces risky PRs instantly.
+
+* **Release drift is visible** inside the GitHub PR.
+* **Integrity trends are measurable** via the Governance Dashboard.
+* **Remediation becomes faster** because drift is caught before production.
+* **Enforcement becomes data-driven**, transitioning from advisory warnings to strict policy gates over time.
 
 ---
 
-## 1. Executive Summary
-XORAS is an institutional-grade systems governance and continuous integration verification platform. Operating entirely on first-principles engineering, XORAS bridges the gap between Level-4 pre-commit pipeline security and automated developer relations (DevRel) acquisition.
+## 🚀 The 30-Day Release Integrity Pilot
+The fastest way to build release confidence is through our **Advisory-First Pilot**. 
 
-By autonomously identifying broken static builds, Next.js 15 asynchronous routing parameter drift, and high-entropy secret leakage across public repositories, XORAS generates verifiable Abstract Syntax Tree (AST) patches and submits them directly as value-first Pull Requests.
+We do not believe in blocking builds on day one. Enterprise tooling fails when it introduces immediate organizational friction. Instead, XORAS runs in **Advisory Mode**.
 
-```bash
-# Execute the full 6-stage autonomous acquisition and DevRel loop
-npm run revops
+**During the 30-Day Pilot, you get:**
+1. **Zero-Friction Install**: A 3-minute setup using `xoras/action@v1`.
+2. **Advisory Mode**: XORAS will analyze your PRs, generate beautiful Step Summaries, and flag architectural drift—but it will *never* fail a build.
+3. **Prevented Incidents Tracking**: We measure exactly what XORAS catches (latency spikes, missing security headers, dependency bloat).
+4. **Weekly Governance Reports**: Data-driven ROI showing exactly how your engineering integrity is improving.
+
+[**Start Your 30-Day Pilot**](#) | [**Book a Demo**](#)
+
+---
+
+## See It In Action (The "Wow" Moment)
+
+XORAS doesn't require a dashboard to provide value. The product surfaces exactly where your engineers live: **The Pull Request.**
+
+* [👀 View an Example Warning PR](../examples/PR_WARNING_EXAMPLE.md) (Advisory Mode)
+* [👀 View an Example Blocked PR](../examples/PR_BLOCKED_EXAMPLE.md) (Enforcement Mode)
+
+### The Setup (3 Minutes)
+Add this to `.github/workflows/integrity.yml` in your repository:
+
+```yaml
+name: Release Integrity
+
+on:
+  pull_request:
+
+jobs:
+  integrity:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: XORAS Release Integrity
+        uses: xoras/action@v1
+        with:
+          mode: ADVISORY
 ```
 
----
-
-## 2. Institutional Architecture & Flagship Hub
-
-This repository serves as the primary flagship hub for XORAS enterprise products, advanced technical specifications, and general research documentation.
-
-```text
-xoras-core/
-├── products/
-│   ├── sentry-pilot.md       # CI/CD Security Hook ($2,000 / mo)
-│   └── zenith-node.md        # Air-Gapped Bare-Metal Security Vault
-├── advanced_tech/
-│   ├── map-index.md          # Sub-millisecond O(1) Cache Architecture
-│   └── ast-drift.md          # Deterministic Next.js 15 Trapping
-├── research/
-│   ├── comm-spec.md          # Protocol-Mediated 5-Tone Reasoning Matrix
-│   └── autobiography.md      # The Sovereign Operator: Living History
-├── intelligence_core/        # Execution Daemons & In-Memory Map
-└── scratch/                  # Isolated & Gitignored Experimental Sandbox
-```
-
-### 2.1 Outgoing Enterprise Products
-*   [Level-4 Continuous Integration Governance Sentry](products/sentry-pilot.md): Autonomous AST security verification daemon preventing parameter panics and configuration drift before staging deployments.
-*   [Zenith Sovereign Node](products/zenith-node.md): Cryptographically verified, air-gapped hardware and software orchestration appliance designed for high-net-worth institutional treasuries.
-
-### 2.2 Advanced Technical Specifications
-*   [O(1) Dual V8 In-Memory Cache Indexing](advanced_tech/map-index.md): High-concurrency relational state synchronizer eliminating disk I/O lock contention (`SQLITE_BUSY`) under multi-core parallel workloads.
-*   [Abstract Syntax Tree (AST) Drift Trapping](advanced_tech/ast-drift.md): Deterministic visitor verification algorithm wrapping Next.js 15 asynchronous routing parameters and masking high-entropy secrets.
-
-### 2.3 General Research Documentation
-*   [Universal Agentic Communication & Cognition Specification](research/comm-spec.md): Protocol-mediated reasoning engine enforcing five distinct commercial profiles (`TECH`, `C_SUITE`, `CAPITAL`, `FOUNDER`, `LEGAL`) under a permanently locked unembellished communication covenant.
-*   [The Sovereign Operator: An Autobiography](research/autobiography.md): The living history and foundational bare-metal evolution of the XORAS enterprise architecture.
+That's it. You now have deterministic release governance.
 
 ---
 
-## 3. The 6-Stage RevOps Master Loop (`xoras_revops_master.cjs`)
+## Why Teams Trust XORAS
 
-When `npm run revops` is executed, the runtime orchestrates six specialized daemons synchronously via an O(1) V8 in-memory hydration index:
+* **Local-First & CI-Native**: No mandatory cloud dependencies or intrusive agents. XORAS runs entirely inside your existing CI pipeline.
+* **Advisory-First**: Roll out governance without engineering rebellion. 
+* **Data-Driven Enforcement**: Once the team trusts the signal, flip `mode: ENFORCEMENT` to strictly gate releases based on your institutional baseline.
 
-### 3.1 The PR Sniper (`pr_sniper.cjs`)
-Queries GitHub REST APIs for 100 premium enterprise repositories suffering from build failures, Next.js dynamic routing parameter drift, or secret exposure. Formats tailored PR patch markdown files in the private `/scratch/repos/` sandbox.
-
-### 3.2 The Triage Engine (`queue_prioritizer.cjs`)
-Ranks staged target repositories based on security profile and commercial viability into Tier 1 (Trophy) or Tier 2 (Commercial Reserve), ensuring zero CPU cycles are wasted on unqualified accounts.
-
-### 3.3 The Parallel Dispatcher (`pr_dispatcher.cjs`)
-Executes parallel AST analysis and generates localized reasoner inferences across all triaged candidate targets.
-
-### 3.4 The Surveillance Daemon (`pr_monitor.cjs`)
-Continuously polls active Pull Request review queues on GitHub, tracking developer comments, CI test runner pass states, and merge events.
-
-### 3.5 The Closer (`pr_closer.cjs`)
-Detects successfully merged Pull Requests instantly and posts a professional institutional follow-up offering our $2,000 Level-4 sentry pilot. It dynamically pairs this with an exclusive 50% Open-Source Maintainer Incentive ($1,000 total + fee waiver).
-
-### 3.6 The Inspector (`ledger_inspector.cjs`)
-Delivers an immediate, audited relational summary of all staged pipeline states directly to the terminal.
-
-> **Executive Governance:** For multi-channel social positioning, brand growth, and outbound founder outreach, review the [CEO Orchestrator Specification](docs/ceo-spec.md).
-
----
-
-## 4. Relational Memory Grid & Security Locking
-All operational intelligence is stored locally in an air-gapped B-Tree database (`AETHER_KNOWLEDGE_BASE/aether_brain.sqlite`), isolated from public cloud ingestion.
-
-```sql
--- Relational Tracking Table
-CREATE TABLE episodic_logs (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    status TEXT NOT NULL, -- 'STAGED', 'SUBMITTED', 'MERGED', 'CLOSED_WON'
-    query TEXT NOT NULL,
-    outcome TEXT NOT NULL
-);
-```
-Every execution cycle triggers an automated AES-256 encrypted backup (`aether_brain.enc`) via our backup sentry (`tri_backup_sentry.cjs`).
-
----
-
-## 5. Quick Start Installation
-
-```bash
-# 1. Clone & install dependencies
-git clone https://github.com/aoxendine3/xoras-core.git
-cd xoras-core
-npm install
-
-# 2. Configure local environment secrets (.env)
-echo "GITHUB_TOKEN=your_token" >> .env
-echo "VITE_VAULT_KEY=your_aes_encryption_key" >> .env
-
-# 3. Execute the Sentry Loop
-npm run revops
-```
-
----
-
-## 6. Institutional Inbound Vector
-All commercial inquiries, pilot onboarding requests, and security disclosures must be directed to our authorized channel:
-**Inbound Vector:** `arvant.apex@gmail.com`
+[**Technical Architecture & Security**](./ARCHITECTURE.md) | [**View the Synthetic Regression Lab**](../demo-vulnerable-app/)
