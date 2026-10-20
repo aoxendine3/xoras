@@ -6,33 +6,117 @@
     <title>XORAS Multi-Platform Webhook Ledger | Cloud Bridge</title>
     <link rel="stylesheet" href="../store/style.css">
     <style>
-        .ledger-container { max-width: 1400px; margin: 4rem auto; padding: 0 2rem; }
-        .ledger-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 1.5rem; margin-bottom: 2.5rem; }
-        .ledger-title { font-family: 'Outfit'; font-size: 2.5rem; font-weight: 800; display: flex; align-items: center; gap: 1rem; }
-        .live-pulse { width: 12px; height: 12px; border-radius: 99px; background: var(--green-badge); box-shadow: 0 0 15px var(--green-badge); animation: pulse 1.5s infinite; }
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
+        :root {
+            --app-max-width: 1680px;
+            --surface-card: rgba(14, 14, 18, 0.75);
+            --surface-elevated: #15151e;
+            --border-subtle: rgba(255, 255, 255, 0.08);
+            --border-focus: #6366f1;
+            --accent-cyan: #00f2fe;
+            --accent-purple: #8b5cf6;
+        }
 
-        .stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; margin-bottom: 3rem; }
-        .stat-card { background: var(--surface); border: 1px solid var(--border); padding: 1.5rem; border-radius: 16px; }
-        .stat-val { font-family: 'Outfit'; font-size: 2.25rem; font-weight: 800; color: var(--text-main); margin-top: 0.5rem; }
-        .stat-lbl { color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; }
+        /* Harmonized Full-Canvas Layout */
+        .container { max-width: var(--app-max-width) !important; width: 100%; padding: 0 2rem; margin: 0 auto; }
+        .ledger-container { max-width: var(--app-max-width); width: 100%; margin: 1.5rem auto 3rem auto; padding: 0 2rem; }
 
-        .table-wrapper { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; }
-        .webhook-table { width: 100%; border-collapse: collapse; text-align: left; }
-        .webhook-table th { background: var(--surface-hover); padding: 1.25rem 1.5rem; font-size: 0.85rem; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.08em; border-bottom: 1px solid var(--border); }
-        .webhook-table td { padding: 1.25rem 1.5rem; font-size: 0.95rem; border-bottom: 1px solid var(--border); font-family: 'JetBrains Mono', monospace; }
-        .webhook-table tr:hover td { background: var(--surface-hover); }
+        /* Unified Header & Nav Alignment */
+        header { padding: 1rem 0; border-bottom: 1px solid var(--border); backdrop-filter: blur(16px); background: rgba(5, 5, 7, 0.85); position: sticky; top: 0; z-index: 100; }
+        .nav-bar { display: flex; justify-content: space-between; align-items: center; width: 100%; }
+
+        /* Page Sub-Header */
+        .ledger-header { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 1px solid var(--border-subtle); padding-bottom: 1rem; margin-bottom: 1.25rem; flex-wrap: wrap; gap: 1rem; }
+        .ledger-title-group { display: flex; flex-direction: column; gap: 0.25rem; }
+        .ledger-title { font-family: 'Outfit', sans-serif; font-size: 1.85rem; font-weight: 800; display: flex; align-items: center; gap: 0.75rem; letter-spacing: -0.02em; }
+        .live-pulse { width: 10px; height: 10px; border-radius: 99px; background: var(--green-badge); box-shadow: 0 0 12px var(--green-badge); animation: pulse 1.6s infinite; }
+        @keyframes pulse { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(0.9); } 100% { opacity: 1; transform: scale(1); } }
+        .ledger-meta { color: var(--text-muted); font-size: 0.85rem; display: flex; align-items: center; gap: 0.75rem; }
+
+        /* Compact High-Density Metric Strip */
+        .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin-bottom: 1.25rem; }
+        .stat-card { background: var(--surface-card); border: 1px solid var(--border-subtle); padding: 1rem 1.25rem; border-radius: 12px; backdrop-filter: blur(12px); transition: border-color 0.2s, transform 0.2s; position: relative; overflow: hidden; }
+        .stat-card:hover { border-color: rgba(99, 102, 241, 0.35); transform: translateY(-1px); }
+        .stat-card::after { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, transparent, var(--stat-glow, var(--primary)), transparent); opacity: 0.7; }
+        .stat-card-header { display: flex; justify-content: space-between; align-items: center; }
+        .stat-lbl { color: var(--text-muted); font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; }
+        .stat-icon { font-size: 0.95rem; opacity: 0.7; }
+        .stat-val { font-family: 'Outfit', sans-serif; font-size: 1.75rem; font-weight: 800; color: var(--text-main); margin-top: 0.25rem; line-height: 1.2; }
+        .stat-sub { font-size: 0.75rem; color: var(--text-muted); margin-top: 0.2rem; font-family: 'JetBrains Mono', monospace; }
+
+        /* Control Toolbar */
+        .toolbar { background: var(--surface-card); border: 1px solid var(--border-subtle); border-radius: 12px; padding: 0.75rem 1rem; display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap; }
+        .toolbar-left { display: flex; align-items: center; gap: 0.75rem; flex: 1; min-width: 280px; }
+        .search-input-wrapper { position: relative; width: 100%; max-width: 380px; }
+        .search-input { width: 100%; background: var(--surface-hover); border: 1px solid var(--border-subtle); border-radius: 8px; padding: 0.5rem 0.85rem 0.5rem 2.2rem; color: var(--text-main); font-size: 0.85rem; font-family: 'Inter', sans-serif; transition: all 0.2s; }
+        .search-input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2); }
+        .search-icon { position: absolute; left: 0.75rem; top: 50%; transform: translateY(-50%); font-size: 0.85rem; color: var(--text-muted); pointer-events: none; }
         
-        .badge-gh { background: rgba(99, 102, 241, 0.15); color: #818cf8; border: 1px solid #6366f1; padding: 0.25rem 0.65rem; border-radius: 6px; font-size: 0.75rem; font-weight: 700; }
-        .badge-wp { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid #10b981; padding: 0.25rem 0.65rem; border-radius: 6px; font-size: 0.75rem; font-weight: 700; }
-        .badge-st { background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid #f59e0b; padding: 0.25rem 0.65rem; border-radius: 6px; font-size: 0.75rem; font-weight: 700; }
-        .badge-dc { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid #ef4444; padding: 0.25rem 0.65rem; border-radius: 6px; font-size: 0.75rem; font-weight: 700; }
+        .filter-group { display: flex; gap: 0.4rem; align-items: center; }
+        .filter-btn { background: transparent; border: 1px solid var(--border-subtle); color: var(--text-muted); padding: 0.4rem 0.75rem; border-radius: 6px; font-size: 0.78rem; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+        .filter-btn:hover { background: var(--surface-hover); color: var(--text-main); }
+        .filter-btn.active { background: rgba(99, 102, 241, 0.15); border-color: var(--primary); color: #a5b4fc; }
 
-        .status-safe { color: var(--green-badge); font-weight: 700; }
-        .status-blocked { color: #ef4444; font-weight: 700; }
+        .toolbar-right { display: flex; align-items: center; gap: 0.5rem; }
+        .btn-action { padding: 0.45rem 0.9rem; background: var(--surface-hover); border: 1px solid var(--border-subtle); color: var(--text-main); border-radius: 6px; font-size: 0.8rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 0.4rem; transition: all 0.2s; }
+        .btn-action:hover { border-color: rgba(255,255,255,0.2); background: rgba(255,255,255,0.06); }
+        .btn-primary { background: linear-gradient(135deg, var(--primary), var(--accent)); border: none; color: #fff; padding: 0.5rem 1rem; border-radius: 6px; font-size: 0.82rem; font-weight: 700; cursor: pointer; box-shadow: 0 0 12px rgba(99, 102, 241, 0.25); transition: all 0.2s; }
+        .btn-primary:hover { box-shadow: 0 0 18px rgba(139, 92, 246, 0.45); transform: translateY(-1px); }
 
-        .btn-test { padding: 0.75rem 1.5rem; background: var(--primary); color: #fff; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
-        .btn-test:hover { background: var(--accent); box-shadow: 0 0 15px var(--accent-glow); }
+        /* Dense, Responsive High-Throughput Ledger Table */
+        .table-wrapper { background: var(--surface-card); border: 1px solid var(--border-subtle); border-radius: 12px; overflow: hidden; backdrop-filter: blur(12px); box-shadow: 0 8px 30px rgba(0,0,0,0.3); }
+        .webhook-table { width: 100%; border-collapse: collapse; text-align: left; table-layout: fixed; }
+        .webhook-table th { background: rgba(22, 22, 30, 0.95); padding: 0.75rem 1rem; font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.08em; font-weight: 700; border-bottom: 1px solid var(--border); user-select: none; }
+        .webhook-table td { padding: 0.65rem 1rem; font-size: 0.85rem; border-bottom: 1px solid rgba(255, 255, 255, 0.04); font-family: 'JetBrains Mono', monospace; vertical-align: middle; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .webhook-table tbody tr { transition: background 0.15s; cursor: pointer; }
+        .webhook-table tbody tr:hover { background: rgba(99, 102, 241, 0.06); }
+        .webhook-table tbody tr.row-blocked:hover { background: rgba(239, 68, 68, 0.06); }
+        
+        /* Calibrated Column Widths */
+        .col-platform { width: 14%; }
+        .col-event { width: 18%; }
+        .col-status { width: 10%; }
+        .col-payload { width: 38%; }
+        .col-ip { width: 10%; }
+        .col-time { width: 10%; }
+
+        /* Status & Badges */
+        .badge { display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.2rem 0.55rem; border-radius: 5px; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.03em; font-family: 'Inter', sans-serif; }
+        .badge-gh { background: rgba(99, 102, 241, 0.15); color: #a5b4fc; border: 1px solid rgba(99, 102, 241, 0.3); }
+        .badge-wp { background: rgba(16, 185, 129, 0.15); color: #6ee7b7; border: 1px solid rgba(16, 185, 129, 0.3); }
+        .badge-st { background: rgba(245, 158, 11, 0.15); color: #fcd34d; border: 1px solid rgba(245, 158, 11, 0.3); }
+        .badge-dc { background: rgba(239, 68, 68, 0.15); color: #fca5a5; border: 1px solid rgba(239, 68, 68, 0.3); }
+
+        .status-pill { display: inline-flex; align-items: center; gap: 0.35rem; font-weight: 700; font-size: 0.75rem; }
+        .status-pill.safe { color: var(--green-badge); }
+        .status-pill.blocked { color: #f87171; }
+        .dot { width: 6px; height: 6px; border-radius: 50%; display: inline-block; }
+        .dot.safe { background: var(--green-badge); box-shadow: 0 0 6px var(--green-badge); }
+        .dot.blocked { background: #ef4444; box-shadow: 0 0 6px #ef4444; }
+
+        .payload-text { font-family: 'Inter', sans-serif; color: #e2e8f0; font-size: 0.83rem; }
+
+        /* Expanded JSON Drawer on Click */
+        .expanded-row td { background: rgba(14, 14, 20, 0.98); padding: 1rem 1.25rem !important; border-bottom: 1px solid var(--border); }
+        .raw-json-viewer { background: #07070a; border: 1px solid var(--border-subtle); border-radius: 8px; padding: 0.75rem 1rem; color: #a5b4fc; font-size: 0.78rem; font-family: 'JetBrains Mono', monospace; max-height: 200px; overflow-y: auto; white-space: pre-wrap; word-break: break-all; }
+
+        /* Responsive Breakpoints */
+        @media (max-width: 1024px) {
+            .stat-grid { grid-template-columns: repeat(2, 1fr); }
+            .col-ip { display: none; }
+            .webhook-table th.col-ip, .webhook-table td:nth-child(5) { display: none; }
+            .col-payload { width: 48%; }
+        }
+
+        @media (max-width: 768px) {
+            .stat-grid { grid-template-columns: 1fr; }
+            .toolbar { flex-direction: column; align-items: stretch; }
+            .search-input-wrapper { max-width: 100%; }
+            .filter-group { overflow-x: auto; padding-bottom: 0.25rem; }
+            .col-time { display: none; }
+            .webhook-table th.col-time, .webhook-table td:nth-child(6) { display: none; }
+            .col-event { width: 25%; }
+            .col-payload { width: 51%; }
+        }
     </style>
 </head>
 <body>
@@ -47,56 +131,115 @@
                 <a href="../index.html" class="nav-link">Overview</a>
                 <a href="./index.html" class="nav-link">CI Health</a>
                 <a href="../store/index.html" class="nav-link">Storefront</a>
-                <a href="#" class="nav-link active">Webhooks</a>
+                <a href="./webhooks.html" class="nav-link active">Webhooks</a>
             </nav>
-            <button class="btn-test" id="trigger-demo-webhook">⚡ Ingest Test Webhook</button>
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+                <button class="btn-action" id="btn-toggle-stream" title="Pause / Resume Live Feed">
+                    <span id="stream-status-dot" class="dot safe"></span>
+                    <span id="stream-status-text">Live Ingestion</span>
+                </button>
+                <button class="btn-primary" id="trigger-demo-webhook">⚡ Ingest Event</button>
+            </div>
         </div>
     </header>
 
     <main class="ledger-container">
+        <!-- Sub-Header & Live Pipeline Status -->
         <div class="ledger-header">
-            <div class="ledger-title">
-                <div class="live-pulse"></div>
-                Multi-Platform Ingestion Ledger
+            <div class="ledger-title-group">
+                <div class="ledger-title">
+                    <div class="live-pulse"></div>
+                    Multi-Platform Ingestion Ledger
+                </div>
+                <div class="ledger-meta">
+                    <span>Autonomous Gateway: <strong style="color: var(--primary); font-family: 'JetBrains Mono', monospace;">port 3075</strong></span>
+                    <span>•</span>
+                    <span>State Integrity: <strong style="color: var(--green-badge);">SQLite WAL &amp; Merkle Root</strong></span>
+                    <span>•</span>
+                    <span id="active-buffer-count">Buffer: 0 events</span>
+                </div>
             </div>
-            <div style="color: var(--text-muted); font-size: 0.9rem;">
-                Ingesting on <span style="color: var(--primary); font-family: monospace;">port 3075</span> • SQLite WAL Persistence
+            <div style="display: flex; gap: 0.5rem;">
+                <button class="btn-action" id="btn-clear-ledger" title="Clear event buffer">🧹 Clear View</button>
+                <button class="btn-action" id="btn-export-json" title="Export Ledger JSON">📥 Export JSON</button>
             </div>
         </div>
 
+        <!-- High-Density Metrics Bar -->
         <div class="stat-grid">
-            <div class="stat-card">
-                <div class="stat-lbl">Total Events Ingested</div>
+            <div class="stat-card" style="--stat-glow: var(--primary);">
+                <div class="stat-card-header">
+                    <div class="stat-lbl">Total Events Ingested</div>
+                    <div class="stat-icon">⚡</div>
+                </div>
                 <div class="stat-val" id="stat-total">0</div>
+                <div class="stat-sub">Streamed via Cloud Bridge</div>
             </div>
-            <div class="stat-card">
-                <div class="stat-lbl">AST Security Safe</div>
+            <div class="stat-card" style="--stat-glow: var(--green-badge);">
+                <div class="stat-card-header">
+                    <div class="stat-lbl">AST Security Verified</div>
+                    <div class="stat-icon" style="color: var(--green-badge);">🛡️</div>
+                </div>
                 <div class="stat-val" id="stat-safe" style="color: var(--green-badge);">0</div>
+                <div class="stat-sub">Zero Invariant Violations</div>
             </div>
-            <div class="stat-card">
-                <div class="stat-lbl">Injections Blocked</div>
+            <div class="stat-card" style="--stat-glow: #ef4444;">
+                <div class="stat-card-header">
+                    <div class="stat-lbl">Threats Neutralized</div>
+                    <div class="stat-icon" style="color: #ef4444;">🛑</div>
+                </div>
                 <div class="stat-val" id="stat-blocked" style="color: #ef4444;">0</div>
+                <div class="stat-sub">Prompt Injection Intercepted</div>
             </div>
-            <div class="stat-card">
-                <div class="stat-lbl">Active Cloud Platforms</div>
-                <div class="stat-val">4 Platforms</div>
+            <div class="stat-card" style="--stat-glow: #00f2fe;">
+                <div class="stat-card-header">
+                    <div class="stat-lbl">Connected Endpoints</div>
+                    <div class="stat-icon" style="color: #00f2fe;">🌐</div>
+                </div>
+                <div class="stat-val" id="stat-endpoints">4 Systems</div>
+                <div class="stat-sub">GitHub • WP • Stripe • Discord</div>
             </div>
         </div>
 
+        <!-- Real-Time Filter & Search Toolbar -->
+        <div class="toolbar">
+            <div class="toolbar-left">
+                <div class="search-input-wrapper">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" id="ledger-search" class="search-input" placeholder="Search payloads, IPs, or event types...">
+                </div>
+                <div class="filter-group">
+                    <button class="filter-btn active" data-filter="platform" data-val="ALL">All Platforms</button>
+                    <button class="filter-btn" data-filter="platform" data-val="GITHUB">GitHub</button>
+                    <button class="filter-btn" data-filter="platform" data-val="WORDPRESS">WordPress</button>
+                    <button class="filter-btn" data-filter="platform" data-val="STRIPE">Stripe</button>
+                    <button class="filter-btn" data-filter="platform" data-val="DISCORD">Discord</button>
+                </div>
+            </div>
+            <div class="toolbar-right">
+                <div class="filter-group">
+                    <button class="filter-btn active" data-filter="status" data-val="ALL">All Status</button>
+                    <button class="filter-btn" data-filter="status" data-val="SAFE">Safe Only</button>
+                    <button class="filter-btn" data-filter="status" data-val="BLOCKED">Blocked</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- High-Density Webhook Stream Table -->
         <div class="table-wrapper">
             <table class="webhook-table">
                 <thead>
                     <tr>
-                        <th>Platform</th>
-                        <th>Event Type</th>
-                        <th>AST Audit</th>
-                        <th>Sanitized Summary / Payload</th>
-                        <th>Client IP</th>
-                        <th>Timestamp</th>
+                        <th class="col-platform">Platform</th>
+                        <th class="col-event">Event Type</th>
+                        <th class="col-status">AST Audit</th>
+                        <th class="col-payload">Sanitized Payload / Summary</th>
+                        <th class="col-ip">Client IP</th>
+                        <th class="col-time">Timestamp</th>
                     </tr>
                 </thead>
                 <tbody id="webhook-rows">
-                    <!-- Populated by webhooks.js -->
+                    <!-- Populated dynamically by webhooks.js -->
                 </tbody>
             </table>
         </div>
